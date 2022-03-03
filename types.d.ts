@@ -6,21 +6,12 @@ export interface ClientOptions extends DJSClientOptions {
   errorMessages?: Map<string, string>;
 }
 
-export interface Client extends DJSClient {
-  prefix: string;
-  cooldowns: Map<string, NodeJS.Timer>
-}
-
-export interface Message extends DJSMessage {
-  args?: string[],
-  users?: string[],
+export interface Message<Type> extends DJSMessage {
+  context: Type,
   client: Client
 }
 
-interface Client {
-  prefix: string;
-  cooldowns: Map<string, NodeJS.Timer>;
-  cooldownTime: number;
+export interface Client extends DJSClient {
   use: (handler: Handler) => void;
   onCommand(command: string, handler: Handler, middleware?: Handler[])
 }

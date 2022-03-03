@@ -5,38 +5,38 @@ describe("Base case", () => {
     expect(true);
   })
   test("Middleware", async () => {
-    const client = new Client({
+    const client = new Client<any>({
       intents: [],
       prefix: "foo"
     });
-    const mockMessage = {content: "foo", order: []} as unknown as Message;
+    const mockMessage = {content: "foo", context: {order: []}} as unknown as Message<any>;
     let testMessage: any;
     let nextFunction;
 
     const middlewareA: any = jest.fn((message, next) => {
       testMessage = message;
       nextFunction = next;
-      message.order.push("a");
+      message.context.order.push("a");
       next();
     });
 
     const middlewareB: any = jest.fn((message, next) => {
       testMessage = message;
       nextFunction = next;
-      message.order.push("b");
+      message.context.order.push("b");
       next();
     });
 
     const middlewareC: any = jest.fn((message, next) => {
       testMessage = message;
       nextFunction = next;
-      message.order.push("c");
+      message.context.order.push("c");
     });
 
     const middlewareD: any = jest.fn((message, next) => {
       testMessage = message;
       nextFunction = next;
-      message.order.push("d");
+      message.context.order.push("d");
     });
 
     client.use(middlewareA);
@@ -50,6 +50,6 @@ describe("Base case", () => {
     expect(middlewareB).toBeCalledTimes(1);
     expect(middlewareC).toBeCalledTimes(1);
     expect(middlewareD).not.toBeCalled();
-    expect(testMessage.order).toEqual(["a","b","c"]);
+    expect(testMessage.context.order).toEqual(["a","b","c"]);
   })
 })

@@ -1,19 +1,14 @@
 import { Client as DJSClient } from 'discord.js';
-import type {Message, ClientOptions, Handler, DJSMessage, Client as IClient} from './types';
+import type {Message, ClientOptions, Handler, DJSMessage} from './types';
 // eslint-disable-next-line no-unused-vars
 
-export default class Client extends DJSClient implements IClient {
-  prefix: string;
+export default class Client<Type> extends DJSClient {
   // eslint-disable-next-line no-undef
-  cooldowns: Map<string, NodeJS.Timer> = new Map();
-  cooldownTime: number;
   middlewareChain: Handler[] = [];
   commandMiddlewares: Map<Handler, Handler[]> = new Map();
   commandHandlers: Map<string, Handler> = new Map();
   constructor(options: ClientOptions) {
     super(options);
-    this.prefix = options.prefix || '';
-    this.cooldownTime = options.cooldownTime || 300;
     this.on('messageCreate', this.handleMessage);
   }
 
@@ -26,7 +21,7 @@ export default class Client extends DJSClient implements IClient {
           escape = false;
         };
         // eslint-disable-next-line no-await-in-loop
-        const status = await handler(message as Message, next);
+        const status = await handler(message as Message<Type>, next);
         if(status) {
           message.channel.send(status);
         }
@@ -41,13 +36,6 @@ export default class Client extends DJSClient implements IClient {
 
   use(handler: Handler) {
     this.middlewareChain.push(handler);
-  }
-
-  onCommand(command: string, handler: Handler, middleware?: Handler[]) {
-    this.commandHandlers.set(this.prefix + command, handler);
-    if (middleware) {
-      this.commandMiddlewares.set(handler, middleware);
-    }
   }
 
 }
