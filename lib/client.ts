@@ -1,5 +1,4 @@
 import {
-  Channel,
   Client,
   DMChannel,
   Guild,
@@ -11,7 +10,7 @@ import {
   ThreadChannel,
   User,
 } from "discord.js";
-
+import rateLimit from "./processors/rate-limit";
 interface Command {
   name: string;
   aliases?: string[];
@@ -75,7 +74,6 @@ export default class DiscordBot {
     callback: MessageProcessor
   ) {
     if (this.processors.has(name)) {
-      let processors: MessageProcessor[] = [callback];
       this.processors.get(name)?.push(callback);
     } else {
       this.processors.set(name, [callback]);
