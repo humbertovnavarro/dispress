@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint",
-    "test": "npm run lint && jest",
-    "prepare": "husky install"
+    "test": "jest",
+    "prepare": "husky install",
+    "dev": "nodemon main.ts"
   },
   "keywords": [],
   "author": "",
