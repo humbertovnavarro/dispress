@@ -7,7 +7,8 @@
     "test": "jest",
     "lint": "prettier --write .",
     "prepare": "husky install",
-    "dev": "nodemon main.ts"
+    "dev": "nodemon main.ts",
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
