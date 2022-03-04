@@ -55,7 +55,6 @@ export default class DiscordBot {
       console.log("connected!");
     });
     this.useCommandHandler();
-    this.useProcessor("pre_command", rateLimit);
   }
 
   login(token: string) {
