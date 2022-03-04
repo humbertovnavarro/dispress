@@ -1,6 +1,6 @@
-import { Channel, Client, DMChannel, Guild, Intents, Message, NewsChannel, PartialDMChannel, TextChannel, ThreadChannel, User } from "discord.js";
+import { Client, DMChannel, Guild, Intents, Message, NewsChannel, PartialDMChannel, TextChannel, ThreadChannel, User } from "discord.js";
 
-interface Command {
+export interface Command {
   name: string;
   aliases?: string[];
   description: string;
@@ -19,14 +19,15 @@ export interface MessageWrapper {
 
 export type MessageProcessor = (message: MessageWrapper) => void;
 
+export type DiscordBotPlugin = (bot: DiscordBot) => void;
+
 export default class DiscordBot {
   prefix: string = "!";
   commandsUnique: Command[] = [];
   commands: Map<string, Command> = new Map();
   processors: Map<string, MessageProcessor[]> = new Map();
   client: Client;
-
-  constructor(prefix: string) {
+  constructor(prefix: string, plugins?: DiscordBotPlugin[]) {
     this.prefix = prefix;
     this.client = new Client({
       intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILDS]
@@ -35,6 +36,10 @@ export default class DiscordBot {
       console.log("connected!");
     });
     this.useCommandHandler();
+  }
+
+  usePlugin(factory: DiscordBotPlugin) {
+    factory(this);
   }
 
   login(token: string) {
