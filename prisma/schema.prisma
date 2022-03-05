@@ -1,0 +1,23 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./data.db"
+}
+
+model UserPermissions {
+  @@id([user, permission])
+  user String
+  permission String
+}
+
+model ChannelRestrictions {
+  channel String @unique
+  regex String
+  error String
+}
