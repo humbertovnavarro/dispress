@@ -1,123 +1,58 @@
-import { Client, DMChannel, Guild, Intents, Message, NewsChannel, PartialDMChannel, TextChannel, ThreadChannel, User } from "discord.js";
-
-export interface Command {
-  name: string;
-  aliases?: string[];
-  description: string;
-  handler: MessageProcessor;
+import { Client, CommandInteraction, Message } from "discord.js";
+import type { SlashCommandBuilder } from "@discordjs/builders";
+import { REST } from '@discordjs/rest'
+import { Routes } from 'discord-api-types/v9';
+import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
+interface Command {
+  handler: (interaction: CommandInteraction) => void | Promise<void>;
+  body: SlashCommandBuilder;
+  init?: () => void | Promise<void>
 }
 
-export interface MessageWrapper {
-  message: Message,
-  args: string[],
-  cancel: () => void,
-  command?: Command,
-  channel: DMChannel | PartialDMChannel | NewsChannel | TextChannel | ThreadChannel,
-  author: User,
-  guild?: Guild | null,
+export interface Bot extends Client{
+  useCommand: (command: Command) => void;
+  useMessage: (handler: (message: Message) => void | Promise<void>) => void;
+}
+const slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
+const commands = new Map<string, Command>();
+const messageHandlers: Array<(message: Message) => void | Promise<void>> = [];
+const rest = new REST({ version: '9' });
+const client = new Client({
+  intents: ["GUILDS", "GUILD_MESSAGES"]
+}) as Bot;
+
+client.on("ready", async () => {
+  if(client.token)
+  rest.setToken(client.token);
+  client.guilds.cache.forEach(guild => {
+    if(client.user?.id)
+    rest.put(Routes.applicationGuildCommands(client.user.id, guild.id), {body: slashCommands})
+    .catch((error) => {
+      console.error(error.message);
+    })
+  });
+   console.log(`Logged in as ${client.user?.tag}`)
+});
+
+client.on("interactionCreate", interaction => {
+  if(interaction.isCommand()) {
+    commands.get(interaction.commandName)?.handler(interaction);
+  }
+});
+
+client.on("messageCreate", message => {
+  messageHandlers.forEach(handler => {
+    handler(message);
+  });
+})
+
+client.useMessage = (messageHandler: (message: Message) => void | Promise<void>) => {
+  messageHandlers.push(messageHandler);
 }
 
-export type MessageProcessor = (message: MessageWrapper) => void;
-
-export type DiscordBotPlugin = (bot: DiscordBot) => void;
-
-export default class DiscordBot {
-  prefix: string = "!";
-  commandsUnique: Command[] = [];
-  commands: Map<string, Command> = new Map();
-  processors: Map<string, MessageProcessor[]> = new Map();
-  client: Client;
-  constructor(prefix: string, plugins?: DiscordBotPlugin[]) {
-    this.prefix = prefix;
-    this.client = new Client({
-      intents: [Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILDS]
-    });
-    this.client.on("ready", () => {
-      console.log("connected!");
-    });
-    this.useCommandHandler();
-  }
-
-  usePlugin(factory: DiscordBotPlugin) {
-    factory(this);
-  }
-
-  login(token: string) {
-    this.client.login(token);
-  }
-
-  use(command: Command) {
-    this.commandsUnique.push(command);
-    command.aliases?.forEach(alias => {
-      this.commands.set(alias, command);
-    });
-    this.commands.set(command.name, command);
-  }
-
-  useProcessor(name: "pre" | "pre_command" | "post_error" | "post_success" | "post", callback: MessageProcessor) {
-    if(this.processors.has(name)) {
-      let processors: MessageProcessor[] = [callback];
-      this.processors.get(name)?.push(callback);
-    } else {
-      this.processors.set(name, [callback]);
-    }
-  }
-
-  private useCommandHandler() {
-    this.client.on("messageCreate", message => {
-      let cancelled = false;
-      const cancelFunction = () => cancelled = !cancelled;
-      const messageWrapper: MessageWrapper = {
-        message,
-        args: [],
-        cancel: cancelFunction,
-        guild: message.guild,
-        channel: message.channel,
-        author: message.author
-      }
-      let processors = this.processors.get("pre");
-      processors?.forEach(processor => {
-        processor(messageWrapper)
-      })
-      if(cancelled) {
-        return;
-      }
-      if(!message.content.startsWith(this.prefix)) {
-        return;
-      }
-      const args = message.content.split(" ");
-      args[0] = args[0].substring(this.prefix.length);
-      messageWrapper.args = args;
-      const command = this.commands.get(args[0]);
-      if(command) {
-        messageWrapper.command = command;
-        this.processors.get("pre_command")?.forEach(processor => {
-          processor(messageWrapper);
-        })
-        this.processors.get(args[0])?.forEach(processor => {
-          processor(messageWrapper);
-        })
-      }
-      if(cancelled) {
-        return;
-      }
-      let didError = false;
-      try {
-        command?.handler(messageWrapper);
-      } catch(error) {
-        didError = true;
-        this.processors.get(`post_error`)?.forEach(processor => {
-          processor(messageWrapper)
-        });
-      }
-      if(!didError) {
-        this.processors.get(`post_success`)?.forEach(processor => {
-          processor(messageWrapper)
-        });
-      }
-      this.processors.get(`post`)?.forEach(processor => {
-        processor(messageWrapper)
-      });
-    });
-  }
+client.useCommand = (command: Command) => {
+  command.init?.();
+  commands.set(command.body.name, command);
+  slashCommands.push(command.body.toJSON());
 }
+export default client;
