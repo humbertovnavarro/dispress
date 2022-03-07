@@ -3,7 +3,7 @@ import { CommandInteraction } from "discord.js";
 import { PrismaClient } from '@prisma/client';
 const client = new PrismaClient();
 const body = new SlashCommandBuilder()
-.setName("addrestriction")
+.setName("setrestriction")
 .setDescription("constrain a channel to a regular expression.")
 
 const arg0 = new SlashCommandStringOption()

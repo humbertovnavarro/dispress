@@ -3,10 +3,10 @@ import type { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9';
 import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
+
 interface Command {
   handler: (interaction: CommandInteraction) => void | Promise<void>;
   body: SlashCommandBuilder;
-  init?: () => void | Promise<void>
 }
 
 export interface Bot extends Client{
@@ -36,7 +36,9 @@ client.on("ready", async () => {
 
 client.on("interactionCreate", interaction => {
   if(interaction.isCommand()) {
-    commands.get(interaction.commandName)?.handler(interaction);
+    const command = commands.get(interaction.commandName);
+    if(!command) return;
+
   }
 });
 
@@ -51,8 +53,8 @@ client.useMessage = (messageHandler: (message: Message) => void | Promise<void>)
 }
 
 client.useCommand = (command: Command) => {
-  command.init?.();
   commands.set(command.body.name, command);
   slashCommands.push(command.body.toJSON());
 }
+
 export default client;
