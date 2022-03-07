@@ -6,16 +6,19 @@
   "scripts": {
     "lint": "eslint",
     "test": "echo noop",
-    "prepare": "husky install",
+    "prepare": "prisma generate",
     "dev": "nodemon main.ts",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "node dist/main.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@discord-player/downloader": "^3.0.1",
+    "@discord-player/extractor": "^3.0.2",
     "@discordjs/builders": "^0.12.0",
+    "@discordjs/opus": "^0.7.0",
     "@discordjs/rest": "^0.3.0",
     "@prisma/client": "3.10.0",
     "axios": "^0.26.0",

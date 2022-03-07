@@ -1,7 +1,6 @@
 import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
 import { CommandInteraction } from "discord.js";
-import { PrismaClient } from '@prisma/client';
-const client = new PrismaClient();
+import db from "../lib/prisma";
 const body = new SlashCommandBuilder()
 .setName("setrestriction")
 .setDescription("constrain a channel to a regular expression.")
@@ -28,7 +27,7 @@ export default {
       return;
     }
     try {
-      await client.channelRestrictions.create({
+      await db.channelRestrictions.create({
         data: {
           regex,
           error,

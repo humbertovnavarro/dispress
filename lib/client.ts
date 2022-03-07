@@ -5,7 +5,7 @@ import { Routes } from 'discord-api-types/v9';
 import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 
 interface Command {
-  handler: (interaction: CommandInteraction) => void | Promise<void>;
+  handler: (interaction: CommandInteraction) => any;
   body: SlashCommandBuilder;
 }
 
@@ -18,7 +18,7 @@ const commands = new Map<string, Command>();
 const messageHandlers: Array<(message: Message) => void | Promise<void>> = [];
 const rest = new REST({ version: '9' });
 const client = new Client({
-  intents: ["GUILDS", "GUILD_MESSAGES"]
+  intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"]
 }) as Bot;
 
 client.on("ready", async () => {
@@ -38,7 +38,11 @@ client.on("interactionCreate", interaction => {
   if(interaction.isCommand()) {
     const command = commands.get(interaction.commandName);
     if(!command) return;
-
+    try {
+      command.handler(interaction);
+    } catch(error) {
+      console.error(error);
+    }
   }
 });
 

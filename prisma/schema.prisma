@@ -21,3 +21,19 @@ model ChannelRestrictions {
   regex String
   error String
 }
+
+model MusicPlays {
+  id String @id @default(cuid())
+  user String
+  url String
+  channel String
+  date DateTime @default(now())
+}
+
+model SongLikes {
+  id String @id @default(cuid())
+  user String
+  url String
+  channel String
+  date DateTime @default(now())
+}
