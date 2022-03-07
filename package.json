@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint",
-    "test": "echo noop",
-    "prepare": "prisma generate",
+    "test": "jest",
+    "prepare": "husky install",
     "dev": "nodemon main.ts",
     "build": "prisma generate && tsc",
     "start": "node dist/main.js"
