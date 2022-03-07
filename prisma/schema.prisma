@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,14 +7,39 @@ datasource db {
   url      = "file:./data.db"
 }
 
-model UserPermissions {
-  @@id([user, permission])
-  user String
-  permission String
+model Permissions {
+  permission String @unique
+  role String
 }
 
 model ChannelRestrictions {
   channel String @unique
   regex String
   error String
+}
+
+model MusicPlays {
+  id String @id @default(cuid())
+  user String
+  url String
+  date DateTime @default(now())
+}
+
+model SongLikes {
+  id String @id @default(cuid())
+  user String
+  url String
+  date DateTime @default(now())
+}
+
+model SongDislikes {
+  id String @id @default(cuid())
+  user String
+  url String
+  date DateTime @default(now())
+}
+
+model User {
+  id String @unique
+  spotifyPlaylist String?
 }
