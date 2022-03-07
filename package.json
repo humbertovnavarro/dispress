@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint",
-    "test": "jest",
+    "test": "prettier . && jest",
     "prepare": "husky install",
     "dev": "nodemon main.ts",
     "build": "prisma generate && tsc",
