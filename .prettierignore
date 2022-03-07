@@ -1,0 +1,8 @@
+dist
+node_modules
+.github
+*.lock
+./*.json
+./.*
+prisma
+.husky
