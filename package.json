@@ -7,7 +7,7 @@
     "lint": "eslint",
     "test": "prettier . && jest",
     "prepare": "husky install",
-    "dev": "nodemon main.ts",
+    "dev": "nodemon --watch . --exec 'tsc --noEmit && jest && ts-node' main.ts",
     "build": "prisma generate && tsc",
     "start": "node dist/main.js"
   },
@@ -40,5 +40,9 @@
     "ts-jest": "^27.1.3",
     "ts-node": "^10.6.0",
     "typescript": "^4.6.2"
+  },
+  "nodemonConfig": {
+    "ignore": ["__tests__", "dist"],
+    "delay": 2500
   }
 }

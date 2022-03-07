@@ -22,7 +22,6 @@ model MusicPlays {
   id String @id @default(cuid())
   user String
   url String
-  channel String
   date DateTime @default(now())
 }
 
@@ -30,22 +29,17 @@ model SongLikes {
   id String @id @default(cuid())
   user String
   url String
-  channel String
+  date DateTime @default(now())
+}
+
+model SongDislikes {
+  id String @id @default(cuid())
+  user String
+  url String
   date DateTime @default(now())
 }
 
 model User {
   id String @unique
   spotifyPlaylist String?
-}
-
-model Playlists {
-  id String @id
-  user String
-}
-
-model PlaylistSongs {
-  id String @id
-  url String
-  playlist String
 }

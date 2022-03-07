@@ -2,8 +2,6 @@ import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builde
 import { CommandInteraction } from "discord.js";
 import { UsePlayer, GetActiveChannel } from "../lib/player";
 
-const spotifyPlaylistRegex = /(?<=https:\/\/open.spotify.com\/playlist\/).+/gm
-
 const body = new SlashCommandBuilder()
 .setName("play")
 .setDescription("adds a song to the player queue");
@@ -53,18 +51,17 @@ export default {
         queue.destroy();
         return await interaction.reply({ content: "Could not join your voice channel!", ephemeral: true });
     }
-    await interaction.deferReply();
 
-    const spotifyPlaylistID = spotifyPlaylistRegex.exec(query);
-
-    const track = await player.search(query, {
+    const track: any = await player.search(query, {
         requestedBy: interaction.user,
     }).then(x => x.tracks[0]);
+    if(!track)
+    if (!track) return await interaction.reply({ content: `❌ | Track **${query}** not found or not playable.` });
 
-    if (!track) return await interaction.followUp({ content: `❌ | Track **${query}** not found or not playable.` });
+    track.query = query;
+    track.guild = interaction.guild;
 
     queue.play(track);
-
-    return await interaction.followUp({ content: `Added track **${track.title}** to queue ✔️` });
+    return await interaction.reply({ content: `Added track **${track.title}** to queue ✔️` });
   }
 }

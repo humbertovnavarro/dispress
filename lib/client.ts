@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, Message } from "discord.js";
+import { Client, CommandInteraction, Interaction, Message } from "discord.js";
 import type { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9';
@@ -6,6 +6,7 @@ import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 
 interface Command {
   handler: (interaction: CommandInteraction) => any;
+  validators?: (interaction: CommandInteraction) => any[];
   body: SlashCommandBuilder;
 }
 
@@ -18,7 +19,7 @@ const commands = new Map<string, Command>();
 const messageHandlers: Array<(message: Message) => void | Promise<void>> = [];
 const rest = new REST({ version: '9' });
 const client = new Client({
-  intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES"]
+  intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "GUILD_MESSAGE_REACTIONS"]
 }) as Bot;
 
 client.on("ready", async () => {
@@ -56,7 +57,7 @@ client.useMessage = (messageHandler: (message: Message) => void | Promise<void>)
   messageHandlers.push(messageHandler);
 }
 
-client.useCommand = (command: Command) => {
+client.useCommand = (command: Command, validators?: (interaction: CommandInteraction) => any[]) => {
   commands.set(command.body.name, command);
   slashCommands.push(command.body.toJSON());
 }
