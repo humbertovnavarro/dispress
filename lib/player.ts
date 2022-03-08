@@ -78,7 +78,7 @@ export const trackStart = async (queue: Queue, track: Track) => {
         queue.skip();
       }
       if(reaction.emoji.name === '🛑') {
-        queue.clear();
+        player?.deleteQueue(message.guild);
       }
       if(reaction.emoji.name === '❤️') {
           if(!likeMap.has(user.id))

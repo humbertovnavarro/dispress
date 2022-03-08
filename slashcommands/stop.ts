@@ -36,7 +36,7 @@ export default {
     if(!voiceChannel) {
       return interaction.reply("You must be in a voice channel with the bot to stop music");
     }
-    console.log(queue);
     player.deleteQueue(interaction.guild);
+    interaction.reply("ok");
   }
 }
