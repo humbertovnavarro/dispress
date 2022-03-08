@@ -43,6 +43,7 @@ client.on("interactionCreate", interaction => {
       command.handler(interaction);
     } catch(error) {
       console.error(error);
+      interaction.reply("An uknown error occured");
     }
   }
 });
