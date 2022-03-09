@@ -8,7 +8,7 @@
     "test": "prettier . && jest",
     "prepare": "husky install",
     "dev": "nodemon --watch . --exec 'tsc --noEmit && jest && ts-node' main.ts",
-    "build": "prisma generate && tsc",
+    "build": "tsc",
     "start": "node dist/main.js"
   },
   "keywords": [],
