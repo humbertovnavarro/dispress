@@ -8,7 +8,7 @@
     "test": "prettier . && jest",
     "prepare": "husky install",
     "dev": "nodemon --watch . --exec 'tsc --noEmit && jest && ts-node' main.ts",
-    "build": "prisma generate && tsc",
+    "build": "tsc",
     "start": "node dist/main.js"
   },
   "keywords": [],
@@ -28,9 +28,9 @@
     "dotenv": "^16.0.0"
   },
   "devDependencies": {
-    "@types/node": "*",
     "@types/better-sqlite3": "^7.5.0",
     "@types/jest": "^27.4.1",
+    "@types/node": "*",
     "eslint": "^8.10.0",
     "husky": "^7.0.4",
     "jest": "^27.5.1",
@@ -42,7 +42,10 @@
     "typescript": "^4.6.2"
   },
   "nodemonConfig": {
-    "ignore": ["__tests__", "dist"],
+    "ignore": [
+      "__tests__",
+      "dist"
+    ],
     "delay": 2500
   }
 }
