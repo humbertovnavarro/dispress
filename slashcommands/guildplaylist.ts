@@ -38,7 +38,6 @@ export default {
         return interaction.reply(`not enough data to generate a guild playlist, try playing and liking songs.`);
     }
     interaction.reply(`created guild playlist with ${tracks.length} tracks.`);
-    console.log(tracks);
     try {
         if (!queue.connection) await queue.connect(voiceChannel);
     } catch {
