@@ -2,7 +2,6 @@ import type { Track } from "discord-player";
 import type { Guild } from "discord.js";
 import db from './db';
 const addPlay = (track:Track, guild: Guild) => {
-    console.log('play');
     try {
         db.prepare(`
             INSERT INTO SongPlay (url, player, guild)
