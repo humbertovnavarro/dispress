@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, Interaction, Message } from "discord.js";
+import { Client, CommandInteraction, Message } from "discord.js";
 import type { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from '@discordjs/rest'
 import { Routes } from 'discord-api-types/v9';
@@ -11,6 +11,7 @@ interface Command {
 }
 
 export interface Bot extends Client{
+  invoke: (command: string, interaction: CommandInteraction) => void;
   useCommand: (command: Command) => void;
   useMessage: (handler: (message: Message) => void | Promise<void>) => void;
 }
@@ -61,6 +62,14 @@ client.useMessage = (messageHandler: (message: Message) => void | Promise<void>)
 client.useCommand = (command: Command, validators?: (interaction: CommandInteraction) => any[]) => {
   commands.set(command.body.name, command);
   slashCommands.push(command.body.toJSON());
+}
+
+const noop = () => {}
+
+client.invoke = (command: string, interaction: CommandInteraction) => {
+  const interactionRef: any = interaction;
+  interactionRef.reply = interaction.channel?.send || noop
+  commands.get(command)?.handler(interaction);
 }
 
 export default client;

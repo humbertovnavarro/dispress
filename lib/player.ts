@@ -1,8 +1,9 @@
 import { Player, Queue, Track } from "discord-player";
-import { Client, Collection, CommandInteraction, Guild, Message, MessageEmbed, TextChannel, User, VoiceBasedChannel } from "discord.js";
+import { Client, Collection, Guild, Message, MessageEmbed, TextChannel, User, VoiceBasedChannel } from "discord.js";
 import { Reverbnation, Lyrics } from "@discord-player/extractor";
 import { LyricsData } from "@discord-player/extractor/lib/ext/Lyrics";
-import db from './prisma';
+import _ from "lodash";
+import addLike from "./query/addLike";
 interface LyricsClient {
     search: (query: string) => Promise<LyricsData>;
     client: any
@@ -41,20 +42,21 @@ export const trackStart = async (queue: Queue, track: Track) => {
     .setImage(thumbnail)
     .setURL(url)
     .setColor("DARK_RED")
-    .setFooter(track.duration)
+    .setFooter({
+        text: track.duration
+    })
     .addField("requested by", track.requestedBy.tag);
     let message: Message;
     try {
         message = await channel.send({embeds: [embed]}) as Message;
-    } catch { 
+    } catch {
         return;
     }
     message.react('⏸️')
     message.react('▶️')
+    message.react('⏭️')
     message.react('🛑')
     message.react('❤️')
-    message.react('😒')
-    message.react('😒')
     message.react('📖')
     const collector = message.createReactionCollector({time: 200000})
     const likeMap = new Collection();
@@ -65,7 +67,7 @@ export const trackStart = async (queue: Queue, track: Track) => {
       if(!(reaction.emoji.name === '⏸️' || reaction.emoji.name === '🛑' || reaction.emoji.name === '▶️' || reaction.emoji.name === '⏭️' || reaction.emoji.name === '❤️' || reaction.emoji.name === '😒' || reaction.emoji.name === '📖')) {
           return;
       }
-      if(!userInBotChannel(user, message.guild)) {
+      if(!userInBotChannel(user, channel.guild)) {
           return;
       }
       if(reaction.emoji.name === '⏸️') {
@@ -78,16 +80,15 @@ export const trackStart = async (queue: Queue, track: Track) => {
         queue.skip();
       }
       if(reaction.emoji.name === '🛑') {
-        player?.deleteQueue(message.guild);
+        player?.deleteQueue(channel.guild);
       }
       if(reaction.emoji.name === '❤️') {
-          if(!likeMap.has(user.id))
-          addLike(user, track);
+          if(likeMap.has(user.id)) return;
           likeMap.set(user.id, true);
+          addLike(track, message.guild);
       }
       if(reaction.emoji.name === '😒') {
           if(!likeMap.has(user.id))
-          addDislike(user, track);
           likeMap.set(user.id,true);
       }
       if(reaction.emoji.name === '📖') {
@@ -95,7 +96,7 @@ export const trackStart = async (queue: Queue, track: Track) => {
           postLyrics(channel, track)
           openedLyrics = true;
       }
-      if(!(reaction.emoji.name === '❤️' || reaction.emoji.name === '😒')) 
+      if(!(reaction.emoji.name === '❤️'))
       reaction.users.remove(user);
     })
 }
@@ -112,18 +113,15 @@ export function userInBotChannel(user: User, guild: Guild): boolean {
 
 async function postLyrics(channel: TextChannel, track: any) {
     let lyrics: string | undefined;
-    let foundLyrics = false;
     try {
         let res = await lyricsClient.search(track.title);
         if(res.lyrics)
         lyrics = res.lyrics;
-        foundLyrics = true;
     } catch {
         try {
             let res = await lyricsClient.search(track.query);
             if(res.lyrics)
             lyrics = res.lyrics;
-            foundLyrics = true;
         } catch (error) {
             console.warn(error);
             return;
@@ -132,29 +130,4 @@ async function postLyrics(channel: TextChannel, track: any) {
     if(!lyrics) return;
     lyrics = "\n" + "Lyrics: " + "\n\n" + lyrics;
     return channel.send(lyrics.slice(0,2000));
-}
-
-async function addLike(user: User, track: Track) {
-    try {
-        db.songLikes.create({
-            data: {
-                user: user.id,
-                url: track.url,
-            }
-        })
-    } catch (error) {
-        console.error(error)
-    }
-}
-async function addDislike(user: User, track: Track) {
-    try {
-        db.songLikes.create({
-            data: {
-                user: user.id,
-                url: track.url,
-            }
-        })
-    } catch(error) {
-        console.error(error);
-    }
 }
