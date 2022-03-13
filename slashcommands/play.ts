@@ -56,7 +56,7 @@ export default {
 
     const track: Track = await player.search(query, {
         requestedBy: interaction.user,
-    }).then(x => x.tracks[0]);
+    }).then(result => result.tracks[0]);
     if (!track) return await interaction.reply({ content: `❌ | Track **${query}** not found or not playable.` });
     addPlay(track, interaction.guild);
     queue.play(track);
