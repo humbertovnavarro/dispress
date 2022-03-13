@@ -53,7 +53,6 @@ export default {
         queue.destroy();
         return await interaction.reply({ content: "Could not join your voice channel!", ephemeral: true });
     }
-
     const track: Track = await player.search(query, {
         requestedBy: interaction.user,
     }).then(result => result.tracks[0]);
