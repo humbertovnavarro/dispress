@@ -9,12 +9,12 @@ interface Result {
 
 const generatePlaylist = async (guild: Guild): Promise<string[]> => {
     let mostPlayed = db.prepare(`
-        SELECT * FROM SongPlayCount WHERE guild = ? order by count desc limit 20;
+        SELECT * FROM SongPlayCount WHERE guild = ? order by count desc limit 15;
     `).all(guild.id) as Result[];
     let mostLiked = db.prepare(`
-        SELECT * FROM SongLikeCount WHERE guild = ? order by count desc limit 20;
+        SELECT * FROM SongLikeCount WHERE guild = ? order by count desc limit 15;
     `).all(guild.id) as Result[];
-    const results = _.intersection(mostPlayed.map(result => result.url), mostLiked.map(result => result.url));
-    return  _.shuffle(results);
+    const urls = mostPlayed.map(track => track.url).concat(mostLiked.map(track => track.url));
+    return _.shuffle(_.uniq(urls)).slice(0,14);
 }
 export default generatePlaylist;

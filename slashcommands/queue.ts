@@ -20,7 +20,7 @@ export default {
     const playing = queue.previousTracks[0];
     const embed = new MessageEmbed();
     embed.setTitle('Song queue')
-    embed.addField(`\`${0}.\` **${playing.title}**`, playing.duration);
+    embed.addField(`Playing -- **${playing.title}**`, playing.duration);
     tracks.forEach((track: Track, index: number) => {
         embed.addField(`\`${index + 1}.\` **${track.title}**`, track.duration);
     })

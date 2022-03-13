@@ -20,7 +20,8 @@ const commands = new Map<string, Command>();
 const messageHandlers: Array<(message: Message) => void | Promise<void>> = [];
 const rest = new REST({ version: '9' });
 const client = new Client({
-  intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "GUILD_MESSAGE_REACTIONS"]
+  intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_VOICE_STATES", "GUILD_MESSAGE_REACTIONS"],
+  restTimeOffset: 0
 }) as Bot;
 
 client.on("ready", async () => {
