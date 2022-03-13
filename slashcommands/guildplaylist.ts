@@ -1,7 +1,8 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction } from "discord.js";
+import { CommandInteraction, MessageEmbed } from "discord.js";
 import generatePlaylist from "../lib/query/generatePlaylist";
 import { UsePlayer, GetActiveChannel } from "../lib/player";
+import { Track } from "discord-player";
 
 const body = new SlashCommandBuilder()
 .setName("guildplaylist")
@@ -33,24 +34,27 @@ export default {
             channel: interaction.channel
         }
     });
-    const tracks = await generatePlaylist(interaction.guild);
-    if(tracks.length === 0) {
+    const playlist = await generatePlaylist(interaction.guild);
+    if(playlist.length === 0) {
         return interaction.reply(`not enough data to generate a guild playlist, try playing and liking songs.`);
     }
-    interaction.reply(`created guild playlist with ${tracks.length} tracks.`);
     try {
         if (!queue.connection) await queue.connect(voiceChannel);
     } catch {
         queue.destroy();
         return await interaction.reply({ content: "Could not join your voice channel!", ephemeral: true });
     }
-    tracks.forEach(query => {
-        const track: any = player.search(query, {
-            requestedBy: interaction.user,
-        }).then(x => x.tracks[0])
-        .then(track => {
-            queue.play(track);
-        });
+    interaction.reply("Loaded guild playlist.");
+    const trackPromises = playlist.map(async url => player.search(url, { requestedBy: interaction.user,}).then(result => result.tracks[0]))
+    const tracks = await Promise.all(trackPromises);
+    const embed = new MessageEmbed();
+    embed.setTitle('Song queue')
+    tracks.forEach((track: Track, index: number) => {
+        embed.addField(`\`${index + 1}.\` **${track.title}**`, track.duration);
+        queue.play(track);
+    });
+    interaction.reply({
+        embeds: [embed]
     });
   }
 }
