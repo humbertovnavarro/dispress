@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
+import { SlashCommandBooleanOption, SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
 import { Track } from "discord-player";
 import { CommandInteraction } from "discord.js";
 import { UsePlayer, GetActiveChannel } from "../lib/player";
@@ -14,6 +14,12 @@ const query = new SlashCommandStringOption()
 .setRequired(true)
 body.addStringOption(query);
 
+const next = new SlashCommandBooleanOption()
+.setName("next")
+.setDescription("plays the song after the current song ends")
+.setRequired(false)
+body.addStringOption(query);
+body.addBooleanOption(next);
 export default {
   body,
   handler: async (interaction: CommandInteraction) => {
@@ -58,7 +64,15 @@ export default {
     }).then(result => result.tracks[0]);
     if (!track) return await interaction.reply({ content: `❌ | Track **${query}** not found or not playable.` });
     addPlay(track, interaction.guild);
-    queue.play(track);
+    if(!queue.playing) {
+        queue.play(track);
+    } else {
+        const next = interaction.options.getBoolean("next");
+        if(next) {
+            queue.insert(track, 0);
+        }
+        queue.addTrack(track);
+    }
     return await interaction.reply({ content: `Added track **${track.title}** to queue ✔️` });
   }
 }
