@@ -1,9 +1,17 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { SlashCommandBuilder, SlashCommandIntegerOption } from "@discordjs/builders";
+import { Queue } from "discord-player";
 import { CommandInteraction } from "discord.js";
 import { UsePlayer, userInBotChannel } from "../lib/player";
+
 const body = new SlashCommandBuilder()
 .setName("skip")
-.setDescription("unpauses the song queue");
+.setDescription("skip the current song, or skip to a specified index using skipto")
+
+const indexOption = new SlashCommandIntegerOption();
+indexOption.setMinValue(1)
+.setName("skipto")
+.setDescription("skip to a specified index")
+.setRequired(false)
 
 export default {
   body,
@@ -12,11 +20,19 @@ export default {
         return;
     }
     const player = UsePlayer(interaction.client);
-    const queue: any = player.getQueue(interaction.guild);
+    const queue: Queue = player.getQueue(interaction.guild);
     if(!queue) return interaction.reply("There is nothing queued.");
-    if(!userInBotChannel(interaction.user, interaction.guild)) 
+    if(!userInBotChannel(interaction.user, interaction.guild))
     return interaction.reply("You must be in the same channel as the bot.");
-    queue.skip();
-    return interaction.reply("ok");
+    const index = interaction.options.getInteger("skipto", false);
+    if(!index) {
+      queue.skip();
+    } else {
+      if(index >= 1) {
+        queue.skipTo(index - 1);
+        return interaction.reply(`Skipped to position ${index}`);
+      }
+    }
+    return interaction.reply("Song skipped.");
   }
 }

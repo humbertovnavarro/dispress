@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { Queue, Track } from "discord-player";
 import { CommandInteraction } from "discord.js";
 import { userInBotChannel, UsePlayer } from "../lib/player";
 
@@ -13,9 +14,9 @@ export default {
         return;
     }
     const player = UsePlayer(interaction.client);
-    const queue: any = player.getQueue(interaction.guild);
+    const queue: Queue = player.getQueue(interaction.guild);
     if(!queue) return interaction.reply("There is nothing queued.");
-    if(!userInBotChannel(interaction.user, interaction.guild)) 
+    if(!userInBotChannel(interaction.user, interaction.guild))
     return interaction.reply("You must be in the same channel as the bot.");
     queue.setPaused(true);
     return interaction.reply("ok");
