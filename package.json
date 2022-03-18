@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "lint": "eslint",
-    "test": "prettier . && jest",
+    "lint": "prettier --write .",
+    "test": "prettier --write . && jest",
     "prepare": "husky install",
     "dev": "nodemon main.ts",
     "build": "yarn tsc",
