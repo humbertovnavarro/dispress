@@ -15,7 +15,7 @@ const body = new SlashCommandBuilder()
       .setName("songs")
       .setDescription("max number of songs to put into the playlist, max of 15")
       .setRequired(false)
-  );
+  ) as SlashCommandBuilder;
 
 export default {
   body,

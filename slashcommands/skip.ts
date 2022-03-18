@@ -17,7 +17,7 @@ const body = new SlashCommandBuilder()
       .setName("skipto")
       .setDescription("skip to a specified index")
       .setRequired(false)
-  );
+  ) as SlashCommandBuilder;
 
 export default {
   body,

@@ -22,7 +22,7 @@ const body = new SlashCommandBuilder()
       .setName("next")
       .setDescription("plays the song after the current song ends")
       .setRequired(false)
-  );
+  ) as SlashCommandBuilder;
 
 export default {
   body,
