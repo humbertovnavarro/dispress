@@ -1,10 +1,14 @@
 import SQLiteDatabase from "better-sqlite3";
 import fs from "fs";
+import dotenv from "dotenv";
+dotenv.config();
 interface Database extends SQLiteDatabase.Database {
   setKey: (key: string, value: string) => void;
   getKey: (key: string) => string | undefined;
 }
-const db = new SQLiteDatabase("./data.db", {}) as Database;
+
+const location: string = process.env.DATABASE_LOCATION?.toString() || "./appdata.db"
+const db = new SQLiteDatabase(location, {}) as Database;
 let schema: string;
 
 try {

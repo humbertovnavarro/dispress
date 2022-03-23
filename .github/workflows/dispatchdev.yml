@@ -24,5 +24,6 @@ jobs:
         run: yarn stop dispress_dev || echo "Bot not running"
       - name: Run bot
         env:
+          DATABASE_LOCATION: "/home/github/dispress.db"
           TOKEN: ${{ secrets.TOKEN_DEV }}
         run: yarn start dispress_dev
