@@ -9,6 +9,7 @@
     "prepare": "husky install",
     "dev": "nodemon main.ts",
     "build": "yarn tsc",
+    "stop": "pm2 delete ",
     "start": "pm2 start dist/main.js -f --name "
   },
   "keywords": [],
