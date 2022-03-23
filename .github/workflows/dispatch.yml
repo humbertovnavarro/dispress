@@ -11,7 +11,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Build
-      - run: cd /home/kamaii/dispress
+        uses: actions/checkout@v2
       - name: Test
       - run: yarn run test
       - run: yarn run build
