@@ -14,10 +14,14 @@ jobs:
       - name: Install dependencies
         run: yarn
       - name: Test build
+        env:
+          PRODUCTION: "true"
         run: yarn test
       - name: Build bot
         run:  yarn build
+      - name: Stop bot
+        run: yarn stop dispress || echo "Bot not running"
       - name: Run bot
         env:
           TOKEN: ${{ secrets.TOKEN }}
-        run: yarn start dispress -f
+        run: yarn start dispress
