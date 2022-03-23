@@ -13,6 +13,11 @@ jobs:
         with:
           path: tests
       - name: Install dependencies
+        working-directory: ./tests
         run: yarn
-      - name: Test build
+      - name: Build source
+        working-directory: ./tests
+        run: yarn build
+      - name: Run tests
+        working-directory: ./tests
         run: yarn test
