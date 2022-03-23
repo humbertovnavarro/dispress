@@ -20,4 +20,4 @@ jobs:
       - name: Run bot
         env:
           TOKEN: ${{ secrets.TOKEN }}
-        run: pm2 start dist/main.js
+        run: yarn start
