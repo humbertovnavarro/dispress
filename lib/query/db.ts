@@ -6,10 +6,11 @@ interface Database extends SQLiteDatabase.Database {
 }
 const db = new SQLiteDatabase('./data.db', {}) as Database;
 let schema: string;
+
 try {
-  schema = fs.readFileSync('./schema.sql', {encoding: 'utf8'});
-  db.exec(schema)
-} catch(error) {
+  schema = fs.readFileSync("./schema.sql", { encoding: "utf8" });
+  db.exec(schema);
+} catch (error) {
   console.error(error);
   process.exit(1);
 }
