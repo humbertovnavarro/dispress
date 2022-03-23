@@ -12,7 +12,6 @@ describe("Discord connection test", () => {
     try {
       client.login(TOKEN);
     } catch(error) {
-      throw (error);
     }
     client.on("ready", done);
   }, 5000);
