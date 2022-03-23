@@ -7,13 +7,15 @@ on:
       - main
 
 jobs:
-  deployment:
+  build:
     runs-on: self-hosted
     steps:
-      - name: Build
-        uses: actions/checkout@v2
-      - name: Test
-      - run: yarn run test
-      - run: yarn run build
-      - name: Run
-      - run: pm2 start dist/main.js
+      - uses: actions/checkout@v2
+      - name: Test bot
+        run: yarn test
+      - name: Build bot
+        run:  yarn build
+      - name: Run bot
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
+        run: pm2 start dist/main.js
