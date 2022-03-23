@@ -16,6 +16,7 @@ jobs:
       - name: Test build
         env:
           PRODUCTION: "true"
+          TOKEN: ${{ secrets.TOKEN }}
         run: yarn test
       - name: Build bot
         run:  yarn build
