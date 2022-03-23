@@ -9,7 +9,7 @@
     "prepare": "husky install",
     "dev": "nodemon main.ts",
     "build": "yarn tsc",
-    "start": "pm2 start dist/main.js --name "
+    "start": "pm2 start dist/main.js -f --name "
   },
   "keywords": [],
   "author": "",
