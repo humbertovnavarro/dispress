@@ -33,3 +33,9 @@ CREATE TABLE IF NOT EXISTS PlaylistSong (
 	url text,
 	playlist integer
 );
+
+
+CREATE TABLE IF NOT EXISTS Keys {
+	k text PRIMARY KEY,
+	v text
+};

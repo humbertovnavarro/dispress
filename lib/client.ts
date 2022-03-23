@@ -6,17 +6,32 @@ import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 
 interface Command {
   handler: (interaction: CommandInteraction) => any;
-  validators?: (interaction: CommandInteraction) => any[];
   body: SlashCommandBuilder;
+  onReady?: (bot: Bot) => any;
+}
+
+interface Plugin {
+  meta?: {
+    name?: string,
+    version?: string,
+    author?: string,
+  }
+  onReady?: (bot: Bot) => any;
+  beforeReady?: (bot: Bot) => any;
+  // Any public data you want to share with other plugins
+  public: any;
 }
 
 export interface Bot extends Client{
+  usePlugin: (plugin: Plugin) => void;
   invoke: (command: string, interaction: CommandInteraction) => void;
   useCommand: (command: Command) => void;
   useMessage: (handler: (message: Message) => void | Promise<void>) => void;
 }
+
 const slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
 const commands = new Map<string, Command>();
+const plugins: Array<Plugin> = [];
 const messageHandlers: Array<(message: Message) => void | Promise<void>> = [];
 const rest = new REST({ version: '9' });
 const client = new Client({
@@ -25,6 +40,16 @@ const client = new Client({
 }) as Bot;
 
 client.on("ready", async () => {
+
+  plugins.forEach(plugin => {
+    try {
+      plugin.onReady?.(client);
+    } catch(error) {
+      console.error(error);
+      console.error(`Error while running plugin: ${plugin.meta}`);
+    }
+  })
+
   if(client.token)
   rest.setToken(client.token);
   client.guilds.cache.forEach(guild => {
@@ -63,6 +88,23 @@ client.useMessage = (messageHandler: (message: Message) => void | Promise<void>)
 client.useCommand = (command: Command, validators?: (interaction: CommandInteraction) => any[]) => {
   commands.set(command.body.name, command);
   slashCommands.push(command.body.toJSON());
+  try {
+    command.onReady?.(client);
+  } catch(error) {
+    console.error(error);
+    process.exit(1);
+  }
+}
+
+client.usePlugin = (plugin: Plugin) => {
+  try {
+    plugin.beforeReady?.(client);
+  }
+  catch(error) {
+    console.error(error);
+    process.exit(1);
+  }
+  plugins.push(plugin);
 }
 
 const noop = () => {}
