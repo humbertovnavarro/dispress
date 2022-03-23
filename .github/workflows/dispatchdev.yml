@@ -9,9 +9,6 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
-    defaults:
-      run:
-        working-directory: "/home/github/dispress_dev"
     steps:
       - name: Checkout
         uses: actions/checkout@v3

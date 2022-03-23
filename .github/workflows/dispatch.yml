@@ -8,9 +8,6 @@ on:
 
 jobs:
   deploy:
-    defaults:
-      run:
-        working-directory: "/home/github/dispress"
     runs-on: self-hosted
     steps:
       - name: Checkout
@@ -30,5 +27,6 @@ jobs:
         run: yarn stop dispress || echo "Bot not running"
       - name: Run bot
         env:
+          DATABASE_LOCATION: "../dispress.db"
           TOKEN: ${{ secrets.TOKEN }}
         run: yarn start dispress
