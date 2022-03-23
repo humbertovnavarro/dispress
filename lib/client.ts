@@ -12,17 +12,17 @@ interface Command {
 
 interface Plugin {
   meta?: {
-    name?: string,
-    version?: string,
-    author?: string,
-  }
+    name?: string;
+    version?: string;
+    author?: string;
+  };
   onReady?: (bot: Bot) => any;
   beforeReady?: (bot: Bot) => any;
   // Any public data you want to share with other plugins
   public: any;
 }
 
-export interface Bot extends Client{
+export interface Bot extends Client {
   usePlugin: (plugin: Plugin) => void;
   invoke: (command: string, interaction: CommandInteraction) => void;
   useCommand: (command: Command) => void;
@@ -45,24 +45,25 @@ const client = new Client({
 }) as Bot;
 
 client.on("ready", async () => {
-
-  plugins.forEach(plugin => {
+  plugins.forEach((plugin) => {
     try {
       plugin.onReady?.(client);
-    } catch(error) {
+    } catch (error) {
       console.error(error);
       console.error(`Error while running plugin: ${plugin.meta}`);
     }
-  })
+  });
 
-  if(client.token)
-  rest.setToken(client.token);
-  client.guilds.cache.forEach(guild => {
-    if(client.user?.id)
-    rest.put(Routes.applicationGuildCommands(client.user.id, guild.id), {body: slashCommands})
-    .catch((error) => {
-      console.error(error.message);
-    })
+  if (client.token) rest.setToken(client.token);
+  client.guilds.cache.forEach((guild) => {
+    if (client.user?.id)
+      rest
+        .put(Routes.applicationGuildCommands(client.user.id, guild.id), {
+          body: slashCommands,
+        })
+        .catch((error) => {
+          console.error(error.message);
+        });
   });
 
   console.log(`Logged in as ${client.user?.tag}`);
@@ -103,22 +104,21 @@ client.useCommand = (
   slashCommands.push(command.body.toJSON());
   try {
     command.onReady?.(client);
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     process.exit(1);
   }
-}
+};
 
 client.usePlugin = (plugin: Plugin) => {
   try {
     plugin.beforeReady?.(client);
-  }
-  catch(error) {
+  } catch (error) {
     console.error(error);
     process.exit(1);
   }
   plugins.push(plugin);
-}
+};
 
 const noop = () => {};
 
