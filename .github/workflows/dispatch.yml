@@ -28,7 +28,7 @@ jobs:
         run:  yarn build
       - name: Stop bot
         working-directory: ./master
-        run: yarn stop dispress_master || echo "Bot not running"
+        run: yarn stop dispress || echo "Bot not running"
       - name: Run bot
         working-directory: ./master
         env:
