@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "prettier --write .",
-    "test": "prettier --write . && jest",
+    "test": "jest",
     "prepare": "husky install",
     "dev": "nodemon main.ts",
     "build": "yarn tsc",

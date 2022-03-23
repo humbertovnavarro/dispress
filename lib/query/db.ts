@@ -30,8 +30,8 @@ db.setKey = (key: string, value: string) => {
 db.getKey = (key: string) => {
   return db
     .prepare(
-      `
-      SELECT * FROM Keys where k=?;
+    `
+      SELECT * FROM Keys where k=?
     `
     )
     .all()[0];

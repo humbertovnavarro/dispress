@@ -8,7 +8,7 @@ const body = new SlashCommandBuilder()
   .setDescription("shows patchnotes for latest changes to the bot.");
 const version = PatchNotes.version;
 const notes = PatchNotes as any;
-const patchnotes = notes[version];
+const patchnotes = notes[version].notes;
 const embed = new Embed();
 patchnotes.forEach((entry: string) => {
   embed.description += `Patchnotes for ${version}`;

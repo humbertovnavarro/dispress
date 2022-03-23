@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS PlaylistSong (
 );
 
 
-CREATE TABLE IF NOT EXISTS Keys {
+CREATE TABLE IF NOT EXISTS Keys (
 	k text PRIMARY KEY,
 	v text
-};
+);
