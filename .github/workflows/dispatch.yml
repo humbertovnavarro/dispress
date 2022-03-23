@@ -1,0 +1,19 @@
+name: Deploy to self-hosted
+concurrency: production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deployment:
+    runs-on: self-hosted
+    steps:
+      - name: Build
+      - run: cd /home/kamaii/dispress
+      - name: Test
+      - run: yarn run test
+      - run: yarn run build
+      - name: Run
+      - run: pm2 start dist/main.js
