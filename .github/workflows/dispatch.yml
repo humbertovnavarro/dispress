@@ -1,4 +1,4 @@
-name: Deploy to self-hosted
+name: Deploy dev to self-hosted
 concurrency: production
 
 on:
@@ -9,27 +9,29 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
-    defaults:
-      run:
-        working-directory: ./master
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           path: master
       - name: Install dependencies
+        working-directory: ./master
         run: yarn
       - name: Test build
+        working-directory: ./master
         env:
           PRODUCTION: "true"
           TOKEN: ${{ secrets.TOKEN }}
         run: yarn test
       - name: Build bot
+        working-directory: ./master
         run:  yarn build
       - name: Stop bot
-        run: yarn stop dispress || echo "Bot not running"
+        working-directory: ./master
+        run: yarn stop dispress_master || echo "Bot not running"
       - name: Run bot
+        working-directory: ./master
         env:
-          DATABASE_LOCATION: "../dispress.db"
           TOKEN: ${{ secrets.TOKEN }}
+          DATABASE_LOCATION: "../dispress.db"
         run: yarn start dispress
