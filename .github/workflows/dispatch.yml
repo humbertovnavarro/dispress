@@ -20,4 +20,4 @@ jobs:
       - name: Run bot
         env:
           TOKEN: ${{ secrets.TOKEN }}
-        run: yarn start dispress
+        run: yarn start dispress -f

@@ -17,6 +17,8 @@ jobs:
         run: yarn test
       - name: Build bot
         run:  yarn build
+      - name: Stop bot
+        run: yarn stop dispress_dev || echo "Bot not running"
       - name: Run bot
         env:
           TOKEN: ${{ secrets.TOKEN_DEV }}
