@@ -13,6 +13,8 @@ jobs:
         working-directory: "/home/github/dispress"
     runs-on: self-hosted
     steps:
+      - name: Init
+        run: mkdir -p /home/github/dispress_dev
       - uses: actions/checkout@v2
       - name: Install dependencies
         run: yarn
