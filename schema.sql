@@ -35,7 +35,8 @@ CREATE TABLE IF NOT EXISTS PlaylistSong (
 );
 
 
-CREATE TABLE IF NOT EXISTS Keys (
+CREATE TABLE IF NOT EXISTS KeyStore (
 	k text PRIMARY KEY,
-	v text
+	v text,
+	expires integer
 );

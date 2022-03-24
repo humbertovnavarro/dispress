@@ -17,14 +17,18 @@ patchnotes.forEach((entry: string) => {
 export default {
   body,
   handler: async (interaction: CommandInteraction) => {},
-  onReady: (bot: Bot) => {
-    bot.guilds.cache.forEach((guild) => {
+  onReady: async (bot: Bot) => {
+    bot.guilds.cache.forEach(async (guild) => {
+      const channelID = db.getKey(`${guild}:patchnotes-channel`);
+      if(!channelID) return;
+      const channel = await bot.channels.fetch(channelID);
+      if(!channel || !channel.isText()) return;
       const patchnotesVersion = db.getKey(`${guild}:patchnotes`);
       if (patchnotesVersion === version) {
         return;
       }
       db.setKey(`${guild}:patchnotes`, version);
-      guild.systemChannel?.send({
+      channel.send({
         embeds: [embed],
       });
     });

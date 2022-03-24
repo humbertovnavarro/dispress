@@ -16,8 +16,6 @@ export interface Plugin {
   author?: string;
   onReady?: (bot: Bot) => any;
   beforeReady?: (bot: Bot) => any;
-  // Any public data you want to share with other plugins
-  public: any;
 }
 
 export interface Bot extends Client {
@@ -99,8 +97,7 @@ client.useMessage = (
 };
 
 client.useCommand = (
-  command: Command,
-  validators?: (interaction: CommandInteraction) => any[]
+  command: Command
 ) => {
   commands.set(command.body.name, command);
   slashCommands.push(command.body.toJSON());
@@ -122,11 +119,7 @@ client.usePlugin = (plugin: Plugin) => {
   plugins.set(plugin.name, plugin);
 };
 
-const noop = () => {};
-
 client.invoke = (command: string, interaction: CommandInteraction) => {
-  const interactionRef: any = interaction;
-  interactionRef.reply = interaction.channel?.send || noop;
   commands.get(command)?.handler(interaction);
 };
 

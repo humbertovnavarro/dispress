@@ -1,8 +1,15 @@
 import SQLiteDatabase from "better-sqlite3";
 import fs from "fs";
 import dotenv from "dotenv";
+import { Channel, User } from "discord.js";
 dotenv.config();
+
 interface Database extends SQLiteDatabase.Database {
+  flushKeys: () => void;
+  clearUserTag: (user: User) => void;
+  userHasTag: (user: User, tag: string) => boolean;
+  removeUserTag: (user: User, tag: string) => void;
+  addUserTag: (user: User, tag: string) => void;
   setKey: (key: string, value: string) => void;
   getKey: (key: string) => string | undefined;
 }
@@ -19,26 +26,38 @@ try {
   process.exit(1);
 }
 
-// Key value store for simple command persistence
-db.setKey = (key: string, value: string) => {
+// Some quick methods for common operations
+
+// Key value store crud
+db.setKey = (key: string, value: string, expires: number = -1) => {
   db.prepare(
     `
-    INSERT INTO Keys(k, v)
-    VALUES (?,?)
+    INSERT INTO KeyStore(k, v, expires)
+    VALUES (?,?,?)
     ON CONFLICT(k) DO UPDATE SET
     k=?,
-    v=?
+    v=?,
+    expires=?
   `
-  ).run();
+  ).run(key, value, expires);
 };
+
 db.getKey = (key: string) => {
   return db
     .prepare(
     `
-      SELECT * FROM Keys where k=?
+      SELECT * FROM KeyStore WHERE k=?;
     `
     )
-    .all()[0];
+    .all(key)[0];
 };
 
+db.flushKeys = () => {
+  db.prepare(`
+    DELETE FROM KeyStore WHERE expires BETWEEN 0 AND ?;
+  `).run(Date.now())
+}
+
+db.flushKeys();
+setInterval(db.flushKeys, 1000 * 60 * 30);
 export default db;
