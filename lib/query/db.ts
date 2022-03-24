@@ -5,6 +5,7 @@ import { Channel, User } from "discord.js";
 dotenv.config();
 
 interface Database extends SQLiteDatabase.Database {
+  deleteKey: (key: string) => void;
   flushKeys: () => void;
   clearUserTag: (user: User) => void;
   userHasTag: (user: User, tag: string) => boolean;
@@ -30,6 +31,7 @@ try {
 
 // Key value store crud
 db.setKey = (key: string, value: string, expires: number = -1) => {
+  console.log(key, value, expires);
   db.prepare(
     `
     INSERT INTO KeyStore(k, v, expires)
@@ -49,7 +51,15 @@ db.getKey = (key: string) => {
       SELECT * FROM KeyStore WHERE k=?;
     `
     )
-    .all(key)[0];
+    .all(key)[0]?.v;
+};
+
+db.deleteKey = (key: string) => {
+  db.prepare(
+    `
+      DELETE FROM KeyStore WHERE k=?;
+    `
+  ).run(key);
 };
 
 db.flushKeys = () => {

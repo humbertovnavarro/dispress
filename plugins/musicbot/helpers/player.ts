@@ -12,7 +12,7 @@ import {
 import { Reverbnation, Lyrics } from "@discord-player/extractor";
 import { LyricsData } from "@discord-player/extractor/lib/ext/Lyrics";
 import _ from "lodash";
-import addLike from "./query/addLike";
+import addLike from "../../../lib/query/addLike";
 
 interface LyricsClient {
   search: (query: string) => Promise<LyricsData>;

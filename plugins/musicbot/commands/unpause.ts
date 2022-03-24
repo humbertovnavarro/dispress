@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction } from "discord.js";
-import { UsePlayer, userInBotChannel } from "../lib/player";
+import { UsePlayer, userInBotChannel } from "../helpers/player";
 
 const body = new SlashCommandBuilder()
   .setName("unpause")
