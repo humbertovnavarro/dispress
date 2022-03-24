@@ -1,11 +1,11 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { Track } from "discord-player";
-import { CommandInteraction, MessageEmbed } from "discord.js";
-import { UsePlayer } from "../helpers/player";
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { Track } from 'discord-player';
+import { CommandInteraction, MessageEmbed } from 'discord.js';
+import { UsePlayer } from '../helpers/player';
 
 const body = new SlashCommandBuilder()
-  .setName("queue")
-  .setDescription("shows the queue");
+  .setName('queue')
+  .setDescription('shows the queue');
 
 export default {
   body,
@@ -17,12 +17,12 @@ export default {
     const player = UsePlayer(interaction.client);
     const queue: any = player.getQueue(interaction.guild);
 
-    if (!queue) return interaction.reply("there is no queue");
+    if (!queue) return interaction.reply('there is no queue');
 
     const tracks = queue.tracks;
     const playing = queue.previousTracks[0];
     const embed = new MessageEmbed()
-      .setTitle("Song queue")
+      .setTitle('Song queue')
       .addField(`Playing -- **${playing.title}**`, playing.duration);
 
     tracks.forEach((track: Track, index: number) => {
@@ -30,7 +30,7 @@ export default {
     });
 
     interaction.reply({
-      embeds: [embed],
+      embeds: [embed]
     });
-  },
+  }
 };

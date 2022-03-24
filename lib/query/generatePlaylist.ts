@@ -1,6 +1,6 @@
-import { Guild } from "discord.js";
-import _ from "lodash";
-import db from "../query/db";
+import { Guild } from 'discord.js';
+import _ from 'lodash';
+import db from '../query/db';
 
 interface Result {
   url: string;
@@ -26,8 +26,8 @@ const generatePlaylist = async (guild: Guild): Promise<string[]> => {
     .all(guild.id) as Result[];
 
   const urls = mostPlayed
-    .map((track) => track.url)
-    .concat(mostLiked.map((track) => track.url));
+    .map(track => track.url)
+    .concat(mostLiked.map(track => track.url));
 
   return _.shuffle(_.uniq(urls)).slice(0, 14);
 };

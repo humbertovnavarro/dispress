@@ -1,10 +1,10 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction } from "discord.js";
-import { UsePlayer, GetActiveChannel } from "../helpers/player";
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { CommandInteraction } from 'discord.js';
+import { UsePlayer, GetActiveChannel } from '../helpers/player';
 
 const body = new SlashCommandBuilder()
-  .setName("stop")
-  .setDescription("stops the playback of the bot");
+  .setName('stop')
+  .setDescription('stops the playback of the bot');
 
 export default {
   body,
@@ -16,7 +16,7 @@ export default {
       !interaction.member
     ) {
       try {
-        return interaction.reply("Something went wrong.");
+        return interaction.reply('Something went wrong.');
       } catch (error) {
         console.error(error);
       }
@@ -27,7 +27,7 @@ export default {
     const queue = player.getQueue(interaction.guild);
 
     if (!queue) {
-      return interaction.reply("The bot is not playing anything.");
+      return interaction.reply('The bot is not playing anything.');
     }
 
     const member = interaction.guild.members.cache.get(
@@ -38,17 +38,17 @@ export default {
 
     if (voiceChannel?.id !== botVoiceChannel?.id) {
       return interaction.reply(
-        "You must be in the same voice channel as the bot."
+        'You must be in the same voice channel as the bot.'
       );
     }
 
     if (!voiceChannel) {
       return interaction.reply(
-        "You must be in a voice channel with the bot to stop music"
+        'You must be in a voice channel with the bot to stop music'
       );
     }
 
     player.deleteQueue(interaction.guild);
-    interaction.reply("ok");
-  },
+    interaction.reply('ok');
+  }
 };
