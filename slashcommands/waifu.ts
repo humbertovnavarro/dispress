@@ -32,7 +32,7 @@ const body = new SlashCommandBuilder()
     new SlashCommandUserOption()
       .setName("user")
       .setDescription("@mention a user with waifu")
-  ) as SlashCommandBuilder;
+  );
 export default {
   body,
   handler: async (interaction: CommandInteraction) => {

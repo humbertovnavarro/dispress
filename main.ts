@@ -10,6 +10,7 @@ import skip from "./slashcommands/skip";
 import queue from "./slashcommands/queue";
 import guildplaylist from "./slashcommands/guildplaylist";
 import patchnotes from "./slashcommands/patchnotes";
+import channeltags from "./slashcommands/channeltags";
 const main = async () => {
   client.useCommand(waifu);
   client.useCommand(play);
@@ -20,6 +21,7 @@ const main = async () => {
   client.useCommand(queue);
   client.useCommand(guildplaylist);
   client.useCommand(patchnotes);
+  client.useCommand(channeltags);
   client.login(process.env.TOKEN);
 };
 main();

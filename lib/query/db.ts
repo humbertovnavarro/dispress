@@ -39,7 +39,7 @@ db.setKey = (key: string, value: string, expires: number = -1) => {
     v=?,
     expires=?
   `
-  ).run(key, value, expires);
+  ).run(key, value, expires, key, value, expires);
 };
 
 db.getKey = (key: string) => {
