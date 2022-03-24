@@ -1,4 +1,4 @@
-import db from "../../../lib/query/db";
+import db from '../../../lib/query/db';
 
 export default function initializeDatabase() {
   db.exec(`

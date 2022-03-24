@@ -1,7 +1,7 @@
-import SQLiteDatabase from "better-sqlite3";
-import fs from "fs";
-import dotenv from "dotenv";
-import { Channel, User } from "discord.js";
+import SQLiteDatabase from 'better-sqlite3';
+import fs from 'fs';
+import dotenv from 'dotenv';
+import { Channel, User } from 'discord.js';
 dotenv.config();
 
 interface Database extends SQLiteDatabase.Database {
@@ -15,12 +15,13 @@ interface Database extends SQLiteDatabase.Database {
   getKey: (key: string) => string | undefined;
 }
 
-const location: string = process.env.DATABASE_LOCATION?.toString() || "./appdata.db"
+const location: string =
+  process.env.DATABASE_LOCATION?.toString() || './appdata.db';
 const db = new SQLiteDatabase(location, {}) as Database;
 let schema: string;
 
 try {
-  schema = fs.readFileSync("./schema.sql", { encoding: "utf8" });
+  schema = fs.readFileSync('./schema.sql', { encoding: 'utf8' });
   db.exec(schema);
 } catch (error) {
   console.error(error);
@@ -47,7 +48,7 @@ db.setKey = (key: string, value: string, expires: number = -1) => {
 db.getKey = (key: string) => {
   return db
     .prepare(
-    `
+      `
       SELECT * FROM KeyStore WHERE k=?;
     `
     )
@@ -63,10 +64,12 @@ db.deleteKey = (key: string) => {
 };
 
 db.flushKeys = () => {
-  db.prepare(`
+  db.prepare(
+    `
     DELETE FROM KeyStore WHERE expires BETWEEN 0 AND ?;
-  `).run(Date.now())
-}
+  `
+  ).run(Date.now());
+};
 
 db.flushKeys();
 setInterval(db.flushKeys, 1000 * 60 * 30);

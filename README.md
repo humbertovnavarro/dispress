@@ -1,26 +1,37 @@
 This guide assumes you have nodejs gallium (16.14.2 lts) installed. [NodeJS Homepage](https://nodejs.org/en/)
-***
+
+---
+
 # Installing Dependencies
+
 Install Yarn
+
 > `npm install -g yarn`
 
 Install dependencies
+
 > `yarn`
 
 Transpile the source code
+
 > `yarn build`
 
 Create a file called .env
+
 > `touch .env`
 
 Add your discord token to the file
+
 > `echo "TOKEN=mydiscordtoken" > .env` (Replace mydiscordtoken with your discord token)
 
 Start the bot
+
 > `yarn start`
 
 # Creating your first command
+
 ## Create a file called ping in /commands/ping
+
 ```js
 /* SlashCommandBuilder is a functional way to create a slash command body,
    which is what gets sent to discord to label our slash command.
@@ -45,17 +56,21 @@ export default {
 }
 
 ```
+
 ## Add the command to your bot
+
 ```js
-import bot from "./lib/client";
-import ping from "./commands/ping"
-bot.useCommand(ping)
-bot.login("yourdiscordtoken")
+import bot from './lib/client';
+import ping from './commands/ping';
+bot.useCommand(ping);
+bot.login('yourdiscordtoken');
 ```
 
 # Creating your first plugin
+
 Making plugins works in a similar way to making commands
 heres the boilerplate for a plugin
+
 ```js
 import { Bot, Plugin } from "../../lib/client"
 export default {
