@@ -5,11 +5,13 @@ import waifu from "./slashcommands/waifu";
 import patchnotes from "./slashcommands/patchnotes";
 import musicbot from "./plugins/musicbot/plugin";
 import channeltags from "./plugins/channeltags/plugin";
+import permissions from "./plugins/permissions/plugin";
 const main = async () => {
   client.useCommand(waifu);
   client.useCommand(patchnotes);
   client.usePlugin(musicbot);
   client.usePlugin(channeltags);
+  client.usePlugin(permissions)
   client.login(process.env.TOKEN);
 };
 main();
