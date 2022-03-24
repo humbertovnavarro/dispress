@@ -1,14 +1,21 @@
-import { Client, CommandInteraction, Message } from "discord.js";
+import { Client, CommandInteraction, Interaction, Message } from "discord.js";
 import type { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 
+interface JSONParseable {
+  toJSON(): RESTPostAPIApplicationCommandsJSONBody
+  [key: string]: any
+}
+
 export interface Command {
   handler: (interaction: CommandInteraction) => any;
-  body: SlashCommandBuilder;
+  body: JSONParseable;
   onReady?: (bot: Bot) => any;
 }
+
+type BeforeCommandCallback = (command: Command, interaction: Interaction, cancel: () => void) => void;
 
 export interface Plugin {
   name: string;
@@ -16,8 +23,7 @@ export interface Plugin {
   author?: string;
   onReady?: (bot: Bot) => any;
   beforeReady?: (bot: Bot) => any;
-  // Any public data you want to share with other plugins
-  public: any;
+  beforeCommand?: BeforeCommandCallback;
 }
 
 export interface Bot extends Client {
@@ -71,14 +77,38 @@ client.on("ready", async () => {
   console.log(`Logged in as ${client.user?.tag}`);
 });
 
+client.on("guildCreate", (guild) => {
+  if (client.token) rest.setToken(client.token);
+  client.guilds.cache.forEach((guild) => {
+    if (client.user?.id)
+      rest
+        .put(Routes.applicationGuildCommands(client.user.id, guild.id), {
+          body: slashCommands,
+        })
+        .catch((error) => {
+          console.error(error.message);
+        });
+  });
+});
+
 client.on("interactionCreate", (interaction) => {
   if (interaction.isCommand()) {
     const command = commands.get(interaction.commandName);
-
     if (!command) return;
-
+    if(interaction.replied) return;
     try {
-      command.handler(interaction);
+        let cancelled = false;
+        const cancel = () => {
+          cancelled = true;
+        }
+        plugins.forEach(plugin => {
+          plugin.beforeCommand?.(command, interaction, cancel);
+        })
+        if(cancelled) return;
+        if(!interaction.replied) {
+          console.warn(`Command ${interaction.commandName} was not handled before cancellation`);
+        }
+        command.handler(interaction);
     } catch (error) {
       console.error(error);
       interaction.reply("An uknown error occured");
@@ -99,8 +129,7 @@ client.useMessage = (
 };
 
 client.useCommand = (
-  command: Command,
-  validators?: (interaction: CommandInteraction) => any[]
+  command: Command
 ) => {
   commands.set(command.body.name, command);
   slashCommands.push(command.body.toJSON());
@@ -122,11 +151,7 @@ client.usePlugin = (plugin: Plugin) => {
   plugins.set(plugin.name, plugin);
 };
 
-const noop = () => {};
-
 client.invoke = (command: string, interaction: CommandInteraction) => {
-  const interactionRef: any = interaction;
-  interactionRef.reply = interaction.channel?.send || noop;
   commands.get(command)?.handler(interaction);
 };
 

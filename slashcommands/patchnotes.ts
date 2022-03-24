@@ -9,22 +9,30 @@ const body = new SlashCommandBuilder()
 const version = PatchNotes.version;
 const notes = PatchNotes as any;
 const patchnotes = notes[version].notes;
-const embed = new Embed();
+const embed = new Embed()
+.setTitle(`Patchnotes for ${version}`)
+let description = "";
 patchnotes.forEach((entry: string) => {
-  embed.description += `Patchnotes for ${version}`;
-  embed.description += `\n${entry}`;
+  description += `\n${entry}`;
 });
+embed.setDescription(description);
 export default {
   body,
-  handler: async (interaction: CommandInteraction) => {},
-  onReady: (bot: Bot) => {
-    bot.guilds.cache.forEach((guild) => {
+  handler: async (interaction: CommandInteraction) => {
+    interaction.reply({ embeds: [embed] });
+  },
+  onReady: async (bot: Bot) => {
+    bot.guilds.cache.forEach(async (guild) => {
+      const channelID = db.getKey(`${guild}:patchnotes-channel`);
+      if(!channelID) return;
+      const channel = await bot.channels.fetch(channelID);
+      if(!channel || !channel.isText()) return;
       const patchnotesVersion = db.getKey(`${guild}:patchnotes`);
       if (patchnotesVersion === version) {
         return;
       }
       db.setKey(`${guild}:patchnotes`, version);
-      guild.systemChannel?.send({
+      channel.send({
         embeds: [embed],
       });
     });

@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { Queue, Track } from "discord-player";
+import { Queue } from "discord-player";
 import { CommandInteraction } from "discord.js";
 import { userInBotChannel, UsePlayer } from "../lib/player";
 
