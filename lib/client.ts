@@ -1,26 +1,29 @@
 import { Client, CommandInteraction, Interaction, Message } from "discord.js";
-import type { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 
-interface JSONParseable {
+interface SlashCommandBuilder {
   toJSON(): RESTPostAPIApplicationCommandsJSONBody
   [key: string]: any
 }
 
 export interface Command {
   handler: (interaction: CommandInteraction) => any;
-  body: JSONParseable;
+  body: SlashCommandBuilder;
   onReady?: (bot: Bot) => any;
+  data?: {
+    [key: string]: any;
+  };
 }
 
-type BeforeCommandCallback = (command: Command, interaction: Interaction, cancel: () => void) => void;
+type BeforeCommandCallback = (command: Command, interaction: CommandInteraction, cancel: () => void) => void;
 
 export interface Plugin {
   name: string;
   version?: string;
   author?: string;
+  description?: string;
   onReady?: (bot: Bot) => any;
   beforeReady?: (bot: Bot) => any;
   beforeCommand?: BeforeCommandCallback;
@@ -61,7 +64,6 @@ client.on("ready", async () => {
       console.error(`Error while running plugin: ${plugin.name}`);
     }
   });
-
   if (client.token) rest.setToken(client.token);
   client.guilds.cache.forEach((guild) => {
     if (client.user?.id)
@@ -73,7 +75,14 @@ client.on("ready", async () => {
           console.error(error.message);
         });
   });
-
+  client.commands.forEach((command) => {
+    try {
+      command.onReady?.(client);
+    } catch (error) {
+      console.error(error);
+      console.error(`Error while running ready function for command: ${command.body.name}`);
+    }
+  });
   console.log(`Logged in as ${client.user?.tag}`);
 });
 
@@ -98,16 +107,14 @@ client.on("interactionCreate", (interaction) => {
     if(interaction.replied) return;
     try {
         let cancelled = false;
-        const cancel = () => {
+        const cancelFunction = () => {
+          console.log("Cancelled");
           cancelled = true;
         }
         plugins.forEach(plugin => {
-          plugin.beforeCommand?.(command, interaction, cancel);
-        })
+          plugin.beforeCommand?.(command, interaction, cancelFunction);
+        });
         if(cancelled) return;
-        if(!interaction.replied) {
-          console.warn(`Command ${interaction.commandName} was not handled before cancellation`);
-        }
         command.handler(interaction);
     } catch (error) {
       console.error(error);
@@ -133,12 +140,6 @@ client.useCommand = (
 ) => {
   commands.set(command.body.name, command);
   slashCommands.push(command.body.toJSON());
-  try {
-    command.onReady?.(client);
-  } catch (error) {
-    console.error(error);
-    process.exit(1);
-  }
 };
 
 client.usePlugin = (plugin: Plugin) => {

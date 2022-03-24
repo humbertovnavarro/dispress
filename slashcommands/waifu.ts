@@ -32,9 +32,12 @@ const body = new SlashCommandBuilder()
     new SlashCommandUserOption()
       .setName("user")
       .setDescription("@mention a user with waifu")
-  );
+  )
 export default {
   body,
+  data: {
+    permissions: ["ADMINISTRATOR"],
+  },
   handler: async (interaction: CommandInteraction) => {
     let category = "waifu";
     const option = interaction.options.getString("category", false);

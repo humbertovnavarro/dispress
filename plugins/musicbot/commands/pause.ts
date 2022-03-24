@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { Queue } from "discord-player";
 import { CommandInteraction } from "discord.js";
-import { userInBotChannel, UsePlayer } from "../lib/player";
+import { userInBotChannel, UsePlayer } from "../helpers/player";
 
 const body = new SlashCommandBuilder()
   .setName("pause")
