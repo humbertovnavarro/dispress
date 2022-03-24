@@ -6,9 +6,11 @@ import patchnotes from "./slashcommands/patchnotes";
 import musicbot from "./plugins/musicbot/plugin";
 import channeltags from "./plugins/channeltags/plugin";
 import permissions from "./plugins/permissions/plugin";
+import obama from "./slashcommands/obama";
 const main = async () => {
   client.useCommand(waifu);
   client.useCommand(patchnotes);
+  client.useCommand(obama);
   client.usePlugin(musicbot);
   client.usePlugin(channeltags);
   client.usePlugin(permissions)
