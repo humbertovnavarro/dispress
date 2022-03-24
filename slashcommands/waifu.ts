@@ -35,9 +35,6 @@ const body = new SlashCommandBuilder()
   )
 export default {
   body,
-  data: {
-    permissions: ["ADMINISTRATOR"],
-  },
   handler: async (interaction: CommandInteraction) => {
     let category = "waifu";
     const option = interaction.options.getString("category", false);
