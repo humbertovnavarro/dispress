@@ -4,18 +4,16 @@ import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import { RESTPostAPIApplicationCommandsJSONBody } from "discord-api-types";
 
-interface Command {
+export interface Command {
   handler: (interaction: CommandInteraction) => any;
   body: SlashCommandBuilder;
   onReady?: (bot: Bot) => any;
 }
 
-interface Plugin {
-  meta?: {
-    name?: string;
-    version?: string;
-    author?: string;
-  };
+export interface Plugin {
+  name: string;
+  version?: string;
+  author?: string;
   onReady?: (bot: Bot) => any;
   beforeReady?: (bot: Bot) => any;
   // Any public data you want to share with other plugins
@@ -27,11 +25,13 @@ export interface Bot extends Client {
   invoke: (command: string, interaction: CommandInteraction) => void;
   useCommand: (command: Command) => void;
   useMessage: (handler: (message: Message) => void | Promise<void>) => void;
+  commands: Map<string, Command>
+  plugins: Map<string, Plugin>
 }
 
 const slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
 const commands = new Map<string, Command>();
-const plugins: Array<Plugin> = [];
+const plugins = new Map<string, Plugin>();
 const messageHandlers: Array<(message: Message) => void | Promise<void>> = [];
 const rest = new REST({ version: "9" });
 const client = new Client({
@@ -43,6 +43,8 @@ const client = new Client({
   ],
   restTimeOffset: 0,
 }) as Bot;
+client.plugins = plugins;
+client.commands = commands;
 
 client.on("ready", async () => {
   plugins.forEach((plugin) => {
@@ -50,7 +52,7 @@ client.on("ready", async () => {
       plugin.onReady?.(client);
     } catch (error) {
       console.error(error);
-      console.error(`Error while running plugin: ${plugin.meta}`);
+      console.error(`Error while running plugin: ${plugin.name}`);
     }
   });
 
@@ -117,7 +119,7 @@ client.usePlugin = (plugin: Plugin) => {
     console.error(error);
     process.exit(1);
   }
-  plugins.push(plugin);
+  plugins.set(plugin.name, plugin);
 };
 
 const noop = () => {};
