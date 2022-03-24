@@ -9,7 +9,5 @@
     "resolveJsonModule": true,
     "outDir": "dist"
   },
-  "exclude": [
-    "__tests__"
-  ]
+  "exclude": ["__tests__"]
 }

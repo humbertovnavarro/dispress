@@ -1,4 +1,4 @@
-import { Player, Queue, Track } from "discord-player";
+import { Player, Queue, Track } from 'discord-player';
 import {
   Client,
   Collection,
@@ -7,12 +7,12 @@ import {
   MessageEmbed,
   TextChannel,
   User,
-  VoiceBasedChannel,
-} from "discord.js";
-import { Reverbnation, Lyrics } from "@discord-player/extractor";
-import { LyricsData } from "@discord-player/extractor/lib/ext/Lyrics";
-import _ from "lodash";
-import addLike from "../../../lib/query/addLike";
+  VoiceBasedChannel
+} from 'discord.js';
+import { Reverbnation, Lyrics } from '@discord-player/extractor';
+import { LyricsData } from '@discord-player/extractor/lib/ext/Lyrics';
+import _ from 'lodash';
+import addLike from '../../../lib/query/addLike';
 
 interface LyricsClient {
   search: (query: string) => Promise<LyricsData>;
@@ -26,8 +26,8 @@ export function UsePlayer(client: Client): Player {
   if (player) return player;
   player = new Player(client);
   lyricsClient = Lyrics.init();
-  player.use("reverbnation", Reverbnation);
-  player.on("trackStart", trackStart);
+  player.use('reverbnation', Reverbnation);
+  player.on('trackStart', trackStart);
   return player;
 }
 
@@ -55,11 +55,11 @@ export const trackStart = async (queue: Queue, track: Track) => {
     .setDescription(author)
     .setImage(thumbnail)
     .setURL(url)
-    .setColor("DARK_RED")
+    .setColor('DARK_RED')
     .setFooter({
-      text: track.duration,
+      text: track.duration
     })
-    .addField("requested by", track.requestedBy.tag);
+    .addField('requested by', track.requestedBy.tag);
   let message: Message;
 
   try {
@@ -68,28 +68,28 @@ export const trackStart = async (queue: Queue, track: Track) => {
     return;
   }
 
-  message.react("⏸️");
-  message.react("▶️");
-  message.react("⏭️");
-  message.react("🛑");
-  message.react("❤️");
-  message.react("📖");
+  message.react('⏸️');
+  message.react('▶️');
+  message.react('⏭️');
+  message.react('🛑');
+  message.react('❤️');
+  message.react('📖');
   const collector = message.createReactionCollector({ time: 200000 });
   const likeMap = new Collection();
   let openedLyrics = false;
 
-  collector.on("collect", (reaction, user) => {
+  collector.on('collect', (reaction, user) => {
     if (!message.guild) return;
     if (user.bot) return;
     if (
       !(
-        reaction.emoji.name === "⏸️" ||
-        reaction.emoji.name === "🛑" ||
-        reaction.emoji.name === "▶️" ||
-        reaction.emoji.name === "⏭️" ||
-        reaction.emoji.name === "❤️" ||
-        reaction.emoji.name === "😒" ||
-        reaction.emoji.name === "📖"
+        reaction.emoji.name === '⏸️' ||
+        reaction.emoji.name === '🛑' ||
+        reaction.emoji.name === '▶️' ||
+        reaction.emoji.name === '⏭️' ||
+        reaction.emoji.name === '❤️' ||
+        reaction.emoji.name === '😒' ||
+        reaction.emoji.name === '📖'
       )
     ) {
       return;
@@ -97,32 +97,32 @@ export const trackStart = async (queue: Queue, track: Track) => {
     if (!userInBotChannel(user, channel.guild)) {
       return;
     }
-    if (reaction.emoji.name === "⏸️") {
+    if (reaction.emoji.name === '⏸️') {
       queue.setPaused(true);
     }
-    if (reaction.emoji.name === "▶️") {
+    if (reaction.emoji.name === '▶️') {
       queue.setPaused(false);
     }
-    if (reaction.emoji.name === "⏭️") {
+    if (reaction.emoji.name === '⏭️') {
       queue.skip();
     }
-    if (reaction.emoji.name === "🛑") {
+    if (reaction.emoji.name === '🛑') {
       player?.deleteQueue(channel.guild);
     }
-    if (reaction.emoji.name === "❤️") {
+    if (reaction.emoji.name === '❤️') {
       if (likeMap.has(user.id)) return;
       likeMap.set(user.id, true);
       addLike(track, message.guild);
     }
-    if (reaction.emoji.name === "😒") {
+    if (reaction.emoji.name === '😒') {
       if (!likeMap.has(user.id)) likeMap.set(user.id, true);
     }
-    if (reaction.emoji.name === "📖") {
+    if (reaction.emoji.name === '📖') {
       if (openedLyrics) return;
       postLyrics(channel, track);
       openedLyrics = true;
     }
-    if (!(reaction.emoji.name === "❤️")) reaction.users.remove(user);
+    if (!(reaction.emoji.name === '❤️')) reaction.users.remove(user);
   });
 };
 
@@ -130,7 +130,7 @@ export function userInBotChannel(user: User, guild: Guild): boolean {
   const channel = GetActiveChannel(guild);
   let match = false;
 
-  channel?.members.forEach((member) => {
+  channel?.members.forEach(member => {
     if (member.id === user.id) {
       match = true;
     }
@@ -157,7 +157,7 @@ async function postLyrics(channel: TextChannel, track: any) {
 
   if (!lyrics) return;
 
-  lyrics = "\n" + "Lyrics: " + "\n\n" + lyrics;
+  lyrics = '\n' + 'Lyrics: ' + '\n\n' + lyrics;
 
   return channel.send(lyrics.slice(0, 2000));
 }

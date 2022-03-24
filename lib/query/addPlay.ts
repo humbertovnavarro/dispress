@@ -1,6 +1,6 @@
-import type { Track } from "discord-player";
-import type { Guild } from "discord.js";
-import db from "./db";
+import type { Track } from 'discord-player';
+import type { Guild } from 'discord.js';
+import db from './db';
 const addPlay = (track: Track, guild: Guild) => {
   try {
     db.prepare(
