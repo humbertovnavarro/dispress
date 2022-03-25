@@ -4,7 +4,7 @@ import {
   SlashCommandUserOption
 } from '@discordjs/builders';
 import axios from 'axios';
-import { CommandInteraction } from 'discord.js';
+import { CommandInteraction, TextChannel } from 'discord.js';
 const body = new SlashCommandBuilder()
   .setName('waifu')
   .setDescription('get a waifu pic uwu')
@@ -44,9 +44,12 @@ export default {
     }
 
     const user = interaction.options.getUser('user', false);
-
+    const channel = await interaction.channel?.fetch() as TextChannel | undefined;
+    if(!channel) return interaction.reply('channel not found');
+    let sfw = true;
+    if(channel.nsfw) sfw = false;
     try {
-      const resp = await axios.get(`https://api.waifu.pics/sfw/${category}`);
+      const resp = await axios.get(`https://api.waifu.pics/${sfw ? "sfw" : "nsfw"}/${category}`);
 
       if (!resp.data.url) {
         throw new Error('No url in response');
