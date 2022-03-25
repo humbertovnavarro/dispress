@@ -47,6 +47,7 @@ export default {
     const channel = await interaction.channel?.fetch() as TextChannel | undefined;
     if(!channel) return interaction.reply('channel not found');
     let sfw = true;
+    category = Math.random() > 0.3 ? 'waifu' : 'neko';
     if(channel.nsfw) sfw = false;
     try {
       const resp = await axios.get(`https://api.waifu.pics/${sfw ? "sfw" : "nsfw"}/${category}`);
