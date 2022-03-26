@@ -1,6 +1,6 @@
 import type { Track } from 'discord-player';
 import type { Guild } from 'discord.js';
-import db from './db';
+import db from '../../../lib/query/db';
 const addLike = (track: Track, guild: Guild) => {
   try {
     db.prepare(

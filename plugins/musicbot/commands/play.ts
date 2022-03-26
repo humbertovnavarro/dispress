@@ -6,7 +6,7 @@ import {
 import { Track } from 'discord-player';
 import { CommandInteraction } from 'discord.js';
 import { UsePlayer, GetActiveChannel } from '../helpers/player';
-import addPlay from '../../../lib/query/addPlay';
+import addPlay from '../helpers/addPlay';
 
 const body = new SlashCommandBuilder()
   .setName('play')

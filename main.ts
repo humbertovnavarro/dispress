@@ -7,12 +7,10 @@ import musicbot from './plugins/musicbot/plugin';
 import channeltags from './plugins/channeltags/plugin';
 import permissions from './plugins/permissions/plugin';
 import anime from './slashcommands/anime';
-import obama from './slashcommands/obama';
 const main = async () => {
   client.useCommand(waifu);
   client.useCommand(patchnotes);
   client.useCommand(anime);
-  client.useCommand(obama);
   client.usePlugin(musicbot);
   client.usePlugin(channeltags);
   client.usePlugin(permissions);
