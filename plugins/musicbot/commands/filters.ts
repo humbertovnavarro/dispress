@@ -7,8 +7,8 @@ import { CommandInteraction } from 'discord.js';
 import { UsePlayer } from '../helpers/player';
 
 const body = new SlashCommandBuilder()
-  .setName('play')
-  .setDescription('adds a song to the player queue')
+  .setName('filter')
+  .setDescription('adds a filter to the player')
   .addStringOption(
     new SlashCommandStringOption()
       .setName('filter')
