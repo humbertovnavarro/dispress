@@ -48,10 +48,11 @@ export default {
     if (!filter) {
       return interaction.reply('Please specify a filter');
     }
-    const filters = queue.getFiltersEnabled() as any;
-    const newFilters = { ...filters };
-    newFilters[filter] = filters[filter] ? false : true;
-    queue.setFilters(filters as QueueFilters);
-    interaction.reply(`Filter ${filter} ${filters[filter] ? 'enabled' : 'disabled'}`);
+    const filters: {
+      [key: string]: boolean;
+    } = {};
+    filters[filter] = true;
+    queue.setFilters(filters);
+    interaction.reply(`Filter ${filter} enabled`);
   }
 };
