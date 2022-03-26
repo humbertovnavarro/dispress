@@ -29,9 +29,9 @@ const body = new SlashCommandBuilder()
         ['karaoke', 'karaoke'],
         ['mono', 'mono'],
         ['compressor', 'compressor'],
-        ['expander', 'expander'],
+        ['expander', 'expander']
       ])
-  )
+  );
 export default {
   body,
   handler: async (interaction: CommandInteraction) => {
@@ -45,7 +45,7 @@ export default {
       }
     });
     const filter = interaction.options.getString('filter');
-    if(!filter) {
+    if (!filter) {
       return interaction.reply('Please specify a filter');
     }
     const filters = queue.getFiltersEnabled() as any;

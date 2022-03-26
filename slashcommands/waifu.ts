@@ -43,19 +43,25 @@ export default {
     }
 
     const user = interaction.options.getUser('user', false);
-    const channel = await interaction.channel?.fetch() as TextChannel | undefined;
-    if(!channel) return interaction.reply('channel not found');
+    const channel = (await interaction.channel?.fetch()) as
+      | TextChannel
+      | undefined;
+    if (!channel) return interaction.reply('channel not found');
     let sfw = true;
-    if(channel.nsfw) {
+    if (channel.nsfw) {
       sfw = false;
-      if(!option) {
+      if (!option) {
         category = Math.random() > 0.3 ? 'waifu' : 'neko';
-      } else if (option !== "waifu" || "neko") {
-        return interaction.reply("Sorry, only waifu and neko are nsfw categories");
+      } else if (option !== 'waifu' || 'neko') {
+        return interaction.reply(
+          'Sorry, only waifu and neko are nsfw categories'
+        );
       }
     }
     try {
-      const resp = await axios.get(`https://api.waifu.pics/${sfw ? "sfw" : "nsfw"}/${category}`);
+      const resp = await axios.get(
+        `https://api.waifu.pics/${sfw ? 'sfw' : 'nsfw'}/${category}`
+      );
 
       if (!resp.data.url) {
         throw new Error('No url in response');
