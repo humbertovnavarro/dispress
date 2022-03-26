@@ -49,8 +49,9 @@ export default {
       return interaction.reply('Please specify a filter');
     }
     const filters = queue.getFiltersEnabled() as any;
-    filters[filter] = !filters[filter];
+    const newFilters = { ...filters };
+    newFilters[filter] = filters[filter] ? false : true;
     queue.setFilters(filters as QueueFilters);
-    interaction.reply(`Filter ${filter} enabled`);
+    interaction.reply(`Filter ${filter} ${filters[filter] ? 'enabled' : 'disabled'}`);
   }
 };
