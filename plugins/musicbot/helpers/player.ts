@@ -31,6 +31,10 @@ export function UsePlayer(client: Client): Player {
   return player;
 }
 
+export function UseQueue(guild: Guild): Queue {
+  return UsePlayer(guild.client).createQueue(guild);
+}
+
 export function GetActiveChannel(guild: Guild): VoiceBasedChannel | undefined {
   const id = player?.client.user?.id;
   if (!id) return;

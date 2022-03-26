@@ -69,7 +69,7 @@ export default {
         ephemeral: true
       });
     }
-
+    interaction.reply('Searching for ' + query);
     const track: Track | void = await musicPlayer
       .search(query, {
         requestedBy: interaction.user
@@ -86,9 +86,13 @@ export default {
 
     addPlay(track, interaction.guild);
 
-    interaction.reply({
-      content: `Added track **${track.title}** to queue ✔️`
-    });
+    const channel = interaction.channel;
+
+    if(!channel || !channel.isText()) {
+      return;
+    }
+
+    interaction.channel.send(`Added track **${track.title}** to queue ✔️`);
 
     if (!queue.playing) {
       queue.play(track);

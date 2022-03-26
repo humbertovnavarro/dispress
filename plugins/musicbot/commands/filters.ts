@@ -2,10 +2,9 @@ import {
   SlashCommandBuilder,
   SlashCommandStringOption
 } from '@discordjs/builders';
-import { Player, QueueFilters } from 'discord-player';
 import { CommandInteraction } from 'discord.js';
-import { UsePlayer } from '../helpers/player';
-
+import { UsePlayer, UseQueue, userInBotChannel } from '../helpers/player';
+const guildFilters = new Map<string, { [key: string]: boolean }>();
 const body = new SlashCommandBuilder()
   .setName('filter')
   .setDescription('adds a filter to the player')
@@ -15,6 +14,7 @@ const body = new SlashCommandBuilder()
       .setDescription('Filter to apply to the queue')
       .setRequired(true)
       .addChoices([
+        ['clear all filters', 'clear'],
         ['bassboost', 'bassboost'],
         ['8D', '8D'],
         ['vaporwave', 'vaporwave'],
@@ -29,30 +29,43 @@ const body = new SlashCommandBuilder()
         ['karaoke', 'karaoke'],
         ['mono', 'mono'],
         ['compressor', 'compressor'],
-        ['expander', 'expander']
+        ['expander', 'expander'],
       ])
   );
 export default {
   body,
   handler: async (interaction: CommandInteraction) => {
-    if (!interaction.guild) {
+    if(!interaction.guild) {
       return;
     }
-    const musicPlayer: Player = UsePlayer(interaction.client);
-    const queue = musicPlayer.createQueue(interaction.guild, {
-      metadata: {
-        channel: interaction.channel
-      }
-    });
-    const filter = interaction.options.getString('filter');
-    if (!filter) {
-      return interaction.reply('Please specify a filter');
+    const selectedFilter = interaction.options.getString('filter');
+    if(!selectedFilter) {
+      return;
     }
-    const filters: {
-      [key: string]: boolean;
-    } = {};
-    filters[filter] = true;
-    queue.setFilters(filters);
-    interaction.reply(`Filter ${filter} enabled`);
+    const player = UsePlayer(interaction.client);
+    const queue = player.getQueue(interaction.guild);
+    if(!queue) {
+      return interaction.reply('No queue playing');
+    }
+    if(!userInBotChannel(interaction.user, interaction.guild)) {
+      return interaction.reply('You must be in the same voice channel as the bot');
+    }
+    if(selectedFilter === 'clear') {
+      queue.setFilters({});
+      return interaction.reply('All filters cleared');
+    }
+    const newFilters: any = {}
+    const enabled: Array<string> = queue.getFiltersEnabled();
+    enabled.forEach((filter: string) => {
+      newFilters[filter] = true;
+    });
+    newFilters[selectedFilter] = !newFilters[selectedFilter];
+    const finalFilters = Object.keys(newFilters).filter(key => newFilters[key]);
+    if(finalFilters.length === 0) {
+      interaction.reply('No filters enabled');
+    } else {
+      interaction.reply(`Enabled filters: ${finalFilters.join(', ')}`);
+    }
+    queue.setFilters(newFilters);
   }
 };
