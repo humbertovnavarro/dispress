@@ -9,8 +9,6 @@ import skip from './commands/skip';
 import filters from './commands/filters';
 const plugin: Plugin = {
   name: 'musicbot',
-  version: '1.0.0',
-  description: 'A music bot for discord',
   beforeReady: (bot: Bot) => {
     bot.useCommand(pause);
     bot.useCommand(play);

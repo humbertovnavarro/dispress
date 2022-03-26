@@ -29,39 +29,41 @@ const body = new SlashCommandBuilder()
         ['karaoke', 'karaoke'],
         ['mono', 'mono'],
         ['compressor', 'compressor'],
-        ['expander', 'expander'],
+        ['expander', 'expander']
       ])
   );
 export default {
   body,
   handler: async (interaction: CommandInteraction) => {
-    if(!interaction.guild) {
+    if (!interaction.guild) {
       return;
     }
     const selectedFilter = interaction.options.getString('filter');
-    if(!selectedFilter) {
+    if (!selectedFilter) {
       return;
     }
     const player = UsePlayer(interaction.client);
     const queue = player.getQueue(interaction.guild);
-    if(!queue) {
+    if (!queue) {
       return interaction.reply('No queue playing');
     }
-    if(!userInBotChannel(interaction.user, interaction.guild)) {
-      return interaction.reply('You must be in the same voice channel as the bot');
+    if (!userInBotChannel(interaction.user, interaction.guild)) {
+      return interaction.reply(
+        'You must be in the same voice channel as the bot'
+      );
     }
-    if(selectedFilter === 'clear') {
+    if (selectedFilter === 'clear') {
       queue.setFilters({});
       return interaction.reply('All filters cleared');
     }
-    const newFilters: any = {}
+    const newFilters: any = {};
     const enabled: Array<string> = queue.getFiltersEnabled();
     enabled.forEach((filter: string) => {
       newFilters[filter] = true;
     });
     newFilters[selectedFilter] = !newFilters[selectedFilter];
     const finalFilters = Object.keys(newFilters).filter(key => newFilters[key]);
-    if(finalFilters.length === 0) {
+    if (finalFilters.length === 0) {
       interaction.reply('No filters enabled');
     } else {
       interaction.reply(`Enabled filters: ${finalFilters.join(', ')}`);

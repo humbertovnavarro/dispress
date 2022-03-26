@@ -4,4 +4,4 @@ config.json
 *.error
 *.log
 dist
-data.db
+*.db

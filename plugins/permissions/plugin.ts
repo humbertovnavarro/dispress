@@ -5,8 +5,6 @@ import initializeDatabase from './helpers/initializeDatabase';
 import setpermissions from './commands/setpermissions';
 const plugin: Plugin = {
   name: 'permissions',
-  version: '1.0.0',
-  author: 'Humberto Navarro',
   beforeReady: (bot: Bot) => {
     bot.useCommand(setpermissions);
     initializeDatabase();

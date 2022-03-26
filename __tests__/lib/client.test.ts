@@ -3,6 +3,10 @@ import { CommandInteraction } from "discord.js";
 import client from "../../lib/client";
 import { Plugin } from "../../lib/client";
 describe("client tests", () => {
+    beforeEach(() => {
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+        jest.spyOn(console, 'log').mockImplementation(() => {});
+    });
     test("Imports without crashing", () => {
         expect(client).toBeTruthy();
     })

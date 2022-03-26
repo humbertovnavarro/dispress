@@ -1,7 +1,7 @@
 import SQLiteDatabase from 'better-sqlite3';
 import fs from 'fs';
 import dotenv from 'dotenv';
-import { Channel, User } from 'discord.js';
+import { User } from 'discord.js';
 dotenv.config();
 
 interface Database extends SQLiteDatabase.Database {
@@ -72,5 +72,4 @@ db.flushKeys = () => {
 };
 
 db.flushKeys();
-setInterval(db.flushKeys, 1000 * 60 * 30);
 export default db;

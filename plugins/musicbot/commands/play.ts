@@ -88,7 +88,7 @@ export default {
 
     const channel = interaction.channel;
 
-    if(!channel || !channel.isText()) {
+    if (!channel || !channel.isText()) {
       return;
     }
 

@@ -25,12 +25,13 @@ type BeforeCommandCallback = (
 
 export interface Plugin {
   name: string;
-  version?: string;
-  author?: string;
-  description?: string;
   onReady?: (bot: Bot) => any;
   beforeReady?: (bot: Bot) => any;
   beforeCommand?: BeforeCommandCallback;
+  data?: {
+    [key: string]: any;
+    permissions?: string[];
+  };
 }
 
 export interface Bot extends Client {
@@ -40,6 +41,7 @@ export interface Bot extends Client {
   useMessage: (handler: (message: Message) => void | Promise<void>) => void;
   commands: Map<string, Command>;
   plugins: Map<string, Plugin>;
+  prefix: string;
 }
 
 const slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
