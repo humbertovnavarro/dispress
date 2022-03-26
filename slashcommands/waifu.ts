@@ -38,7 +38,6 @@ export default {
   handler: async (interaction: CommandInteraction) => {
     let category = 'waifu';
     const option = interaction.options.getString('category', false);
-
     if (option) {
       category = option;
     }
@@ -47,8 +46,14 @@ export default {
     const channel = await interaction.channel?.fetch() as TextChannel | undefined;
     if(!channel) return interaction.reply('channel not found');
     let sfw = true;
-    category = Math.random() > 0.3 ? 'waifu' : 'neko';
-    if(channel.nsfw) sfw = false;
+    if(channel.nsfw) {
+      sfw = false;
+      if(!option) {
+        category = Math.random() > 0.3 ? 'waifu' : 'neko';
+      } else if (option !== "waifu" || "neko") {
+        return interaction.reply("Sorry, only waifu and neko are nsfw categories");
+      }
+    }
     try {
       const resp = await axios.get(`https://api.waifu.pics/${sfw ? "sfw" : "nsfw"}/${category}`);
 
