@@ -3,7 +3,7 @@ describe("Plugin tests", () => {
   test("isLink", () => {
     const testCases = [
       "https://www.twitch.tv",
-      "check this out!  😀  https://www.google.com/search?q=test&oq=test \n\n",
+      "wow check out thi video wow https://youtu.be/RhrJ9-mir64 wow wow plz archive @Patrick \n\n",
     ];
     testCases.forEach(testCase => {
       expect(isLink(testCase)).toBe(true);
