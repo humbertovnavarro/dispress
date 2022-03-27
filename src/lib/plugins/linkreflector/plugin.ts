@@ -42,7 +42,7 @@ async function handleMessage(message: Message) {
     if (channel) {
       const embed = new Embed()
         .setTitle(`Posted by ${message.author.username}`)
-        .setThumbnail(message.author.displayAvatarURL())
+        .setThumbnail(message.author.displayAvatarURL());
       try {
         await channel.send({ embeds: [embed] });
         await channel.send(message.content);
