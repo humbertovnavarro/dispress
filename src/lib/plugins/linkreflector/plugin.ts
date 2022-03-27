@@ -1,7 +1,7 @@
 import { Embed } from '@discordjs/builders';
 import { Guild, Message, TextChannel } from 'discord.js';
-import { Bot, Plugin } from '../../lib/client';
-import db from '../../lib/query/db';
+import { Bot, Plugin } from '../../../lib/client';
+import db from '../../query/db';
 const reflectorChannels = new Map<string, TextChannel>();
 const plugin: Plugin = {
   name: 'linkreflector',

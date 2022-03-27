@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction } from "discord.js";
-import client from "../../lib/client";
-import { Plugin } from "../../lib/client";
+import client from "./client";
+import { Plugin } from "./client";
 describe("client tests", () => {
     beforeEach(() => {
         jest.spyOn(console, 'error').mockImplementation(() => {});

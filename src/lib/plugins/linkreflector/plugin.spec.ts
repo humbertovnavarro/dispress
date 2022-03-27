@@ -1,4 +1,4 @@
-import { isLink } from "../../../plugins/linkreflector/plugin";
+import { isLink } from "./plugin";
 describe("Plugin tests", () => {
   test("isLink", () => {
     const testCases = [
