@@ -3,10 +3,8 @@ dotenv.config();
 import client from './lib/client';
 import waifu from './slashcommands/waifu';
 import patchnotes from './slashcommands/patchnotes';
-import musicbot from './plugins/musicbot/plugin';
-import channeltags from './plugins/channeltags/plugin';
-import permissions from './plugins/permissions/plugin';
-import linkreflector from './plugins/linkreflector/plugin';
+import musicbot from './lib/plugins/musicbot/plugin';
+import linkreflector from './lib/plugins/linkreflector/plugin';
 import anime from './slashcommands/anime';
 const main = async () => {
   client.prefix = process.env.PREFIX || '!';
@@ -14,8 +12,6 @@ const main = async () => {
   client.useCommand(patchnotes);
   client.useCommand(anime);
   client.usePlugin(musicbot);
-  client.usePlugin(channeltags);
-  client.usePlugin(permissions);
   client.usePlugin(linkreflector);
   client.login(process.env.TOKEN);
 };
