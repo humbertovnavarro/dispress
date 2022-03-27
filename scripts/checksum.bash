@@ -7,7 +7,7 @@ fi
 newsum=$(ls -alR --full-time ./dist | sha1sum)
 if [ "$oldsum" != "$newsum" ]; then
     echo $newsum > ./sha1sum.txt
-    exit 1
+    exit 0
 fi
 echo $newsum > ./sha1sum.txt
-exit 0
+exit 1
