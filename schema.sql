@@ -33,10 +33,3 @@ CREATE TABLE IF NOT EXISTS PlaylistSong (
 	url text,
 	playlist integer
 );
-
-
-CREATE TABLE IF NOT EXISTS KeyStore (
-	k text PRIMARY KEY,
-	v text,
-	expires integer
-);
