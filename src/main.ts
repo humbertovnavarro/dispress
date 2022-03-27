@@ -14,3 +14,4 @@ const main = async () => {
   client.login(process.env.TOKEN);
 };
 main();
+export default client;
