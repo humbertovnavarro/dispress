@@ -1,4 +1,4 @@
-import { Bot, Plugin } from '../../lib/client';
+import { Bot, Plugin } from '../../client';
 import pause from './commands/pause';
 import queue from './commands/queue';
 import unpause from './commands/unpause';
