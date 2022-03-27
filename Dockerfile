@@ -17,4 +17,4 @@ WORKDIR /app
 RUN apk add --no-cache python3 ffmpeg
 RUN ln -s /usr/bin/python3 /usr/bin/python
 RUN yarn install
-ENTRYPOINT ["npm", "start"]
+ENTRYPOINT ["yarn", "start"]

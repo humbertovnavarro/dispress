@@ -7,7 +7,7 @@ import axios from 'axios';
 import { CommandInteraction, TextChannel } from 'discord.js';
 const body = new SlashCommandBuilder()
   .setName('waifu')
-  .setDescription('get a waifu pic uwu')
+  .setDescription('Get a random waifu')
   .addStringOption(
     new SlashCommandStringOption()
       .setDescription('type of waifu')

@@ -9,9 +9,12 @@ import url from 'url';
 import { parse } from 'node-html-parser';
 const body = new SlashCommandBuilder()
   .setName('anime')
-  .setDescription('find a link to watch anime')
+  .setDescription('Search for anime')
   .addStringOption(
-    new SlashCommandStringOption().setDescription('anime name').setName('name')
+    new SlashCommandStringOption()
+      .setDescription('anime name')
+      .setName('name')
+      .setRequired(true)
   );
 export default {
   body,
