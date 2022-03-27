@@ -26,12 +26,9 @@ jobs:
       - name: Build bot
         working-directory: ./master
         run:  yarn build
-      - name: Stop bot
-        working-directory: ./master
-        run: yarn stop dispress || echo "Bot not running"
-      - name: Run bot
+      - name: Restart bot
         working-directory: ./master
         env:
           TOKEN: ${{ secrets.TOKEN }}
           DATABASE_LOCATION: "../dispress.db"
-        run: yarn start dispress
+        run: yarn restart dispress
