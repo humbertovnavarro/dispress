@@ -20,7 +20,11 @@ const body = new SlashCommandBuilder()
 export default {
   body,
   handler: async (interaction: CommandInteraction) => {
-    if (!interaction.guild || !interaction.member) {
+    if (
+      !interaction.guild ||
+      !interaction.member ||
+      !interaction.channel?.isText()
+    ) {
       try {
         return interaction.reply('Something went wrong.');
       } catch (error) {
@@ -28,6 +32,7 @@ export default {
       }
       return;
     }
+    const channel = interaction.channel;
 
     const member = interaction.guild.members.cache.get(
       interaction.member.user.id
@@ -46,6 +51,8 @@ export default {
         );
       }
     }
+
+    interaction.reply('Generating guild playlist...');
 
     const player = UsePlayer(interaction.client);
     const queue = player.createQueue(interaction.guild, {
@@ -73,7 +80,7 @@ export default {
     );
 
     if (playlist.length === 0) {
-      return interaction.reply(
+      return channel.send(
         `not enough data to generate a guild playlist, try playing and liking songs.`
       );
     }
@@ -82,9 +89,8 @@ export default {
       if (!queue.connection) await queue.connect(voiceChannel);
     } catch {
       queue.destroy();
-      return await interaction.reply({
-        content: 'Could not join your voice channel!',
-        ephemeral: true
+      return await channel.send({
+        content: 'Could not join your voice channel!'
       });
     }
 
@@ -115,7 +121,7 @@ export default {
       embed.addField(`\`${index + 1}.\` **${track.title}**`, track.duration);
     });
 
-    interaction.reply({
+    channel.send({
       embeds: [embed]
     });
   }
