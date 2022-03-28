@@ -1,14 +1,17 @@
 import { Player, Queue, Track } from 'discord-player';
+
 import {
   Client,
   Collection,
   Guild,
   Message,
   MessageEmbed,
+  ReactionCollector,
   TextChannel,
   User,
   VoiceBasedChannel
 } from 'discord.js';
+
 import { Reverbnation, Lyrics } from '@discord-player/extractor';
 import { LyricsData } from '@discord-player/extractor/lib/ext/Lyrics';
 import _ from 'lodash';
@@ -21,13 +24,21 @@ interface LyricsClient {
 
 let lyricsClient: LyricsClient;
 let player: Player | undefined;
+const activeCollectors: ReactionCollector[] = [];
+const cleanupCollectors = () => {
+  activeCollectors.forEach(collector => collector.stop())
+}
 
 export function UsePlayer(client: Client): Player {
   if (player) return player;
   player = new Player(client);
   lyricsClient = Lyrics.init();
   player.use('reverbnation', Reverbnation);
-  player.on('trackStart', trackStart);
+  player.on('trackStart', cleanupCollectors);
+  player.on('trackEnd', cleanupCollectors);
+  player.on('queueEnd', cleanupCollectors);
+  player.on('botDisconnect', cleanupCollectors);
+  player.on('connectionError', cleanupCollectors);
   return player;
 }
 
@@ -78,10 +89,11 @@ export const trackStart = async (queue: Queue, track: Track) => {
   message.react('🛑');
   message.react('❤️');
   message.react('📖');
-  const collector = message.createReactionCollector({ time: 200000 });
+
+  const collector = message.createReactionCollector({ time:  3600000 });
+  activeCollectors.push(collector);
   const likeMap = new Collection();
   let openedLyrics = false;
-
   collector.on('collect', (reaction, user) => {
     if (!message.guild) return;
     if (user.bot) return;
