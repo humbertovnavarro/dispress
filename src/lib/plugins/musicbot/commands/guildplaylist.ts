@@ -20,7 +20,11 @@ const body = new SlashCommandBuilder()
 export default {
   body,
   handler: async (interaction: CommandInteraction) => {
-    if (!interaction.guild || !interaction.member || !interaction.channel?.isText()) {
+    if (
+      !interaction.guild ||
+      !interaction.member ||
+      !interaction.channel?.isText()
+    ) {
       try {
         return interaction.reply('Something went wrong.');
       } catch (error) {
@@ -48,7 +52,7 @@ export default {
       }
     }
 
-    interaction.reply("Generating guild playlist...");
+    interaction.reply('Generating guild playlist...');
 
     const player = UsePlayer(interaction.client);
     const queue = player.createQueue(interaction.guild, {
@@ -86,7 +90,7 @@ export default {
     } catch {
       queue.destroy();
       return await channel.send({
-        content: 'Could not join your voice channel!',
+        content: 'Could not join your voice channel!'
       });
     }
 

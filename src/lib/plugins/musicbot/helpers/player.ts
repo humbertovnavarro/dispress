@@ -26,8 +26,8 @@ let lyricsClient: LyricsClient;
 let player: Player | undefined;
 const activeCollectors: ReactionCollector[] = [];
 const cleanupCollectors = () => {
-  activeCollectors.forEach(collector => collector.stop())
-}
+  activeCollectors.forEach(collector => collector.stop());
+};
 
 export function UsePlayer(client: Client): Player {
   if (player) return player;
@@ -90,7 +90,7 @@ export const trackStart = async (queue: Queue, track: Track) => {
   message.react('❤️');
   message.react('📖');
 
-  const collector = message.createReactionCollector({ time:  3600000 });
+  const collector = message.createReactionCollector({ time: 3600000 });
   activeCollectors.push(collector);
   const likeMap = new Collection();
   let openedLyrics = false;
