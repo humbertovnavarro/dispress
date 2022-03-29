@@ -1,6 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction } from 'discord.js';
-import client from '../main';
 const body = new SlashCommandBuilder()
   .setName('uptime')
   .setDescription('Returns the uptime of the bot');
