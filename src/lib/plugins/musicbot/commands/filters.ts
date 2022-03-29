@@ -3,8 +3,7 @@ import {
   SlashCommandStringOption
 } from '@discordjs/builders';
 import { CommandInteraction } from 'discord.js';
-import { UsePlayer, UseQueue, userInBotChannel } from '../helpers/player';
-const guildFilters = new Map<string, { [key: string]: boolean }>();
+import { UsePlayer, userInBotChannel } from '../helpers/player';
 const body = new SlashCommandBuilder()
   .setName('filter')
   .setDescription('adds a filter to the player')

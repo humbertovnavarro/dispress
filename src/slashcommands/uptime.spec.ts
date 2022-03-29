@@ -1,4 +1,4 @@
-import uptime, { getUptimeHumanReadable } from './uptime';
+import uptime from './uptime';
 describe('Uptime slash command', () => {
   test('Assert body', () => {
     expect(uptime.body).toBeDefined();

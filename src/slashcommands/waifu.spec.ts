@@ -1,4 +1,3 @@
-import exp from 'constants';
 import waifu from './waifu';
 const categories = {
   autocomplete: undefined,

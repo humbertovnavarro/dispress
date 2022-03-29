@@ -1,4 +1,4 @@
-import { Client, CommandInteraction, Interaction, Message } from 'discord.js';
+import { Client, CommandInteraction, Message } from 'discord.js';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
@@ -8,13 +8,11 @@ interface SlashCommandBuilder {
   [key: string]: any;
 }
 
-export interface Command {
+export interface Command<CommandContext = any> {
   handler: (interaction: CommandInteraction) => any;
   body: SlashCommandBuilder;
   onReady?: (bot: Bot) => any;
-  data?: {
-    [key: string]: any;
-  };
+  context?: CommandContext;
 }
 
 type BeforeCommandCallback = (
@@ -23,18 +21,17 @@ type BeforeCommandCallback = (
   cancel: () => void
 ) => void;
 
-export interface Plugin {
+export interface Plugin<PluginContext = any> {
   name: string;
   onReady?: (bot: Bot) => any;
   beforeReady?: (bot: Bot) => any;
   beforeCommand?: BeforeCommandCallback;
-  data?: {
-    [key: string]: any;
-    permissions?: string[];
-  };
+  context?: PluginContext;
 }
 
 export interface Bot extends Client {
+  getCommand: (command: string) => Command | undefined;
+  getPlugin: (command: string) => Plugin | undefined;
   usePlugin: (plugin: Plugin) => void;
   invoke: (command: string, interaction: CommandInteraction) => void;
   useCommand: (command: Command) => void;
@@ -47,7 +44,7 @@ export interface Bot extends Client {
 const slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
 const commands = new Map<string, Command>();
 const plugins = new Map<string, Plugin>();
-const messageHandlers: Array<(message: Message) => void | Promise<void>> = [];
+const messageHandlers: Array<(message: Message) => any> = [];
 const rest = new REST({ version: '9' });
 const client = new Client({
   intents: [
@@ -157,6 +154,10 @@ client.usePlugin = (plugin: Plugin) => {
   }
   plugins.set(plugin.name, plugin);
 };
+
+client.getCommand = (command:string): Command | undefined => {
+  return commands.get(command);
+}
 
 client.invoke = (command: string, interaction: CommandInteraction) => {
   commands.get(command)?.handler(interaction);
