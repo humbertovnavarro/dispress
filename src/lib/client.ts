@@ -30,6 +30,8 @@ export interface Plugin<PluginContext = any> {
 }
 
 export interface Bot extends Client {
+  getCommand: (command: string) => Command | undefined;
+  getPlugin: (command: string) => Plugin | undefined;
   usePlugin: (plugin: Plugin) => void;
   invoke: (command: string, interaction: CommandInteraction) => void;
   useCommand: (command: Command) => void;
@@ -152,6 +154,10 @@ client.usePlugin = (plugin: Plugin) => {
   }
   plugins.set(plugin.name, plugin);
 };
+
+client.getCommand = (command:string): Command | undefined => {
+  return commands.get(command);
+}
 
 client.invoke = (command: string, interaction: CommandInteraction) => {
   commands.get(command)?.handler(interaction);
