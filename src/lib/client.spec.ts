@@ -1,7 +1,21 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction } from 'discord.js';
-import client from './client';
-import { Plugin } from './client';
+import client, { Plugin } from './client';
+const plugin = {
+  name: 'bad plugin',
+  onReady: jest.fn(() => {
+    throw new Error();
+  }),
+  beforeReady: jest.fn(() => {})
+} as unknown as Plugin;
+const command = {
+    body: new SlashCommandBuilder()
+      .setName('error')
+      .setDescription('throws an error'),
+    handler: (interaction: CommandInteraction) => {
+      throw new Error();
+    }
+}
 describe('client tests', () => {
   beforeEach(() => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -11,14 +25,7 @@ describe('client tests', () => {
     expect(client).toBeTruthy();
   });
   test('Handles crashing commands', () => {
-    client.useCommand({
-      body: new SlashCommandBuilder()
-        .setName('error')
-        .setDescription('throws an error'),
-      handler: (interaction: CommandInteraction) => {
-        throw new Error();
-      }
-    });
+    client.useCommand(command);
     const reply = jest.fn();
     const interaction = {
       isCommand: () => true,
@@ -29,16 +36,15 @@ describe('client tests', () => {
     expect(reply).toBeCalledWith('An uknown error occured');
   });
   test('Handles crashing plugins', () => {
-    const plugin = {
-      name: 'bad plugin',
-      onReady: jest.fn(() => {
-        throw new Error();
-      }),
-      beforeReady: jest.fn(() => {})
-    } as unknown as Plugin;
     client.usePlugin(plugin);
     expect(plugin.beforeReady).toHaveBeenCalledWith(client);
     client.emit('ready', null);
     expect(plugin.onReady).toBeCalledWith(client);
   });
+  test('Grabs plugins', () => {
+    expect(client.getPlugin('bad plugin')).toBe(plugin);
+  })
+  test('Grabs commands', () => {
+    expect(client.getCommand('error')).toBe(command);
+  })
 });

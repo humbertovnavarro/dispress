@@ -159,6 +159,10 @@ client.getCommand = (command:string): Command | undefined => {
   return commands.get(command);
 }
 
+client.getPlugin = (plugin: string): Plugin | undefined => {
+  return plugins.get(plugin);
+}
+
 client.invoke = (command: string, interaction: CommandInteraction) => {
   commands.get(command)?.handler(interaction);
 };
