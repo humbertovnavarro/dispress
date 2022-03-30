@@ -1,6 +1,6 @@
 import { Bot, Plugin } from "../../client"
 import axios from "axios";
-import { PresenceData, PresenceStatusData } from "discord.js";
+import { PresenceData } from "discord.js";
 import dotenv from "dotenv";
 dotenv.config();
 
