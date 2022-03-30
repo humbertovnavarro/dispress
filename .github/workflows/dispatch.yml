@@ -30,5 +30,6 @@ jobs:
         working-directory: ./master
         env:
           TOKEN: ${{ secrets.TOKEN }}
+          MINECRAFT_SERVER: ${{ secrets.MINECRAFT_SERVER }}
           DATABASE_LOCATION: "../dispress.db"
         run: yarn restart dispress
