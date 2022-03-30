@@ -7,7 +7,7 @@
     "lint": "prettier --write .",
     "test": "tsc --noEmit && jest",
     "prepare": "husky install",
-    "dev": "yarn build && nodemon main.ts",
+    "dev": "nodemon src/main.ts",
     "build": "yarn tsc || bash ./scripts/checksum.bash",
     "stop": "pm2 delete ",
     "start": "pm2 start dist/main.js -f --name ",

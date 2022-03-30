@@ -11,8 +11,6 @@ interface Database extends SQLiteDatabase.Database {
   userHasTag: (user: User, tag: string) => boolean;
   removeUserTag: (user: User, tag: string) => void;
   addUserTag: (user: User, tag: string) => void;
-  setKey: (key: string, value: string) => void;
-  getKey: (key: string) => string | undefined;
 }
 
 const location: string =
@@ -28,48 +26,4 @@ try {
   process.exit(1);
 }
 
-// Some quick methods for common operations
-
-// Key value store crud
-db.setKey = (key: string, value: string, expires: number = -1) => {
-  console.log(key, value, expires);
-  db.prepare(
-    `
-    INSERT INTO KeyStore(k, v, expires)
-    VALUES (?,?,?)
-    ON CONFLICT(k) DO UPDATE SET
-    k=?,
-    v=?,
-    expires=?
-  `
-  ).run(key, value, expires, key, value, expires);
-};
-
-db.getKey = (key: string) => {
-  return db
-    .prepare(
-      `
-      SELECT * FROM KeyStore WHERE k=?;
-    `
-    )
-    .all(key)[0]?.v;
-};
-
-db.deleteKey = (key: string) => {
-  db.prepare(
-    `
-      DELETE FROM KeyStore WHERE k=?;
-    `
-  ).run(key);
-};
-
-db.flushKeys = () => {
-  db.prepare(
-    `
-    DELETE FROM KeyStore WHERE expires BETWEEN 0 AND ?;
-  `
-  ).run(Date.now());
-};
-
-db.flushKeys();
 export default db;
