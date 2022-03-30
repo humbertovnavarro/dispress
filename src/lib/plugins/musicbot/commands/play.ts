@@ -74,11 +74,17 @@ export default {
       .search(query, {
         requestedBy: interaction.user
       })
-      .then(result => result.tracks[0])
+      .then(result => {
+        for(const track of result.tracks) {
+          if(track.durationMS < 60 * 1000 * 20) {
+           return track;
+          }
+        }
+        return undefined;
+      })
       .catch(error => {
         console.error(error);
       });
-
     if (!track)
       return await interaction.reply({
         content: `❌ | Track **${query}** not found or not playable.`
