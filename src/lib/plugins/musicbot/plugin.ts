@@ -6,6 +6,7 @@ import guildplaylist from './commands/guildplaylist';
 import play from './commands/play';
 import stop from './commands/stop';
 import skip from './commands/skip';
+import summon from './commands/summon';
 import filters from './commands/filters';
 const plugin: Plugin = {
   name: 'musicbot',
@@ -18,6 +19,7 @@ const plugin: Plugin = {
     bot.useCommand(guildplaylist);
     bot.useCommand(unpause);
     bot.useCommand(filters);
+    bot.useCommand(summon);
   }
 };
 export default plugin;
