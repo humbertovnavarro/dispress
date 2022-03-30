@@ -25,8 +25,8 @@ const getServerStatistics = async (bot: Bot) => {
     online: number,
     max: number,
   } | undefined = resp.data.players;
-  if(!players?.online) {
-    bot.user?.setPresence({ activities: [{name: `Minecraft with 0 players`}], status: 'online' });
+  if(!players || !players.online || !players.max) {
+    bot.user?.setPresence({ activities: [{name: `Minecraft with 0 players :(`}], status: 'online' });
   }
   bot.user?.setPresence({ activities: [{name: `Minecraft with ${players?.online}/${players?.max} players`}], status: 'online' });
 }
