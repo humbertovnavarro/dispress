@@ -6,7 +6,7 @@ import { UsePlayer, GetActiveChannel } from '../helpers/player';
 
 const body = new SlashCommandBuilder()
   .setName('summon')
-  .setDescription('summon the bot to your channel.')
+  .setDescription('Summon the bot to your channel.')
 export default {
   body,
   handler: async (interaction: CommandInteraction) => {
