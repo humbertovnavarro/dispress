@@ -3,13 +3,14 @@ import { CommandInteraction } from 'discord.js';
 const body = new SlashCommandBuilder()
   .setName('uptime')
   .setDescription('Returns the uptime of the bot');
+const start = Date.now();
 export default {
   name: 'uptime',
   body,
   description: 'Returns the uptime of the bot',
   handler: async (interaction: CommandInteraction) => {
     interaction.reply(
-      `I've been online for ${getUptimeHumanReadable(process.uptime())}`
+      `I've been online for ${getUptimeHumanReadable(Date.now() - start)}`
     );
   }
 };
