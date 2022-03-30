@@ -94,14 +94,11 @@ export default {
 
     interaction.channel.send(`Added track **${track.title}** to queue ✔️`);
 
-    if (!queue.playing) {
-      queue.play(track);
-    }
-
     const next = interaction.options.getBoolean('next');
 
     if (next) {
       queue.insert(track, 0);
+      return;
     }
 
     queue.addTrack(track);
