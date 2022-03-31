@@ -1,5 +1,4 @@
 import { Player, Queue as DiscordPlayerQueue, Track as DiscordPlayerTrack } from 'discord-player';
-
 import {
   Client,
   Collection,
@@ -11,16 +10,9 @@ import {
   User,
   VoiceBasedChannel
 } from 'discord.js';
-
 import { Reverbnation, Lyrics } from '@discord-player/extractor';
-import { LyricsData } from '@discord-player/extractor/lib/ext/Lyrics';
 import _ from 'lodash';
 import addLike from './addLike';
-
-interface LyricsClient {
-  search: (query: string) => Promise<LyricsData>;
-  client: any;
-}
 
 export interface Track extends DiscordPlayerTrack {
   query: string
@@ -30,7 +22,10 @@ export interface Queue extends DiscordPlayerQueue {
   tracks: Track[];
 }
 
-let lyricsClient: LyricsClient;
+let lyricsClient: {
+    search: (query: string) => Promise<Lyrics.LyricsData>;
+}
+
 let player: Player | undefined;
 const activeCollectors: ReactionCollector[] = [];
 const cleanupCollectors = () => {
