@@ -55,7 +55,9 @@ export default {
       queue.setFilters({});
       return interaction.reply('All filters cleared');
     }
-    const newFilters: any = {};
+    const newFilters: {
+      [key: string]: boolean
+    } = {};
     const enabled: Array<string> = queue.getFiltersEnabled();
     enabled.forEach((filter: string) => {
       newFilters[filter] = true;
