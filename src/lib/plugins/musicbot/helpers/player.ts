@@ -1,4 +1,4 @@
-import { Player, Queue, Track } from 'discord-player';
+import { Player, Queue as DiscordPlayerQueue, Track as DiscordPlayerTrack } from 'discord-player';
 
 import {
   Client,
@@ -22,6 +22,14 @@ interface LyricsClient {
   client: any;
 }
 
+export interface Track extends DiscordPlayerTrack {
+  query: string
+}
+
+export interface Queue extends DiscordPlayerQueue {
+  tracks: Track[];
+}
+
 let lyricsClient: LyricsClient;
 let player: Player | undefined;
 const activeCollectors: ReactionCollector[] = [];
@@ -43,7 +51,7 @@ export function UsePlayer(client: Client): Player {
 }
 
 export function UseQueue(guild: Guild): Queue {
-  return UsePlayer(guild.client).createQueue(guild);
+  return UsePlayer(guild.client).createQueue(guild) as Queue;
 }
 
 export function GetActiveChannel(guild: Guild): VoiceBasedChannel | undefined {
@@ -155,7 +163,7 @@ export function userInBotChannel(user: User, guild: Guild): boolean {
   return match;
 }
 
-async function postLyrics(channel: TextChannel, track: any) {
+async function postLyrics(channel: TextChannel, track: Track) {
   let lyrics: string | undefined;
 
   try {

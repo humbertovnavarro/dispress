@@ -4,8 +4,7 @@ import {
 } from '@discordjs/builders';
 import { CommandInteraction, MessageEmbed } from 'discord.js';
 import generatePlaylist from '../../../query/generatePlaylist';
-import { UsePlayer, GetActiveChannel } from '../helpers/player';
-import { Track } from 'discord-player';
+import { UsePlayer, GetActiveChannel, Queue, Track } from '../helpers/player';
 
 const body = new SlashCommandBuilder()
   .setName('guildplaylist')
@@ -59,7 +58,7 @@ export default {
       metadata: {
         channel: interaction.channel
       }
-    });
+    }) as Queue;
     let maxSongs = 15;
 
     try {
@@ -116,7 +115,6 @@ export default {
     if (playing) {
       embed.addField(`Playing -- **${playing.title}**`, playing.duration);
     }
-    // Construct an embed like in queue.ts, if we need to use this again dedupe it in /lib
     queue.tracks.forEach((track: Track, index: number) => {
       embed.addField(`\`${index + 1}.\` **${track.title}**`, track.duration);
     });
