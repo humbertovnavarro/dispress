@@ -2,16 +2,15 @@ import { Client, CommandInteraction, Message } from 'discord.js';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
-
-interface SlashCommandBuilder {
-  toJSON(): RESTPostAPIApplicationCommandsJSONBody;
-  [key: string]: any;
+export interface SlashCommandBody {
+  toJSON: () => RESTPostAPIApplicationCommandsJSONBody;
+  name: string;
+  description: string;
 }
-
-export interface Command<CommandContext = any> {
-  handler: (interaction: CommandInteraction) => any;
-  body: SlashCommandBuilder;
-  onReady?: (bot: Bot) => any;
+export interface Command<CommandContext = unknown> {
+  handler: (interaction: CommandInteraction) => unknown;
+  body: SlashCommandBody;
+  onReady?: (bot: Bot) => unknown;
   context?: CommandContext;
 }
 
@@ -21,10 +20,10 @@ type BeforeCommandCallback = (
   cancel: () => void
 ) => void;
 
-export interface Plugin<PluginContext = any> {
+export interface Plugin<PluginContext = unknown> {
   name: string;
-  onReady?: (bot: Bot) => any;
-  beforeReady?: (bot: Bot) => any;
+  onReady?: (bot: Bot) => unknown;
+  beforeReady?: (bot: Bot) => unknown;
   beforeCommand?: BeforeCommandCallback;
   context?: PluginContext;
 }
@@ -44,7 +43,7 @@ export interface Bot extends Client {
 const slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
 const commands = new Map<string, Command>();
 const plugins = new Map<string, Plugin>();
-const messageHandlers: Array<(message: Message) => any> = [];
+const messageHandlers: Array<(message: Message) => unknown> = [];
 const rest = new REST({ version: '9' });
 const client = new Client({
   intents: [

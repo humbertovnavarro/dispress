@@ -1,5 +1,4 @@
 import { Player, Queue as DiscordPlayerQueue, Track as DiscordPlayerTrack } from 'discord-player';
-
 import {
   Client,
   Collection,
@@ -11,16 +10,9 @@ import {
   User,
   VoiceBasedChannel
 } from 'discord.js';
-
 import { Reverbnation, Lyrics } from '@discord-player/extractor';
-import { LyricsData } from '@discord-player/extractor/lib/ext/Lyrics';
 import _ from 'lodash';
 import addLike from './addLike';
-
-interface LyricsClient {
-  search: (query: string) => Promise<LyricsData>;
-  client: any;
-}
 
 export interface Track extends DiscordPlayerTrack {
   query: string
@@ -28,9 +20,15 @@ export interface Track extends DiscordPlayerTrack {
 
 export interface Queue extends DiscordPlayerQueue {
   tracks: Track[];
+  metadata?: {
+    channel?: TextChannel
+  }
 }
 
-let lyricsClient: LyricsClient;
+let lyricsClient: {
+    search: (query: string) => Promise<Lyrics.LyricsData>;
+}
+
 let player: Player | undefined;
 const activeCollectors: ReactionCollector[] = [];
 const cleanupCollectors = () => {
@@ -63,11 +61,8 @@ export function GetActiveChannel(guild: Guild): VoiceBasedChannel | undefined {
 }
 
 export const trackStart = async (queue: Queue, track: Track) => {
-  const queueRef = queue as any;
-  const channel = queueRef.metadata.channel as TextChannel;
-
+  const channel = queue.metadata?.channel;
   if (!channel) return;
-
   let { title, thumbnail, url, author } = track;
   author = `uploaded by ${author}`;
   let avatar: string =
