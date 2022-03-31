@@ -1,3 +1,5 @@
+[![CodeFactor](https://www.codefactor.io/repository/github/humbertovnavarro/dispress/badge)](https://www.codefactor.io/repository/github/humbertovnavarro/dispress)
+
 This guide assumes you have nodejs gallium (16.14.2 lts) installed. [NodeJS Homepage](https://nodejs.org/en/)
 
 ---
