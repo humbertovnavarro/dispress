@@ -20,6 +20,9 @@ export interface Track extends DiscordPlayerTrack {
 
 export interface Queue extends DiscordPlayerQueue {
   tracks: Track[];
+  metadata?: {
+    channel?: TextChannel
+  }
 }
 
 let lyricsClient: {
@@ -58,11 +61,8 @@ export function GetActiveChannel(guild: Guild): VoiceBasedChannel | undefined {
 }
 
 export const trackStart = async (queue: Queue, track: Track) => {
-  const queueRef = queue as any;
-  const channel = queueRef.metadata.channel as TextChannel;
-
+  const channel = queue.metadata?.channel;
   if (!channel) return;
-
   let { title, thumbnail, url, author } = track;
   author = `uploaded by ${author}`;
   let avatar: string =
