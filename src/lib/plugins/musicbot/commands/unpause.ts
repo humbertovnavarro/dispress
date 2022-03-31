@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { Queue } from 'discord-player';
 import { CommandInteraction } from 'discord.js';
 import { UsePlayer, userInBotChannel } from '../helpers/player';
 
@@ -14,7 +15,7 @@ export default {
     }
 
     const player = UsePlayer(interaction.client);
-    const queue: any = player.getQueue(interaction.guild);
+    const queue: Queue = player.getQueue(interaction.guild);
 
     if (!queue) {
       return interaction.reply('There is nothing queued.');

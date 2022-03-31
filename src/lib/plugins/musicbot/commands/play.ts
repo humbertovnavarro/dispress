@@ -3,7 +3,7 @@ import {
   SlashCommandBuilder,
   SlashCommandStringOption
 } from '@discordjs/builders';
-import { Track } from 'discord-player';
+import { Track } from '../helpers/player';
 import { CommandInteraction } from 'discord.js';
 import { UsePlayer, GetActiveChannel } from '../helpers/player';
 import addPlay from '../helpers/addPlay';
@@ -70,7 +70,7 @@ export default {
       });
     }
     interaction.reply('Searching for ' + query);
-    const track: Track | void = await musicPlayer
+    const track: Track | undefined = await musicPlayer
       .search(query, {
         requestedBy: interaction.user
       })
@@ -84,7 +84,7 @@ export default {
       })
       .catch(error => {
         console.error(error);
-      });
+      }) as Track | undefined;
     if (!track)
       return await interaction.reply({
         content: `❌ | Track **${query}** not found or not playable.`
