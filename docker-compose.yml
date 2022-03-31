@@ -1,0 +1,6 @@
+version: '3'
+services:
+  dispress:
+    build: .
+  redis:
+    image: 'redis'
