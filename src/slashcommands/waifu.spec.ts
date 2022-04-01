@@ -43,5 +43,5 @@ describe('Anime slash command tests', () => {
   });
   test('Client has waifu command', () => {
     expect(client.getCommand('waifu')).toBe(waifu);
-  })
+  });
 });

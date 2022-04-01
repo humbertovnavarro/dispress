@@ -14,7 +14,7 @@ const client = new Bot({
     'GUILD_MESSAGE_REACTIONS'
   ],
   restTimeOffset: 0,
-  prefix: "/"
+  prefix: '/'
 });
 client.useCommand(anime);
 client.useCommand(waifu);

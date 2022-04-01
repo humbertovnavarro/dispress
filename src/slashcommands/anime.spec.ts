@@ -7,7 +7,7 @@ describe('Anime slash command tests', () => {
   });
   test('Client has anime plugin', () => {
     expect(client.getCommand('anime')).toBe(anime);
-  })
+  });
 });
 
 function SelfCheck(anime: Command) {

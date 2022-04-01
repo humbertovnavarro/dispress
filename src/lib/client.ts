@@ -1,11 +1,17 @@
-import { Client as DiscordClient, CommandInteraction, Guild, Interaction, Message} from "discord.js";
+import {
+  Client as DiscordClient,
+  CommandInteraction,
+  Guild,
+  Interaction,
+  Message
+} from 'discord.js';
 import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
 import { Routes } from 'discord-api-types/v9';
 import { REST } from '@discordjs/rest';
-import { Bot as IBot, BotOptions, Command, Plugin } from "./dispress";
+import { Bot as IBot, BotOptions, Command, Plugin } from './dispress';
 
 export default class Client extends DiscordClient implements IBot {
-  prefix: string = "!"
+  prefix: string = '!';
   slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
   commands = new Map<string, Command>();
   plugins = new Map<string, Plugin>();
@@ -16,48 +22,50 @@ export default class Client extends DiscordClient implements IBot {
     super(options);
     this.on('ready', this.ready);
     this.on('guildCreate', this.guildCreate);
-    this.on('interactionCreate', this.interactionCreate)
+    this.on('interactionCreate', this.interactionCreate);
     this.on('messageCreate', this.messageCreate);
-    if(options.prefix) {
+    if (options.prefix) {
       this.prefix = options.prefix;
     }
   }
 
   private async ready() {
     this.plugins.forEach(plugin => {
-        try {
-          plugin.onReady?.(this);
-        } catch (error) {
-          console.error(error);
-          console.error(`Error while running plugin: ${plugin.name}`);
-        }
-      });
-      if (this.token) {
-        this.slashCommandRest.setToken(this.token);
-      } else {
-        console.error("Client token missing after logging in, I hope you're testing or something went horribly wrong.");
+      try {
+        plugin.onReady?.(this);
+      } catch (error) {
+        console.error(error);
+        console.error(`Error while running plugin: ${plugin.name}`);
       }
-      this.guilds.cache.forEach(guild => {
-        if (this.user?.id)
-          this.slashCommandRest
-            .put(Routes.applicationGuildCommands(this.user.id, guild.id), {
-              body: this.slashCommands
-            })
-            .catch(error => {
-              console.error(error.message);
-            });
-      });
-      this.commands.forEach(command => {
-        try {
-          command.onReady?.(this);
-        } catch (error) {
-          console.error(error);
-          console.error(
-            `Error while running ready function for command: ${command.body.name}`
-          );
-        }
-      });
-      console.log(`Logged in as ${this.user?.tag}`);
+    });
+    if (this.token) {
+      this.slashCommandRest.setToken(this.token);
+    } else {
+      console.error(
+        "Client token missing after logging in, I hope you're testing or something went horribly wrong."
+      );
+    }
+    this.guilds.cache.forEach(guild => {
+      if (this.user?.id)
+        this.slashCommandRest
+          .put(Routes.applicationGuildCommands(this.user.id, guild.id), {
+            body: this.slashCommands
+          })
+          .catch(error => {
+            console.error(error.message);
+          });
+    });
+    this.commands.forEach(command => {
+      try {
+        command.onReady?.(this);
+      } catch (error) {
+        console.error(error);
+        console.error(
+          `Error while running ready function for command: ${command.body.name}`
+        );
+      }
+    });
+    console.log(`Logged in as ${this.user?.tag}`);
   }
 
   private async guildCreate(guild: Guild) {
@@ -77,7 +85,7 @@ export default class Client extends DiscordClient implements IBot {
   }
 
   private interactionCreate(interaction: Interaction) {
-    if(!interaction.isCommand()) return;
+    if (!interaction.isCommand()) return;
     const command = this.commands.get(interaction.commandName);
     if (!command || interaction.replied) return;
     try {
@@ -100,10 +108,10 @@ export default class Client extends DiscordClient implements IBot {
     this.messageHandlers.forEach(handler => {
       try {
         handler(message);
-      } catch(error) {
+      } catch (error) {
         console.error(error);
       }
-    })
+    });
   }
 
   public getCommand(command: string): Command | undefined {

@@ -1,4 +1,8 @@
-import { Player, Queue as DiscordPlayerQueue, Track as DiscordPlayerTrack } from 'discord-player';
+import {
+  Player,
+  Queue as DiscordPlayerQueue,
+  Track as DiscordPlayerTrack
+} from 'discord-player';
 import {
   Client,
   Collection,
@@ -15,19 +19,19 @@ import _ from 'lodash';
 import addLike from './addLike';
 
 export interface Track extends DiscordPlayerTrack {
-  query: string
+  query: string;
 }
 
 export interface Queue extends DiscordPlayerQueue {
   tracks: Track[];
   metadata?: {
-    channel?: TextChannel
-  }
+    channel?: TextChannel;
+  };
 }
 
 let lyricsClient: {
-    search: (query: string) => Promise<Lyrics.LyricsData>;
-}
+  search: (query: string) => Promise<Lyrics.LyricsData>;
+};
 
 let player: Player | undefined;
 const activeCollectors: ReactionCollector[] = [];

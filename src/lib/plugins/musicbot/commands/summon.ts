@@ -1,12 +1,10 @@
-import {
-  SlashCommandBuilder,
-} from '@discordjs/builders';
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction } from 'discord.js';
 import { UsePlayer, GetActiveChannel } from '../helpers/player';
 
 const body = new SlashCommandBuilder()
   .setName('summon')
-  .setDescription('Summon the bot to your channel.')
+  .setDescription('Summon the bot to your channel.');
 export default {
   body,
   handler: async (interaction: CommandInteraction) => {
@@ -31,13 +29,13 @@ export default {
     }
     const musicPlayer = UsePlayer(interaction.client);
     const queue = musicPlayer.getQueue(interaction.guild);
-    if(!queue) {
+    if (!queue) {
       return interaction.reply('The bot is not playing anything.');
     }
     try {
       await queue.connect(voiceChannel);
-    } catch(error) {
-      console.error(error)
+    } catch (error) {
+      console.error(error);
     }
     interaction.reply('Bot moved');
   }

@@ -1,4 +1,4 @@
-import type { ClientOptions, Client } from "discord.js";
+import type { ClientOptions, Client } from 'discord.js';
 
 export interface SlashCommandBody {
   toJSON: () => RESTPostAPIApplicationCommandsJSONBody;
@@ -41,5 +41,5 @@ export interface Bot extends Client {
 }
 
 export interface BotOptions extends ClientOptions {
-  prefix?: string
+  prefix?: string;
 }
