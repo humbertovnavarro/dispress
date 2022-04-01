@@ -1,4 +1,4 @@
-import { Command } from '../../../client';
+import type { Command } from '../../../dispress';
 import summon from './summon';
 describe('Summon slash command tests', () => {
   test('Assert body', () => {

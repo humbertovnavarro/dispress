@@ -1,4 +1,4 @@
-import { Bot, Plugin } from "../../client"
+import  { Bot, Plugin } from "../../dispress";
 import axios from "axios";
 import { PresenceData } from "discord.js";
 import dotenv from "dotenv";

@@ -1,9 +1,13 @@
 import anime from './anime';
-import { Command } from '../lib/client';
+import client from '../main';
+import type { Command } from '../lib/dispress';
 describe('Anime slash command tests', () => {
   test('Assert body', () => {
     SelfCheck(anime);
   });
+  test('Client has anime plugin', () => {
+    expect(client.getCommand('anime')).toBe(anime);
+  })
 });
 
 function SelfCheck(anime: Command) {

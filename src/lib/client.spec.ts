@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction } from 'discord.js';
-import client, { Plugin } from './client';
+import type { Plugin } from './dispress';
+import client from '../main';
 const plugin = {
   name: 'bad plugin',
   onReady: jest.fn(() => {
