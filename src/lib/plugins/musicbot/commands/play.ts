@@ -70,21 +70,21 @@ export default {
       });
     }
     interaction.reply('Searching for ' + query);
-    const track: Track | undefined = await musicPlayer
+    const track: Track | undefined = (await musicPlayer
       .search(query, {
         requestedBy: interaction.user
       })
       .then(result => {
-        for(const track of result.tracks) {
-          if(track.durationMS < 60 * 1000 * 20) {
-           return track;
+        for (const track of result.tracks) {
+          if (track.durationMS < 60 * 1000 * 20) {
+            return track;
           }
         }
         return undefined;
       })
       .catch(error => {
         console.error(error);
-      }) as Track | undefined;
+      })) as Track | undefined;
     if (!track)
       return await interaction.reply({
         content: `❌ | Track **${query}** not found or not playable.`
@@ -106,6 +106,6 @@ export default {
       return;
     }
     queue.addTrack(track);
-    if(!queue.playing) queue.play();
+    if (!queue.playing) queue.play();
   }
 };

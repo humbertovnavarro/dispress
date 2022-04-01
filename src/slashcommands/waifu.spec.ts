@@ -1,4 +1,5 @@
 import waifu from './waifu';
+import client from '../main';
 const categories = {
   autocomplete: undefined,
   choices: [
@@ -39,5 +40,8 @@ describe('Anime slash command tests', () => {
     expect(waifu.body.options.length).toBe(2);
     expect(waifu.body.options[0]).toEqual(categories);
     expect(waifu.body.options[1]).toEqual(user);
+  });
+  test('Client has waifu command', () => {
+    expect(client.getCommand('waifu')).toBe(waifu);
   });
 });

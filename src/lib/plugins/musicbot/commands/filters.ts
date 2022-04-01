@@ -56,7 +56,7 @@ export default {
       return interaction.reply('All filters cleared');
     }
     const newFilters: {
-      [key: string]: boolean
+      [key: string]: boolean;
     } = {};
     const enabled: Array<string> = queue.getFiltersEnabled();
     enabled.forEach((filter: string) => {

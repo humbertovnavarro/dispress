@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction } from 'discord.js';
-import client, { Plugin } from './client';
+import type { Plugin } from './dispress';
+import client from '../main';
 const plugin = {
   name: 'bad plugin',
   onReady: jest.fn(() => {
@@ -9,13 +10,13 @@ const plugin = {
   beforeReady: jest.fn(() => {})
 } as unknown as Plugin;
 const command = {
-    body: new SlashCommandBuilder()
-      .setName('error')
-      .setDescription('throws an error'),
-    handler: (interaction: CommandInteraction) => {
-      throw new Error();
-    }
-}
+  body: new SlashCommandBuilder()
+    .setName('error')
+    .setDescription('throws an error'),
+  handler: (interaction: CommandInteraction) => {
+    throw new Error();
+  }
+};
 describe('client tests', () => {
   beforeEach(() => {
     jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -43,8 +44,8 @@ describe('client tests', () => {
   });
   test('Grabs plugins', () => {
     expect(client.getPlugin('bad plugin')).toBe(plugin);
-  })
+  });
   test('Grabs commands', () => {
     expect(client.getCommand('error')).toBe(command);
-  })
+  });
 });
