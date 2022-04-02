@@ -86,66 +86,59 @@ export const trackStart = async (queue: Queue, track: Track) => {
 
   try {
     message = (await channel.send({ embeds: [embed] })) as Message;
-  } catch {
+  } catch(error) {
+    console.warn(error);
     return;
   }
 
-  message.react('⏸️');
-  message.react('▶️');
-  message.react('⏭️');
-  message.react('🛑');
-  message.react('❤️');
-  message.react('📖');
+  await Promise.all([
+    message.react('⏸️'),
+    message.react('▶️'),
+    message.react('⏭️'),
+    message.react('🛑'),
+    message.react('❤️'),
+    message.react('📖'),
+  ]);
 
-  const collector = message.createReactionCollector({ time: 3600000 });
-  activeCollectors.push(collector);
-  const likeMap = new Collection();
-  let openedLyrics = false;
-  collector.on('collect', (reaction, user) => {
-    if (!message.guild) return;
-    if (user.bot) return;
-    if (
-      !(
-        reaction.emoji.name === '⏸️' ||
+  const collector = message.createReactionCollector({ time: 3600000, filter: (reaction) => {
+    return reaction.emoji.name === '⏸️' ||
         reaction.emoji.name === '🛑' ||
         reaction.emoji.name === '▶️' ||
         reaction.emoji.name === '⏭️' ||
         reaction.emoji.name === '❤️' ||
         reaction.emoji.name === '😒' ||
         reaction.emoji.name === '📖'
-      )
-    ) {
-      return;
+  } });
+  activeCollectors.push(collector);
+  const likeMap = new Collection();
+  let didOpenLyrics = false;
+  collector.on('collect', (reaction, user) => {
+    if (!message.guild || user.bot || !userInBotChannel(user, channel.guild)) return;
+    switch(reaction.emoji.name) {
+      case '⏸️':
+        queue.setPaused(true);
+        break;
+      case '▶️':
+        queue.setPaused(false);
+        break;
+      case '⏭️':
+        queue.skip();
+        break;
+      case '🛑':
+        player?.deleteQueue(channel.guild);
+        break;
+      case '❤️':
+        if (likeMap.has(user.id)) break;
+        likeMap.set(user.id, true);
+        addLike(track, message.guild);
+        break;
+      case '📖':
+        if (didOpenLyrics) return;
+        postLyrics(channel, track);
+        didOpenLyrics = true;
+      break;
     }
-    if (!userInBotChannel(user, channel.guild)) {
-      return;
-    }
-    if (reaction.emoji.name === '⏸️') {
-      queue.setPaused(true);
-    }
-    if (reaction.emoji.name === '▶️') {
-      queue.setPaused(false);
-    }
-    if (reaction.emoji.name === '⏭️') {
-      queue.skip();
-    }
-    if (reaction.emoji.name === '🛑') {
-      player?.deleteQueue(channel.guild);
-    }
-    if (reaction.emoji.name === '❤️') {
-      if (likeMap.has(user.id)) return;
-      likeMap.set(user.id, true);
-      addLike(track, message.guild);
-    }
-    if (reaction.emoji.name === '😒') {
-      if (!likeMap.has(user.id)) likeMap.set(user.id, true);
-    }
-    if (reaction.emoji.name === '📖') {
-      if (openedLyrics) return;
-      postLyrics(channel, track);
-      openedLyrics = true;
-    }
-    if (!(reaction.emoji.name === '❤️')) reaction.users.remove(user);
+    reaction.users.remove(user);
   });
 };
 
