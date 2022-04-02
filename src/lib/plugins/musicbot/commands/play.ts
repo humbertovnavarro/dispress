@@ -3,10 +3,11 @@ import {
   SlashCommandBuilder,
   SlashCommandStringOption
 } from '@discordjs/builders';
-import { Track } from '../helpers/player';
+import { Queue, Track } from 'discord-player';
 import { CommandInteraction } from 'discord.js';
 import { UsePlayer, GetActiveChannel } from '../helpers/player';
 import addPlay from '../helpers/addPlay';
+import { QueueMeta } from '../../../dispress';
 
 const body = new SlashCommandBuilder()
   .setName('play')
@@ -54,7 +55,7 @@ export default {
       return;
     }
     const musicPlayer = UsePlayer(interaction.client);
-    const queue = musicPlayer.createQueue(interaction.guild, {
+    const queue: Queue<QueueMeta> = musicPlayer.createQueue(interaction.guild, {
       metadata: {
         channel: interaction.channel
       }

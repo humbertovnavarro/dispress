@@ -1,6 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { Queue, Track } from 'discord-player';
 import { CommandInteraction, MessageEmbed } from 'discord.js';
-import { UsePlayer, Queue, Track } from '../helpers/player';
+import { QueueMeta } from '../../../dispress';
+import { UsePlayer } from '../helpers/player';
 
 const body = new SlashCommandBuilder()
   .setName('queue')
@@ -14,7 +16,7 @@ export default {
     }
 
     const player = UsePlayer(interaction.client);
-    const queue: Queue = player.getQueue(interaction.guild) as Queue;
+    const queue: Queue<QueueMeta> = player.getQueue(interaction.guild) as Queue<QueueMeta>;
 
     if (!queue) return interaction.reply('there is no queue');
 
