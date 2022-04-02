@@ -127,7 +127,7 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
         break;
       case '📖':
         if (didOpenLyrics) return;
-        postLyrics(channel, track);
+        postLyrics(channel, track as CustomTrack);
         didOpenLyrics = true;
       break;
     }
@@ -148,9 +148,12 @@ export function userInBotChannel(user: User, guild: Guild): boolean {
   return match;
 }
 
-async function postLyrics(channel: TextChannel, track: any) {
-  let lyrics: string | undefined;
+interface CustomTrack extends Track {
+  query: string;
+}
 
+async function postLyrics(channel: TextChannel, track: CustomTrack) {
+  let lyrics: string | undefined;
   try {
     let res = await lyricsClient.search(track.title);
     if (res.lyrics) lyrics = res.lyrics;
@@ -175,6 +178,6 @@ function waitForMS(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function raceWithTimeout(promise: Promise<any>, timeout: number) {
+function raceWithTimeout(promise: Promise<unknown>, timeout: number) {
   return Promise.race([promise, waitForMS(timeout)]);
 }
