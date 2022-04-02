@@ -1,14 +1,10 @@
 import waifu, { getResponse } from './waifu';
-import client from '../main';
 import { User } from 'discord.js';
 describe('Anime slash command tests', () => {
   test('Assert body', () => {
     expect(waifu.body.name).toBe('waifu');
     expect(waifu.body.description).toBe('Get a random waifu');
     expect(waifu.body.options.length).toBe(2);
-  });
-  test('Client has waifu command', () => {
-    expect(client.getCommand('waifu')).toBe(waifu);
   });
   test('Get response works as intended', () => {
     const user = {

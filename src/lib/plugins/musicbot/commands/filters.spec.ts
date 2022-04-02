@@ -1,15 +1,15 @@
 import type { Command } from '../../../dispress';
+jest.mock("../helpers/player", () => {
+  return {
+    UsePlayer: () => undefined,
+    userInBotChannel: () => undefined
+  }
+});
 import filters from './filters';
-import plugin from  '../plugin';
-import client from '../../../../main';
 describe('Summon slash command tests', () => {
   test('Assert body', () => {
     SelfCheck(filters);
   });
-  test('Plugin adds command', () => {
-    plugin.beforeReady?.(client);
-    expect(client.commands.get(filters.body.name)).toBeDefined();
-  })
 });
 
 function SelfCheck(command: Command) {
