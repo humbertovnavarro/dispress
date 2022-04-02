@@ -122,6 +122,31 @@ export default class Client extends DiscordClient implements IBot {
     return this.plugins.get(plugin);
   }
   /**
+   * Returns the context of the command (Read only) or undefined if the command is not registered
+   */
+  public useCommandContext<ContextType>(command:string): Command<ContextType> | undefined {
+    const commandReference = this.commands.get(command);
+    if(!commandReference) return undefined;
+    const pureCommand = {
+      ...commandReference,
+    };
+    Object.freeze(pureCommand);
+    return pureCommand as Command<ContextType>;
+  }
+  /**
+   * Returns the context of a plugin (Read only) or undefined if the plugin is not registered
+   */
+  public usePluginContext<ContextType>(command:string): Plugin<ContextType> | undefined {
+    const commandReference = this.plugins.get(command);
+    if(!commandReference) return undefined;
+    const pureCommand = {
+      ...commandReference,
+    };
+    Object.freeze(pureCommand);
+    return pureCommand as Plugin<ContextType>;
+  }
+
+  /**
    * usePlugin injects a Plugin into the bot.
    */
   public usePlugin(plugin: Plugin) {
