@@ -64,10 +64,10 @@ export default {
   }
 };
 
-function getResponse(user: User, category: string): string {
+export function getResponse(user: User, category: string): string {
   let terminator = '!';
   let adverb;
-  let verb;
+  let verb = category;
   switch (category) {
     case 'dance':
       adverb = 's with';
