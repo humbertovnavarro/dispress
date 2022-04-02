@@ -1,7 +1,7 @@
 import {
   Player,
-  Queue as DiscordPlayerQueue,
-  Track as DiscordPlayerTrack
+  Queue,
+  Track
 } from 'discord-player';
 import {
   Client,
@@ -17,17 +17,7 @@ import {
 import { Reverbnation, Lyrics } from '@discord-player/extractor';
 import _ from 'lodash';
 import addLike from './addLike';
-
-export interface Track extends DiscordPlayerTrack {
-  query: string;
-}
-
-export interface Queue extends DiscordPlayerQueue {
-  tracks: Track[];
-  metadata?: {
-    channel?: TextChannel;
-  };
-}
+import { QueueMeta } from '../../../dispress';
 
 let lyricsClient: {
   search: (query: string) => Promise<Lyrics.LyricsData>;
@@ -45,6 +35,9 @@ export function UsePlayer(client: Client): Player {
   lyricsClient = Lyrics.init();
   player.use('reverbnation', Reverbnation);
   player.on('trackStart', cleanupCollectors);
+  player.on('trackStart', (queue, track) => {
+    trackStart(queue as Queue<QueueMeta>, track);
+  });
   player.on('trackEnd', cleanupCollectors);
   player.on('queueEnd', cleanupCollectors);
   player.on('botDisconnect', cleanupCollectors);
@@ -52,8 +45,8 @@ export function UsePlayer(client: Client): Player {
   return player;
 }
 
-export function UseQueue(guild: Guild): Queue {
-  return UsePlayer(guild.client).createQueue(guild) as Queue;
+export function UseQueue(guild: Guild): Queue<QueueMeta> {
+  return UsePlayer(guild.client).createQueue(guild) as Queue<QueueMeta>;
 }
 
 export function GetActiveChannel(guild: Guild): VoiceBasedChannel | undefined {
@@ -64,7 +57,7 @@ export function GetActiveChannel(guild: Guild): VoiceBasedChannel | undefined {
   return member.voice.channel || undefined;
 }
 
-export const trackStart = async (queue: Queue, track: Track) => {
+export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
   const channel = queue.metadata?.channel;
   if (!channel) return;
   let { title, thumbnail, url, author } = track;
@@ -90,23 +83,23 @@ export const trackStart = async (queue: Queue, track: Track) => {
     console.warn(error);
     return;
   }
-
-  await Promise.all([
-    message.react('⏸️'),
-    message.react('▶️'),
-    message.react('⏭️'),
-    message.react('🛑'),
-    message.react('❤️'),
-    message.react('📖'),
-  ]);
-
+  /*
+    a little risky to move on after 10ms without confirming reaction order, but its much faster,
+    and the edgecase of the reactions being out of order is unlikely/not a big deal
+  */
+  const reactions = ['⏸️','🛑','▶️','⏭️', '❤️', '📖'];
+  await raceWithTimeout(message.react(reactions[0]), 10);
+  await raceWithTimeout(message.react(reactions[1]), 10);
+  await raceWithTimeout(message.react(reactions[2]), 10);
+  await raceWithTimeout(message.react(reactions[3]), 10);
+  await raceWithTimeout(message.react(reactions[4]), 10);
+  await raceWithTimeout(message.react(reactions[5]), 10);
   const collector = message.createReactionCollector({ time: 3600000, filter: (reaction) => {
     return reaction.emoji.name === '⏸️' ||
         reaction.emoji.name === '🛑' ||
         reaction.emoji.name === '▶️' ||
         reaction.emoji.name === '⏭️' ||
         reaction.emoji.name === '❤️' ||
-        reaction.emoji.name === '😒' ||
         reaction.emoji.name === '📖'
   } });
   activeCollectors.push(collector);
@@ -155,7 +148,7 @@ export function userInBotChannel(user: User, guild: Guild): boolean {
   return match;
 }
 
-async function postLyrics(channel: TextChannel, track: Track) {
+async function postLyrics(channel: TextChannel, track: any) {
   let lyrics: string | undefined;
 
   try {
@@ -176,4 +169,12 @@ async function postLyrics(channel: TextChannel, track: Track) {
   lyrics = '\n' + 'Lyrics: ' + '\n\n' + lyrics;
 
   return channel.send(lyrics.slice(0, 2000));
+}
+
+function waitForMS(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function raceWithTimeout(promise: Promise<any>, timeout: number) {
+  return Promise.race([promise, waitForMS(timeout)]);
 }

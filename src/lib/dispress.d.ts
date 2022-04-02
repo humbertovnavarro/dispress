@@ -64,3 +64,11 @@ export interface Bot extends Client {
 export interface BotOptions extends ClientOptions {
   prefix?: string;
 }
+
+export interface QueueMeta {
+  channel: TextChannel;
+}
+
+export interface TrackMeta {
+  query: string;
+}
