@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Queue, Track } from 'discord-player';
 import { CommandInteraction, MessageEmbed } from 'discord.js';
-import { QueueMeta } from '../../../dispress';
+import { QueueMeta } from '../../../lib/dispress';
 import { UsePlayer } from '../helpers/player';
 
 const body = new SlashCommandBuilder()

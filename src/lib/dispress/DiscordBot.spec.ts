@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction } from 'discord.js';
-import type { Plugin } from './dispress';
-import clientClass from './client';
+import { Plugin } from '../dispress';
+import clientClass from './DiscordBot';
 const client = new clientClass({
   intents: []
 });

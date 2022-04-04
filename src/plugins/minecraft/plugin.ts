@@ -1,24 +1,25 @@
-import { Bot, Plugin } from '../../dispress';
+import { Plugin } from '../../lib/dispress';
 import axios from 'axios';
 import { PresenceData } from 'discord.js';
 import dotenv from 'dotenv';
+import DiscordBot from 'lib/dispress/DiscordBot';
 dotenv.config();
 
 const plugin: Plugin = {
   name: 'minecraft',
-  beforeReady: (bot: Bot) => {
+  beforeReady: (discordbot: DiscordBot) => {
     const presence: PresenceData = {};
     setInterval(async () => {
-      getServerStatistics(bot);
+      getServerStatistics(discordbot);
     }, 60000);
   },
-  onReady: (bot: Bot) => {
-    getServerStatistics(bot);
+  onReady: (discordbot: DiscordBot) => {
+    getServerStatistics(discordbot);
   }
 };
 export default plugin;
 
-const getServerStatistics = async (bot: Bot) => {
+const getServerStatistics = async (discordbot: DiscordBot) => {
   const resp = await axios.get(
     `https://api.mcsrvstat.us/2/${process.env.MINECRAFT_SERVER}`
   );
@@ -30,12 +31,12 @@ const getServerStatistics = async (bot: Bot) => {
       }
     | undefined = resp.data.players;
   if (!players || !players.online || !players.max) {
-    bot.user?.setPresence({
+    discordbot.user?.setPresence({
       activities: [{ name: `Minecraft with 0 players :(` }],
       status: 'online'
     });
   }
-  bot.user?.setPresence({
+  discordbot.user?.setPresence({
     activities: [
       { name: `Minecraft with ${players?.online}/${players?.max} players` }
     ],

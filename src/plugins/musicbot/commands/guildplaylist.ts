@@ -3,7 +3,7 @@ import {
   SlashCommandStringOption
 } from '@discordjs/builders';
 import { CommandInteraction, MessageEmbed } from 'discord.js';
-import generatePlaylist from '../../../query/generatePlaylist';
+import generatePlaylist from '../helpers/generatePlaylist';
 import { UsePlayer, GetActiveChannel } from '../helpers/player';
 import { Queue, Track } from 'discord-player';
 const body = new SlashCommandBuilder()

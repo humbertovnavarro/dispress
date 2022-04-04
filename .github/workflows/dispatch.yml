@@ -29,6 +29,7 @@ jobs:
       - name: Restart bot
         working-directory: ./master
         env:
+          PORT: 4005
           TOKEN: ${{ secrets.TOKEN }}
           MINECRAFT_SERVER: ${{ secrets.MINECRAFT_SERVER }}
           DATABASE_LOCATION: "../dispress.db"
