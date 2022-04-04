@@ -1,9 +1,9 @@
 import type { Command } from '../../../dispress';
-jest.mock("../helpers/player", () => {
+jest.mock('../helpers/player', () => {
   return {
     UsePlayer: () => undefined,
     userInBotChannel: () => undefined
-  }
+  };
 });
 import filters from './filters';
 describe('Summon slash command tests', () => {
