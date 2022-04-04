@@ -1,6 +1,6 @@
 import { Guild } from 'discord.js';
 import _ from 'lodash';
-import db from './db';
+import db from '../../../lib/db';
 
 interface Result {
   url: string;

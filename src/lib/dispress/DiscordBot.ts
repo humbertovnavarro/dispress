@@ -8,9 +8,9 @@ import {
 import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
 import { Routes } from 'discord-api-types/v9';
 import { REST } from '@discordjs/rest';
-import { Bot as IBot, BotOptions, Command, Plugin } from './dispress';
+import { BotOptions, Command, Plugin } from '../dispress';
 
-export default class Client extends DiscordClient implements IBot {
+export default class DiscordBot extends DiscordClient {
   prefix: string = '!';
   slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
   commands = new Map<string, Command>();

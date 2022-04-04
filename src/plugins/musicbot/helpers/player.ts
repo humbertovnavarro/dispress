@@ -13,7 +13,7 @@ import {
 import { Reverbnation, Lyrics } from '@discord-player/extractor';
 import _ from 'lodash';
 import addLike from './addLike';
-import { QueueMeta } from '../../../dispress';
+import { QueueMeta } from '../../../lib/dispress';
 
 let lyricsClient: {
   search: (query: string) => Promise<Lyrics.LyricsData>;

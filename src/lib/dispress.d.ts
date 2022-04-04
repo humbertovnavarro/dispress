@@ -49,18 +49,6 @@ export interface Plugin<PluginContext = unknown> {
   context?: PluginContext;
 }
 
-export interface Bot extends Client {
-  getCommand: (command: string) => Command | void;
-  getPlugin: (command: string) => Plugin | void;
-  usePlugin: (plugin: Plugin) => void;
-  invoke: (command: string, interaction: CommandInteraction) => void;
-  useCommand: (command: Command) => void;
-  useMessage: (handler: (message: Message) => void | Promise<void>) => void;
-  commands: Map<string, Command>;
-  plugins: Map<string, Plugin>;
-  prefix: string;
-}
-
 export interface BotOptions extends ClientOptions {
   prefix?: string;
 }

@@ -7,7 +7,7 @@ import { Queue, Track } from 'discord-player';
 import { CommandInteraction } from 'discord.js';
 import { UsePlayer, GetActiveChannel } from '../helpers/player';
 import addPlay from '../helpers/addPlay';
-import { QueueMeta } from '../../../dispress';
+import { QueueMeta } from '../../../lib/dispress';
 
 const body = new SlashCommandBuilder()
   .setName('play')
