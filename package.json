@@ -1,8 +1,7 @@
 {
   "name": "dispress",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A discord bot starter",
   "scripts": {
     "lint": "prettier --write .",
     "test": "tsc --noEmit && jest",
@@ -13,9 +12,9 @@
     "start": "pm2 start dist/main.js -f --name ",
     "restart": "bash ./scripts/restart.bash"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["discord", "bot", "framework"],
+  "author": "Humberto Navarro",
+  "license": "GPL-2.0-only",
   "dependencies": {
     "@discord-player/downloader": "^3.0.1",
     "@discord-player/extractor": "^3.0.2",

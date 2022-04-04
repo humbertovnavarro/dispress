@@ -16,7 +16,9 @@ export default {
     }
 
     const player = UsePlayer(interaction.client);
-    const queue: Queue<QueueMeta> = player.getQueue(interaction.guild) as Queue<QueueMeta>;
+    const queue: Queue<QueueMeta> = player.getQueue(
+      interaction.guild
+    ) as Queue<QueueMeta>;
 
     if (!queue) return interaction.reply('there is no queue');
 

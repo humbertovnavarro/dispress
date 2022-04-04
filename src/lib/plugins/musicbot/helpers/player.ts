@@ -1,8 +1,4 @@
-import {
-  Player,
-  Queue,
-  Track
-} from 'discord-player';
+import { Player, Queue, Track } from 'discord-player';
 import {
   Client,
   Collection,
@@ -79,7 +75,7 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
 
   try {
     message = (await channel.send({ embeds: [embed] })) as Message;
-  } catch(error) {
+  } catch (error) {
     console.warn(error);
     return;
   }
@@ -87,27 +83,33 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
     a little risky to move on after 10ms without confirming reaction order, but its much faster,
     and the edgecase of the reactions being out of order is unlikely/not a big deal
   */
-  const reactions = ['⏸️','🛑','▶️','⏭️', '❤️', '📖'];
+  const reactions = ['⏸️', '🛑', '▶️', '⏭️', '❤️', '📖'];
   await raceWithTimeout(message.react(reactions[0]), 10);
   await raceWithTimeout(message.react(reactions[1]), 10);
   await raceWithTimeout(message.react(reactions[2]), 10);
   await raceWithTimeout(message.react(reactions[3]), 10);
   await raceWithTimeout(message.react(reactions[4]), 10);
   await raceWithTimeout(message.react(reactions[5]), 10);
-  const collector = message.createReactionCollector({ time: 3600000, filter: (reaction) => {
-    return reaction.emoji.name === '⏸️' ||
+  const collector = message.createReactionCollector({
+    time: 3600000,
+    filter: reaction => {
+      return (
+        reaction.emoji.name === '⏸️' ||
         reaction.emoji.name === '🛑' ||
         reaction.emoji.name === '▶️' ||
         reaction.emoji.name === '⏭️' ||
         reaction.emoji.name === '❤️' ||
         reaction.emoji.name === '📖'
-  } });
+      );
+    }
+  });
   activeCollectors.push(collector);
   const likeMap = new Collection();
   let didOpenLyrics = false;
   collector.on('collect', (reaction, user) => {
-    if (!message.guild || user.bot || !userInBotChannel(user, channel.guild)) return;
-    switch(reaction.emoji.name) {
+    if (!message.guild || user.bot || !userInBotChannel(user, channel.guild))
+      return;
+    switch (reaction.emoji.name) {
       case '⏸️':
         queue.setPaused(true);
         break;
@@ -129,7 +131,7 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
         if (didOpenLyrics) return;
         postLyrics(channel, track as CustomTrack);
         didOpenLyrics = true;
-      break;
+        break;
     }
     reaction.users.remove(user);
   });

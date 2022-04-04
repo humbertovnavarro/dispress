@@ -124,11 +124,13 @@ export default class Client extends DiscordClient implements IBot {
   /**
    * Returns the context of the command (Read only) or undefined if the command is not registered
    */
-  public useCommandContext<ContextType>(command:string): Command<ContextType> | undefined {
+  public useCommandContext<ContextType>(
+    command: string
+  ): Command<ContextType> | undefined {
     const commandReference = this.commands.get(command);
-    if(!commandReference) return undefined;
+    if (!commandReference) return undefined;
     const pureCommand = {
-      ...commandReference,
+      ...commandReference
     };
     Object.freeze(pureCommand);
     return pureCommand as Command<ContextType>;
@@ -136,11 +138,13 @@ export default class Client extends DiscordClient implements IBot {
   /**
    * Returns the context of a plugin (Read only) or undefined if the plugin is not registered
    */
-  public usePluginContext<ContextType>(command:string): Plugin<ContextType> | undefined {
+  public usePluginContext<ContextType>(
+    command: string
+  ): Plugin<ContextType> | undefined {
     const commandReference = this.plugins.get(command);
-    if(!commandReference) return undefined;
+    if (!commandReference) return undefined;
     const pureCommand = {
-      ...commandReference,
+      ...commandReference
     };
     Object.freeze(pureCommand);
     return pureCommand as Plugin<ContextType>;

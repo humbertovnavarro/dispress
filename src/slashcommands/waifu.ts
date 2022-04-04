@@ -20,7 +20,7 @@ const choices = [
   'bonk',
   'pat',
   'lick',
-  'cuddle',
+  'cuddle'
 ].sort();
 const body = new SlashCommandBuilder()
   .setName('waifu')
@@ -39,7 +39,8 @@ const body = new SlashCommandBuilder()
 export default {
   body,
   handler: async (interaction: CommandInteraction) => {
-    const category = interaction.options.getString('category', false) || 'waifu';
+    const category =
+      interaction.options.getString('category', false) || 'waifu';
     const user = interaction.options.getUser('user', false);
     const channel = (await interaction.channel?.fetch()) as
       | TextChannel
@@ -99,5 +100,5 @@ export function getResponse(user: User, category: string): string {
       adverb = 's';
       break;
   }
-  return `<@${user.id}> ${verb}${adverb} <@${user.id}>${terminator}`
+  return `<@${user.id}> ${verb}${adverb} <@${user.id}>${terminator}`;
 }

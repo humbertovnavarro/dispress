@@ -4,7 +4,7 @@ import type { Plugin } from './dispress';
 import clientClass from './client';
 const client = new clientClass({
   intents: []
-})
+});
 const plugin = {
   name: 'bad plugin',
   onReady: jest.fn(() => {
