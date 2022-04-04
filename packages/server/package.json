@@ -6,7 +6,8 @@
     "lint": "prettier --write .",
     "test": "jest",
     "dev": "nodemon src/main.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node dist/main.js"
   },
   "keywords": [
     "discord",
