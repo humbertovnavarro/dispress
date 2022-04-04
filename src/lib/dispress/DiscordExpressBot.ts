@@ -1,6 +1,8 @@
 import DiscordBot from './DiscordBot';
 import express, { Application } from 'express';
 import { BotOptions } from 'lib/dispress';
+import dotenv from "dotenv";
+dotenv.config();
 export default class DiscordExpressBot extends DiscordBot {
   router = express() as Application | undefined;
   constructor(options: BotOptions) {
