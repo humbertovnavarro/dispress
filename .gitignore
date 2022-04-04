@@ -1,8 +1,7 @@
-node_modules
+node_modules/
+dist/
 config.json
 .env
 *.error
 *.log
-dist
 *.db
-.sha1sum.txt

@@ -14,7 +14,7 @@ interface Database extends SQLiteDatabase.Database {
 }
 
 const location: string =
-  process.env.DATABASE_LOCATION?.toString() || './appdata.db';
+  process.env.DATABASE_LOCATION?.toString() || '../../appdata.db';
 const db = new SQLiteDatabase(location, {}) as Database;
 let schema: string;
 
