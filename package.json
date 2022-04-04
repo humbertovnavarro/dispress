@@ -14,7 +14,7 @@
   },
   "keywords": ["discord", "bot", "framework"],
   "author": "Humberto Navarro",
-  "license": "GPL2",
+  "license": "GPL-2.0-only",
   "dependencies": {
     "@discord-player/downloader": "^3.0.1",
     "@discord-player/extractor": "^3.0.2",
