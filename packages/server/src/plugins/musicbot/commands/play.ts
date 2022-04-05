@@ -91,7 +91,7 @@ export default {
         content: `❌ | Track **${query}** not found or not playable.`
       });
 
-    addPlay(track, interaction.guild);
+    await addPlay(track, interaction.guild);
 
     const channel = interaction.channel;
 
