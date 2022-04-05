@@ -1,34 +1,38 @@
 import { Guild } from 'discord.js';
 import _ from 'lodash';
-import db from '../../../lib/db';
-
-interface Result {
-  url: string;
-  count: number;
-  guild: string;
-}
+import db from '../../../lib/PrismaClient';
 
 const generatePlaylist = async (guild: Guild): Promise<string[]> => {
-  let mostPlayed = db
-    .prepare(
-      `
-        SELECT * FROM SongPlayCount WHERE guild = ? order by count desc limit 15;
-    `
-    )
-    .all(guild.id) as Result[];
-
-  let mostLiked = db
-    .prepare(
-      `
-        SELECT * FROM SongLikeCount WHERE guild = ? order by count desc limit 15;
-    `
-    )
-    .all(guild.id) as Result[];
-
-  const urls = mostPlayed
-    .map(track => track.url)
-    .concat(mostLiked.map(track => track.url));
-
-  return _.shuffle(_.uniq(urls)).slice(0, 14);
+  const mostPlayed =  (await db.songs.findMany({
+    where: {
+      guild: guild.id,
+    },
+    orderBy: {
+      plays: 'desc',
+    },
+    select: {
+      song: true,
+      likes: true,
+    },
+    take: 15,
+  }))
+  .sort((a, b) => b.likes - a.likes)
+  .map(song => song.song);
+  const mostLiked = (await db.songs.findMany({
+    where: {
+      guild: guild.id,
+    },
+    orderBy: {
+      likes: 'desc',
+    },
+    select: {
+      song: true,
+    },
+    take: 15,
+  }))
+  .map(song => song.song);
+  const mostPlayedAndLiked = _.intersection(mostPlayed, mostLiked);
+  const playlist = _.uniq(mostPlayedAndLiked.concat(mostPlayed, mostLiked));
+  return playlist;
 };
 export default generatePlaylist;

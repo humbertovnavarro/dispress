@@ -106,7 +106,7 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
   activeCollectors.push(collector);
   const likeMap = new Collection();
   let didOpenLyrics = false;
-  collector.on('collect', (reaction, user) => {
+  collector.on('collect', async (reaction, user) => {
     if (!message.guild || user.bot || !userInBotChannel(user, channel.guild))
       return;
     switch (reaction.emoji.name) {

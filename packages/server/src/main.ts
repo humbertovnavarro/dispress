@@ -6,6 +6,7 @@ import minecraft from './plugins/minecraft/plugin';
 import anime from './slashcommands/anime';
 import uptime from './slashcommands/uptime';
 import DiscordExpressBot from './lib/dispress/DiscordExpressBot';
+import PrismaClient from './lib/PrismaClient';
 const client = new DiscordExpressBot({
   intents: [
     'GUILDS',
@@ -16,13 +17,20 @@ const client = new DiscordExpressBot({
   restTimeOffset: 0,
   prefix: '/'
 });
-client.useCommand(anime);
-client.useCommand(waifu);
-client.usePlugin(musicbot);
-client.usePlugin(minecraft);
-client.usePlugin(uptime);
-if (require.main === module) {
-  client.login(process.env.TOKEN);
+const main = async () => {
+  try {
+    await PrismaClient.$connect();
+  } catch(error) {
+    console.error(error);
+  }
+  client.useCommand(anime);
+  client.useCommand(waifu);
+  client.usePlugin(musicbot);
+  client.usePlugin(minecraft);
+  client.usePlugin(uptime);
+  if (require.main === module) {
+    client.login(process.env.TOKEN);
+  }
 }
-
+main();
 export default client;
