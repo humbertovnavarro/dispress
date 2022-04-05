@@ -7,6 +7,7 @@ export default class DiscordExpressBot extends DiscordBot {
   router = express() as Application | undefined;
   constructor(options: BotOptions) {
     super(options);
+    this.router?.use(express.json());
     this.on('ready', () => {
       const port = process.env.PORT || 3001;
       try {

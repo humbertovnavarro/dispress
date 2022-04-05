@@ -8,6 +8,7 @@ import { CommandInteraction } from 'discord.js';
 import { UsePlayer, GetActiveChannel } from '../helpers/player';
 import addPlay from '../helpers/addPlay';
 import { QueueMeta } from '../../../lib/dispress';
+import searchForTrack from '../helpers/searchForTrack';
 
 const body = new SlashCommandBuilder()
   .setName('play')
@@ -71,21 +72,7 @@ export default {
       });
     }
     interaction.reply('Searching for ' + query);
-    const track: Track | undefined = (await musicPlayer
-      .search(query, {
-        requestedBy: interaction.user
-      })
-      .then(result => {
-        for (const track of result.tracks) {
-          if (track.durationMS < 60 * 1000 * 20) {
-            return track;
-          }
-        }
-        return undefined;
-      })
-      .catch(error => {
-        console.error(error);
-      })) as Track | undefined;
+    const track = await searchForTrack(query, interaction.user, musicPlayer);
     if (!track)
       return await interaction.reply({
         content: `❌ | Track **${query}** not found or not playable.`

@@ -41,10 +41,6 @@ export function UsePlayer(client: Client): Player {
   return player;
 }
 
-export function UseQueue(guild: Guild): Queue<QueueMeta> {
-  return UsePlayer(guild.client).createQueue(guild) as Queue<QueueMeta>;
-}
-
 export function GetActiveChannel(guild: Guild): VoiceBasedChannel | undefined {
   const id = player?.client.user?.id;
   if (!id) return;
