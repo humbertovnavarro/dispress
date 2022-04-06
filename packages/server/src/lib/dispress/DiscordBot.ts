@@ -9,15 +9,18 @@ import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
 import { Routes } from 'discord-api-types/v9';
 import { REST } from '@discordjs/rest';
 import { BotOptions, Command, Plugin } from '../dispress';
+import { type } from 'os';
 
 export default class DiscordBot extends DiscordClient {
   prefix: string = '!';
-  slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
-  commands = new Map<string, Command>();
-  plugins = new Map<string, Plugin>();
-  messageHandlers: Array<(message: Message) => unknown> = [];
-  slashCommandRest = new REST({ version: '9' });
-
+  private slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
+  private commands = new Map<string, Command>();
+  private plugins = new Map<string, Plugin>();
+  private messageHandlers: Array<(message: Message) => unknown> = [];
+  /**s
+  *  A seperate REST client for slash commands
+  */
+  private slashCommandRest = new REST({ version: '9' });
   constructor(options: BotOptions) {
     super(options);
     this.on('ready', this.ready);
@@ -30,22 +33,14 @@ export default class DiscordBot extends DiscordClient {
   }
 
   private async ready() {
-    this.plugins.forEach(plugin => {
-      try {
-        plugin.onReady?.(this);
-      } catch (error) {
-        console.error(error);
-        console.error(`Error while running plugin: ${plugin.name}`);
-      }
-    });
-    if (this.token) {
-      this.slashCommandRest.setToken(this.token);
-    } else {
-      console.error(
-        "Client token missing after logging in, I hope you're testing or something went horribly wrong."
-      );
-    }
-    this.guilds.cache.forEach(guild => {
+    await this.invokePluginOnReady();
+    await this.postSlashCommands();
+    await this.invokeCommandOnReady();
+    console.log(`Logged in as ${this.user?.tag}`);
+  }
+
+  private async postSlashCommands() {
+    const guildPostSlashCommmandPromises = this.guilds.cache.map(guild => {
       if (this.user?.id)
         this.slashCommandRest
           .put(Routes.applicationGuildCommands(this.user.id, guild.id), {
@@ -55,9 +50,20 @@ export default class DiscordBot extends DiscordClient {
             console.error(error.message);
           });
     });
+    try {
+      await Promise.all(guildPostSlashCommmandPromises);
+    } catch(error) {
+      console.error(error);
+      process.exit(1);
+    }
+  }
+
+  private async invokeCommandOnReady() {
+    const commandOnReadyPromises: Promise<unknown>[] = [];
     this.commands.forEach(command => {
       try {
-        command.onReady?.(this);
+        const promise = Promise.resolve(command.onReady?.(this));
+        commandOnReadyPromises.push(promise);
       } catch (error) {
         console.error(error);
         console.error(
@@ -65,7 +71,39 @@ export default class DiscordBot extends DiscordClient {
         );
       }
     });
-    console.log(`Logged in as ${this.user?.tag}`);
+    try {
+      await Promise.all(commandOnReadyPromises);
+    }
+    catch (error) {
+      console.error(error);
+      process.exit(1);
+    }
+  }
+
+  private async invokePluginOnReady() {
+    const promises: Promise<unknown>[] = [];
+    this.plugins.forEach(plugin => {
+      try {
+        promises.push(Promise.resolve(plugin.onReady?.(this)));
+      } catch (error) {
+        console.error(error);
+        console.error(`Error while running plugin: ${plugin.name}`);
+      }
+    });
+    if (this.token) {
+      this.slashCommandRest.setToken(this.token);
+    } else {
+      console.error(
+        "Client token missing after logging in, something went horribly wrong. :|"
+      );
+    }
+    try {
+      await Promise.all(promises);
+    }
+    catch (error) {
+      console.error(error);
+      process.exit(1);
+    }
   }
 
   private async guildCreate(guild: Guild) {
@@ -124,7 +162,7 @@ export default class DiscordBot extends DiscordClient {
   /**
    * Returns the context of the command (Read only) or undefined if the command is not registered
    */
-  public useCommandContext<ContextType>(
+  public getCommandContext<ContextType>(
     command: string
   ): Command<ContextType> | undefined {
     const commandReference = this.commands.get(command);
@@ -138,7 +176,7 @@ export default class DiscordBot extends DiscordClient {
   /**
    * Returns the context of a plugin (Read only) or undefined if the plugin is not registered
    */
-  public usePluginContext<ContextType>(
+  public getPluginContext<ContextType>(
     command: string
   ): Plugin<ContextType> | undefined {
     const commandReference = this.plugins.get(command);

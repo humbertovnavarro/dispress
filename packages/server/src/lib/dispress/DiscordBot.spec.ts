@@ -42,8 +42,10 @@ describe('client tests', () => {
   test('Handles crashing plugins', () => {
     client.usePlugin(plugin);
     expect(plugin.beforeReady).toHaveBeenCalledWith(client);
+    expect(plugin.beforeReady).toBeCalledTimes(1);
     client.emit('ready', null);
     expect(plugin.onReady).toBeCalledWith(client);
+    expect(plugin.onReady).toBeCalledTimes(1);
   });
   test('Grabs plugins', () => {
     expect(client.getPlugin('bad plugin')).toBe(plugin);
