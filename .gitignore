@@ -5,3 +5,4 @@ config.json
 *.error
 *.log
 *.db
+package-lock.json
