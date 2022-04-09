@@ -11,5 +11,9 @@
     "lint": "lerna run lint --stream",
     "build": "lerna run build",
     "start": "lerna run start --stream"
+  },
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "axios": "^0.26.1"
   }
 }

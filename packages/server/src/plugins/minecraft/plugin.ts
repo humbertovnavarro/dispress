@@ -3,15 +3,20 @@ import axios from 'axios';
 import { PresenceData } from 'discord.js';
 import dotenv from 'dotenv';
 import DiscordBot from 'lib/dispress/DiscordBot';
+import DiscordExpressBot from 'lib/dispress/DiscordExpressBot';
+import { Response } from 'express';
 dotenv.config();
 
 const plugin: Plugin = {
   name: 'minecraft',
-  beforeReady: (discordbot: DiscordBot) => {
+  beforeReady: (discordbot: DiscordExpressBot) => {
     const presence: PresenceData = {};
     setInterval(async () => {
       getServerStatistics(discordbot);
     }, 60000);
+    discordbot.router?.get('/minecraft/v1/:guild/stats', (_, response: Response) => {
+      response.redirect(`https://api.mcsrvstat.us/2/${process.env.MINECRAFT_SERVER}`);
+    });
   },
   onReady: (discordbot: DiscordBot) => {
     getServerStatistics(discordbot);

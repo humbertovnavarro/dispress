@@ -53,3 +53,20 @@ model Playlists {
   song         String
   user         String
 }
+
+model UserPermissions {
+  id        Int      @id @default(autoincrement())
+  user      String
+  guild     String
+  permission String
+}
+
+model Messages {
+  id        String @id
+  author    String
+  guild     String
+  channel   String
+  content   String
+  createdAt DateTime @default(now())
+  editedAt  DateTime @default(now())
+}
