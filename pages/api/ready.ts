@@ -6,6 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<{ready: boolean}>
 ) {
+  // Bootstrap discord
   const discord = await client();
   res.json({ready: discord.isReady()})
 }
