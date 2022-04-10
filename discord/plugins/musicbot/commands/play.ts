@@ -27,7 +27,7 @@ const body = new SlashCommandBuilder()
 export default {
   body,
   handler: async (interaction: CommandInteraction) => {
-    if (!interaction.guild || !interaction.member) {
+    if (!interaction.guild || !interaction.member || interaction.replied) {
       return;
     }
 

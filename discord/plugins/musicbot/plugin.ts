@@ -8,10 +8,10 @@ import stop from './commands/stop';
 import skip from './commands/skip';
 import summon from './commands/summon';
 import filters from './commands/filters';
-import DiscordExpressBot from 'lib/dispress/DiscordExpressBot';
+import DiscordBot from '../../lib/dispress/DiscordBot';
 const plugin: Plugin = {
   name: 'musicbot',
-  beforeReady: (bot: DiscordExpressBot) => {
+  beforeReady: (bot: DiscordBot) => {
     bot.useCommand(pause);
     bot.useCommand(play);
     bot.useCommand(stop);

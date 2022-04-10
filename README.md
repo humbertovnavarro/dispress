@@ -1,109 +1,34 @@
-[![CodeFactor](https://www.codefactor.io/repository/github/humbertovnavarro/dispress/badge)](https://www.codefactor.io/repository/github/humbertovnavarro/dispress)
+This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-This guide assumes you have nodejs gallium (16.14.2 lts) installed. [NodeJS Homepage](https://nodejs.org/en/)
+## Getting Started
 
----
+First, run the development server:
 
-# Installing Dependencies
-
-Install Yarn
-
-> `npm install -g yarn`
-
-Install dependencies
-
-> `yarn`
-
-Transpile the source code
-
-> `yarn build`
-
-Create a file called .env
-
-> `touch .env`
-
-Add your discord token to the file
-
-> `echo "TOKEN=mydiscordtoken" > .env` (Replace mydiscordtoken with your discord token)
-
-Start the bot
-
-> `yarn start`
-
-# Creating your first command
-
-## Create a file called ping in /commands/ping
-
-```js
-/* SlashCommandBuilder is a functional way to create a slash command body,
-   which is what gets sent to discord to label our slash command.
-*/
-import { SlashCommandBuilder } from "@discordjs/builders"
-// Command interaction is a type from discord.js
-import type { CommandInteraction } from "discord.js";
-const body = new SlashCommandBuilder()
-.setName("ping")
-.setDescription("replies with pong");
-export default {
- // Body is of type SlashCommandBuilder
- body,
- // Handler runs whenever a slash command is recieved.
- handler: async (interaction: CommandInteraction) => {
-    interaction.reply("Pong!")
- }
- // On ready runs when the bot logs in. You can use this for any initialization code.
- onReady: (bot: Bot) => {
-
- }
-}
-
+```bash
+npm run dev
+# or
+yarn dev
 ```
 
-## Add the command to your bot
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-```js
-import bot from './lib/client';
-import ping from './commands/ping';
-bot.useCommand(ping);
-bot.login('yourdiscordtoken');
-```
+You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-# Creating your first plugin
+[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
-Making plugins works in a similar way to making commands
-heres the boilerplate for a plugin
+The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-```js
-import { Bot, Plugin } from "../../lib/client"
-export default {
-  name: "myfirstplugin",
-  version: "1.0.0",
-  description: "my first plugin",
-  author: "humbertovnavarro",
-  // Data accessible by other plugins, you'll have to do you're own type checks
-  data: {
-    anythinggoes: "in here"
-  },
-  // Before ready runs after the bot logs in, but before it sends the slash commands.
-  beforeReady: (bot: Bot) => {
-    bot.plugins.forEach(plugin) => {
-      console.log(plugin.name);
-    }
-    bot.commands.forEach(command) => {
-      console.log(command.body.name);
-    }
-    // You can bundle commands with your plugins!
-    bot.useCommand(mycoolcommand)
-  },
-  // Runs after commands have been posted.
-  onReady: (bot: Bot) => {
-    console.log("I'm ready! I'm ready! I'm ready!");
-  },
-  //Runs before a command is executed, call cancel to cancel its execution.
-  beforeCommand: (command: Commange, interaction: CommandInteraction, cancel: () => void) => {
-    if(command.body.name === "cancelme") {
-      cancel();
-    }
-  }
-}
-```
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

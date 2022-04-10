@@ -9,7 +9,6 @@ import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
 import { Routes } from 'discord-api-types/v9';
 import { REST } from '@discordjs/rest';
 import { BotOptions, Command, Plugin } from '../dispress';
-import { type } from 'os';
 
 export default class DiscordBot extends DiscordClient {
   prefix: string = '!';
@@ -17,10 +16,11 @@ export default class DiscordBot extends DiscordClient {
   private commands = new Map<string, Command>();
   private plugins = new Map<string, Plugin>();
   private messageHandlers: Array<(message: Message) => unknown> = [];
-  /**s
+  /**
   *  A seperate REST client for slash commands
   */
   private slashCommandRest = new REST({ version: '9' });
+  
   constructor(options: BotOptions) {
     super(options);
     this.on('ready', this.ready);

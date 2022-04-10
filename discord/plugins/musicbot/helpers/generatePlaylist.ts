@@ -1,6 +1,6 @@
 import { Guild } from 'discord.js';
 import _ from 'lodash';
-import db from '../../../lib/PrismaClient';
+import db from '../../../../lib/PrismaClient';
 
 const generatePlaylist = async (guild: Guild): Promise<string[]> => {
   const mostPlayed =  (await db.songs.findMany({
