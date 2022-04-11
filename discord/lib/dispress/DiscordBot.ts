@@ -47,7 +47,11 @@ export default class DiscordBot extends DiscordClient {
             body: this.slashCommands
           })
           .catch(error => {
-            console.error(error.message);
+            if(error.status === 403) {
+              console.error("Missing access for posting slash commands to one of your guilds :(")
+            } else {
+              console.error(error);
+            }
           });
     });
     try {
@@ -86,8 +90,8 @@ export default class DiscordBot extends DiscordClient {
       try {
         promises.push(Promise.resolve(plugin.onReady?.(this)));
       } catch (error) {
-        console.error(error);
         console.error(`Error while running plugin: ${plugin.name}`);
+        console.error(error);
       }
     });
     if (this.token) {
@@ -117,7 +121,7 @@ export default class DiscordBot extends DiscordClient {
             body: this.slashCommands
           })
           .catch(error => {
-            console.error(error.message);
+            console.error(error);
           });
     });
   }

@@ -1,12 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import client from '../../discord/main';
+import UseBot from '../../discord/main';
 import dotenv from 'dotenv';
 dotenv.config();
+let booted = false;
 export default async function handler(
-  req: NextApiRequest,
+  _: NextApiRequest,
   res: NextApiResponse<{ready: boolean}>
 ) {
   // Bootstrap discord
-  const discord = await client();
-  res.json({ready: discord.isReady()})
+  const discord = UseBot();
+  res.json({ ready: discord.isReady()});
+  if(!booted) {
+    discord.login(process.env.TOKEN);
+    booted = true;
+  }
 }
