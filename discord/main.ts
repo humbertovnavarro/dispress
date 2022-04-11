@@ -6,7 +6,9 @@ import anime from './slashcommands/anime';
 import uptime from './slashcommands/uptime';
 import DiscordBot from './lib/dispress/DiscordBot';
 import PrismaClient from '../lib/PrismaClient';
-let ready: boolean = false;
+import fs from 'fs';
+let start: number = Date.now();
+let interval: NodeJS.Timer;
 const bot = new DiscordBot({
   intents: [
     'GUILDS',
@@ -17,8 +19,9 @@ const bot = new DiscordBot({
   restTimeOffset: 0,
   prefix: '/'
 });
+
 export default async function client(): Promise<DiscordBot> {
-  if(ready) return bot;
+  if(bot.isReady()) return bot;
   try {
     await PrismaClient.$connect();
   } catch(error) {
@@ -29,6 +32,23 @@ export default async function client(): Promise<DiscordBot> {
   bot.usePlugin(musicbot);
   bot.usePlugin(uptime);
   await bot.login(process.env.TOKEN);
-  ready = true;
+  generateLockFile(start);
+  setInterval(() => {
+    if(!isValidLock) {
+      bot.destroy();
+      PrismaClient
+      return;
+    }
+  })
   return bot;
+}
+
+
+function generateLockFile(startTime: number) {
+  fs.writeFileSync("discordbot.lock", start.toString(), { encoding: 'utf-8'});
+}
+
+const isValidLock = () => {
+  const time = fs.readFileSync('discordbot.lock', { encoding: 'utf-8'});
+  return time === start.toString();
 }

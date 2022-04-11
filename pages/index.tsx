@@ -14,7 +14,6 @@ const Home: NextPage = () => {
         <h1 className={styles.title}>
           Welcome to <a href="https://github.com/humbertovnavarro/dispress">Dispress!</a>
         </h1>
-
         <p className={styles.description}>
           A self-hosted music bot created by Humberto Navarro!
         </p>
