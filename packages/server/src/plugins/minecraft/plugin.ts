@@ -2,7 +2,7 @@ import { Plugin } from '../../lib/dispress';
 import axios from 'axios';
 import { PresenceData } from 'discord.js';
 import dotenv from 'dotenv';
-import DiscordBot from 'lib/dispress/DiscordBot';
+import DiscordBot from '../../lib/dispress/DiscordBot';
 dotenv.config();
 
 const plugin: Plugin = {

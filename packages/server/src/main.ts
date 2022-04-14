@@ -5,9 +5,10 @@ import musicbot from './plugins/musicbot/plugin';
 import minecraft from './plugins/minecraft/plugin';
 import anime from './slashcommands/anime';
 import uptime from './slashcommands/uptime';
-import DiscordExpressBot from './lib/dispress/DiscordExpressBot';
 import PrismaClient from './lib/PrismaClient';
-const client = new DiscordExpressBot({
+import DiscordBotRestApi from './rest/api';
+import DiscordBot from './lib/dispress/DiscordBot';
+const discordBot = new DiscordBot({
   intents: [
     'GUILDS',
     'GUILD_MESSAGES',
@@ -17,20 +18,31 @@ const client = new DiscordExpressBot({
   restTimeOffset: 0,
   prefix: '/'
 });
+
 const main = async () => {
   try {
     await PrismaClient.$connect();
   } catch(error) {
     console.error(error);
+    process.exit(1);
   }
-  client.useCommand(anime);
-  client.useCommand(waifu);
-  client.usePlugin(musicbot);
-  client.usePlugin(minecraft);
-  client.usePlugin(uptime);
+
+  discordBot.useCommand(anime);
+  discordBot.useCommand(waifu);
+  discordBot.usePlugin(musicbot);
+  discordBot.usePlugin(minecraft);
+  discordBot.usePlugin(uptime);
+
+  const discordBotRestApi = DiscordBotRestApi(discordBot);
+
+  discordBotRestApi.listen(3000, () => {
+    console.log("Rest api listening on port 3000")
+  });
+
   if (require.main === module) {
-    client.login(process.env.TOKEN);
+    discordBot.login(process.env.TOKEN);
   }
+
 }
 main();
-export default client;
+export default discordBot;

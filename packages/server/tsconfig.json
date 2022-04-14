@@ -8,7 +8,7 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "outDir": "dist",
-    "baseUrl": "./src"
+    "rootDir": "src"
   },
   "exclude": ["node_modules", "**/*.spec.ts"]
 }
