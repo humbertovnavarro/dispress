@@ -12,6 +12,7 @@
     "lint": "lerna run lint --stream",
     "build": "lerna run build",
     "start": "lerna run start --stream",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "lerna run postinstall && lerna bootstrap"
   }
 }
