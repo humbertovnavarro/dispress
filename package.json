@@ -11,7 +11,9 @@
     "test": "lerna run test --stream",
     "lint": "lerna run lint --stream",
     "build": "lerna run build",
-    "start": "lerna run start --stream"
+    "start": "lerna run start --stream",
+    "install": "lerna bootstrap",
+    "prepare": "prisma db push"
   },
   "dependencies": {
     "@prisma/client": "^3.12.0"
