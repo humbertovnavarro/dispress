@@ -34,8 +34,8 @@ const main = async () => {
   discordBot.usePlugin(uptime);
 
   const discordBotRestApi = DiscordBotRestApi(discordBot);
-
-  discordBotRestApi.listen(3000, () => {
+  const port = process.env.API_PORT || 3000;
+  discordBotRestApi.listen(port, () => {
     console.log("Rest api listening on port 3000")
   });
 
