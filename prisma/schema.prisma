@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./userdata.db"
+}
+
+model Songs {
+  song      String
+  title     String?
+  genre     String?
+  year      Int?
+  duration  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  plays     Int      @default(1)
+  likes     Int      @default(0)
+  dislikes  Int      @default(0)
+  guild     String
+  id        String   @id
+}
+
+model Likes {
+  id        Int      @id @default(autoincrement())
+  user      String
+  song      String
+  createdAt DateTime @default(now())
+  guild     String
+}
+
+model Dislikes {
+  id        Int      @id @default(autoincrement())
+  user      String
+  song      String
+  createdAt DateTime @default(now())
+  guild     String
+}
+
+model Plays {
+  id        Int   @id @default(autoincrement())
+  user      String
+  createdAt DateTime @default(now())
+  guild     String
+  song      String
+}
+
+model Playlists {
+  id           String @id @default(cuid())
+  playlistName String
+  playlistId   String @default(cuid())
+  song         String
+  user         String
+}
