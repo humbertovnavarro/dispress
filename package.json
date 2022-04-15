@@ -2,7 +2,8 @@
   "name": "root",
   "private": true,
   "devDependencies": {
-    "lerna": "^4.0.0"
+    "lerna": "^4.0.0",
+    "husky": "^7.0.0"
   },
   "scripts": {
     "dev": "lerna run dev --stream",
@@ -11,7 +12,7 @@
     "lint": "lerna run lint --stream",
     "build": "lerna run build",
     "start": "lerna run start --stream",
-    "install": "lerna bootstrap",
-    "prepare": "prisma db push"
+    "prepare": "husky install",
+    "postinstall": "lerna run postinstall && lerna bootstrap"
   }
 }
