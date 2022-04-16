@@ -40,7 +40,7 @@ const main = async () => {
   });
 
   if (require.main === module) {
-    discordBot.login(process.env.TOKEN);
+    discordBot.login(process.env.DISCORD_TOKEN);
   }
 
 }

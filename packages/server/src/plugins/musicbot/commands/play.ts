@@ -71,26 +71,30 @@ export default {
       });
     }
     interaction.reply('Searching for ' + query);
-    const track: Track | undefined = (await musicPlayer
-      .search(query, {
-        requestedBy: interaction.user
-      })
-      .then(result => {
-        for (const track of result.tracks) {
-          if (track.durationMS < 60 * 1000 * 20) {
-            return track;
-          }
-        }
-        return undefined;
-      })
-      .catch(error => {
-        console.error(error);
-      })) as Track | undefined;
-    if (!track)
-      return await interaction.reply({
-        content: `❌ | Track **${query}** not found or not playable.`
+    let track: Track | undefined = undefined;
+    try {
+      track = await new Promise<Track | undefined>((resolve, reject) => {
+        setTimeout(() => {
+          reject("timed out.")
+        }, 10000);
+        musicPlayer.search(query, { requestedBy: interaction.user })
+        .then(result => {
+            for (const track of result.tracks) {
+              if (track.durationMS < 60 * 1000 * 20) {
+                resolve(track);
+                return;
+              }
+            }
+            return undefined;
+        })
+        .catch(error => {
+          reject(error);
+        });
       });
-
+    } catch(error) {
+      console.error(error);
+    }
+    if(!track) return interaction.channel?.send("an error occured while searching for song.");
     await addPlay(track, interaction.guild);
 
     const channel = interaction.channel;
