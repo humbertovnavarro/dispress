@@ -21,6 +21,7 @@ export default {
     ) as Queue<QueueMeta>;
 
     if (!queue) return interaction.reply('there is no queue');
+    if (queue.tracks.length == 0) return interaction.reply('queue is empty');
 
     const tracks = queue.tracks;
     const playing = queue.previousTracks[0];

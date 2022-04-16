@@ -9,7 +9,18 @@ import skip from './commands/skip';
 import summon from './commands/summon';
 import filters from './commands/filters';
 import DiscordBot from '../../lib/dispress/DiscordBot';
-const plugin: Plugin = {
+import { UsePlayer } from './helpers/player';
+import type { Player } from 'discord-player';
+
+let player: Player;
+
+export interface MusicBotContext {
+  getPlayer: () => Player
+}
+
+export type MusicBotPlugin = Plugin<MusicBotContext>;
+
+const plugin: MusicBotPlugin = {
   name: 'musicbot',
   beforeReady: (bot: DiscordBot) => {
     bot.useCommand(pause);
@@ -21,6 +32,14 @@ const plugin: Plugin = {
     bot.useCommand(unpause);
     bot.useCommand(filters);
     bot.useCommand(summon);
+    player = UsePlayer(bot);
+  },
+  // Expose the player through the context api
+  context: {
+    getPlayer: () => player,
   }
 };
+
 export default plugin;
+
+
