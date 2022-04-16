@@ -69,7 +69,7 @@ export default function api(bot: DiscordBot): ExpressApplication {
         if(!accessToken) return response.status(401).json({
             error: "No access token provided!"
         });
-        if(Date.now() > expires_on) { 
+        if(Date.now() > expires_on) {
             try {
                 const refreshToken = request.cookies["refresh_token"];
                 if(!refreshToken) return response.status(401).json({
@@ -103,7 +103,7 @@ export default function api(bot: DiscordBot): ExpressApplication {
             return response.status(401).json({
                 error: "Could not fetch user data!"
             });
-        }    
+        }
     });
     // Authenticated Routes
     app.use(auth);
