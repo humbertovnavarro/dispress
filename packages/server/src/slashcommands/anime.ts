@@ -28,7 +28,6 @@ export default {
       qfast: name
     });
     const request = await axios.post(`https://cachecow.eu/api/search`, params);
-    console.log(request.data);
     const dom = parse(request.data.result);
     const $lis = dom.querySelectorAll('li');
     const embed = new Embed()

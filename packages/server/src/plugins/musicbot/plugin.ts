@@ -12,10 +12,10 @@ import DiscordBot from '../../lib/dispress/DiscordBot';
 import { UsePlayer } from './helpers/player';
 import type { Player } from 'discord-player';
 
-let player: Player;
+let player: Player | undefined;
 
 export interface MusicBotContext {
-  getPlayer: () => Player
+  getPlayer: () => Player | undefined;
 }
 
 export type MusicBotPlugin = Plugin<MusicBotContext>;
