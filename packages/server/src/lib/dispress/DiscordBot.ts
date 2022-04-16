@@ -65,7 +65,6 @@ export default class DiscordBot extends DiscordClient {
         );
       }
     });
-    console.log(`Logged in as ${this.user?.tag}`);
   }
 
   private async guildCreate(guild: Guild) {

@@ -1,11 +1,13 @@
-import Express, { Application as ExpressApplication, Response, Request, urlencoded } from "express";
+import Express, { Application as ExpressApplication, Response, Request, urlencoded, response } from "express";
 import type DiscordBot from "../lib/dispress/DiscordBot";
 import { MusicBotPlugin } from "../plugins/musicbot/plugin";
 import dotenv from "dotenv";
 import DiscordOAuth, { DiscordUserData } from "./lib/DiscordOAuth";
 import CookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
-import auth from "./middlewares/auth";
+import { auth, guild, member } from "./middlewares/discord";
+import { request } from "http";
+import { Track } from "discord-player";
 const discordOAuth = new DiscordOAuth(
     process.env.DISCORD_CLIENT_ID as string,
     process.env.DISCORD_CLIENT_SECRET as string,
@@ -14,11 +16,19 @@ const discordOAuth = new DiscordOAuth(
 );
 dotenv.config();
 export default function api(bot: DiscordBot): ExpressApplication {
-
+    const router = Express.Router();
     const app = Express().use(Express.json());
     app.use(CookieParser());
+    const guildMiddleware = guild(bot);
+    const memberMiddleware = member(bot);
+    const authMiddleware = auth(bot);
 
     // Public Routes
+
+    app.get("/login", (request, response) => {
+        response.redirect(process.env.DISCORD_OAUTH_URL as string);
+    });
+
     app.get("/api/v1/bot/statistics", (_, response: Response) => {
         response.json({
             ready: bot.isReady(),
@@ -27,20 +37,6 @@ export default function api(bot: DiscordBot): ExpressApplication {
             uptime: bot.uptime,
             commands: bot.slashCommands,
         });
-    });
-
-    app.get("/api/v1/guild/:guild/queue", (request: Request, response: Response) => {
-        const musicBotPlugin: MusicBotPlugin | undefined = bot.getPlugin("musicbot") as MusicBotPlugin | undefined;
-        if(!musicBotPlugin) return response.status(500).json({
-            error: "Could not fetch music bot plugin, is it missing?"
-        });
-        const guild = bot.guilds.cache.get(request.params.guild);
-        if(!guild) return response.status(404).json({
-            error: "Guild not found!"
-        });
-        const queue = musicBotPlugin.context?.getPlayer().getQueue(guild);
-        if(!queue) return response.status(503).end();
-        response.json(queue.toJSON());
     });
 
     app.get("/api/v1/auth/oauth2/callback", async (request: Request, response: Response) => {
@@ -53,7 +49,7 @@ export default function api(bot: DiscordBot): ExpressApplication {
             response.cookie("access_token", accessToken.access_token);
             response.cookie("refresh_token", accessToken.refresh_token);
             response.cookie("access_token_expires_on", Date.now() + accessToken.expires_in);
-            response.sendStatus(200);
+            response.redirect("/api/v1/auth");
         } catch(error) {
             console.error(error);
             return response.status(500).json({
@@ -95,9 +91,7 @@ export default function api(bot: DiscordBot): ExpressApplication {
             }
             const token = jwt.sign(tokenPayload, process.env.JWT_SECRET as string);
             response.cookie("jwt", token);
-            response.json({
-                user,
-            });
+            response.redirect("/");
         } catch(error) {
             console.error(error);
             return response.status(401).json({
@@ -105,7 +99,67 @@ export default function api(bot: DiscordBot): ExpressApplication {
             });
         }
     });
-    // Authenticated Routes
-    app.use(auth);
+    router.use("*", (request, response, next) => {
+        request.context = {};
+        next();
+    })
+    router.use("/api/v1/guild", authMiddleware, guildMiddleware, memberMiddleware);
+    router.use("/api/v1/member", authMiddleware, guildMiddleware, memberMiddleware);
+
+    app.use("/", router);
+
+    app.get("/api/v1/guild", (request: Request, response: Response) => {
+        response.json(request.context.guild.toJSON());
+    });
+
+    app.get("/api/v1/guild/queue", (request: Request, response: Response) => {
+        const musicBotPlugin: MusicBotPlugin | undefined = bot.getPlugin("musicbot") as MusicBotPlugin | undefined;
+        if(!musicBotPlugin) return response.status(500).json({
+            error: "Could not fetch music bot plugin, is it missing?"
+        });
+        const player = musicBotPlugin.context?.getPlayer();
+        if(!player) return response.status(503).json({
+            error: "Could not fetch player!"
+        });
+        const queue = player.getQueue(request.context.guild);
+        if(!queue) return response.status(503).json({
+            error: "Could not fetch queue!"
+        });
+        const tracks = queue.tracks.map((track: Track) => {
+            const { requestedBy, url, thumbnail, views, duration, author, title, description, id } = track;
+            return {
+                requestedBy,
+                url,
+                thumbnail,
+                views,
+                duration,
+                author,
+                title,
+                description,
+                id,
+            }
+        });
+        const previousTracks = queue.previousTracks.map((track: Track) => {
+            const { requestedBy, url, thumbnail, views, duration, author, title, description, id } = track;
+            return {
+                requestedBy,
+                url,
+                thumbnail,
+                views,
+                duration,
+                author,
+                title,
+                description,
+                id,
+            }
+        });
+        const payload = {
+            tracks: tracks,
+            current: queue.current,
+            previous: previousTracks
+        }
+        response.json(payload);
+    });
+    
     return app;
 }

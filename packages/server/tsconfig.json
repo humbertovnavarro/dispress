@@ -8,7 +8,10 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "typeRoots": [
+      "./types"
+    ],
   },
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "exclude": ["node_modules", "**/*.spec.ts"],
 }

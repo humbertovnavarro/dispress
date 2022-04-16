@@ -1,1 +1,0 @@
-export type Cookies = "access_token" | "refresh_token" | "access_token_expires_in";
