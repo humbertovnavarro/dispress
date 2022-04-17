@@ -1,8 +1,9 @@
 import { Guild, GuildMember } from "discord.js";
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, response, Response } from "express";
 import DiscordBot from "../../lib/dispress/DiscordBot";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { MusicBotPlugin } from "../../plugins/musicbot/plugin";
 dotenv.config();
 /**
  * Middleware used to authenticate the user and attach jwt to response object
@@ -55,6 +56,19 @@ export function member(bot: DiscordBot) {
             error: "You must belong to the guild!"
         });
         request.context.member = member;
+        next();
+    }
+}
+/** 
+ * Middleware that attached the musicbot plugin to the request context.
+*/
+export function musicPlugin(bot: DiscordBot) {
+    return async (request: Request, reponse: Response, next: NextFunction) => {
+        const plugin: MusicBotPlugin | undefined = bot.getPlugin("musicbot") as MusicBotPlugin | undefined;
+        if(!plugin) return response.status(500).json({
+            error: "Could not find music bot plugin"
+        });
+        request.context.musicPlugin = plugin;
         next();
     }
 }

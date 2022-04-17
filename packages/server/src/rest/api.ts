@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import DiscordOAuth, { DiscordUserData } from "./lib/DiscordOAuth";
 import CookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
-import { auth, guild, member } from "./middlewares/discord";
+import { auth, guild, member, musicPlugin } from "./middlewares/discord";
 import { request } from "http";
 import { Track } from "discord-player";
 const discordOAuth = new DiscordOAuth(
@@ -19,10 +19,6 @@ export default function api(bot: DiscordBot): ExpressApplication {
     const router = Express.Router();
     const app = Express().use(Express.json());
     app.use(CookieParser());
-    const guildMiddleware = guild(bot);
-    const memberMiddleware = member(bot);
-    const authMiddleware = auth(bot);
-
     // Public Routes
 
     app.get("/login", (request, response) => {
@@ -103,8 +99,15 @@ export default function api(bot: DiscordBot): ExpressApplication {
         request.context = {};
         next();
     })
+
+    const guildMiddleware = guild(bot);
+    const memberMiddleware = member(bot);
+    const authMiddleware = auth(bot);
+    const musicPluginMiddleware = musicPlugin(bot);
+
     router.use("/api/v1/guild", authMiddleware, guildMiddleware, memberMiddleware);
     router.use("/api/v1/member", authMiddleware, guildMiddleware, memberMiddleware);
+    router.use("/api/v1/guild/player", authMiddleware, guildMiddleware, memberMiddleware, musicPluginMiddleware);
 
     app.use("/", router);
 
@@ -160,6 +163,9 @@ export default function api(bot: DiscordBot): ExpressApplication {
         }
         response.json(payload);
     });
-    
+    app.get("/api/v1/guild/player", (request: Request, response: Response) => {
+        response.sendStatus(503);
+        console.log(request.context);
+    })
     return app;
 }

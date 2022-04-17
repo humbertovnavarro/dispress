@@ -2,8 +2,8 @@
   "name": "root",
   "private": true,
   "devDependencies": {
-    "lerna": "^4.0.0",
-    "husky": "^7.0.0"
+    "husky": "^7.0.0",
+    "lerna": "^4.0.0"
   },
   "scripts": {
     "dev": "lerna run dev --stream",
@@ -14,5 +14,9 @@
     "start": "lerna run start --stream",
     "prepare": "husky install",
     "postinstall": "lerna run postinstall && lerna bootstrap"
+  },
+  "dependencies": {
+    "@types/jsonwebtoken": "^8.5.8",
+    "jsonwebtoken": "^8.5.1"
   }
 }
