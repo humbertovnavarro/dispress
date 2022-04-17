@@ -1,13 +1,13 @@
 import Express, { Application as ExpressApplication, Response, Request, urlencoded, response } from "express";
 import type DiscordBot from "../lib/dispress/DiscordBot";
-import { MusicBotPlugin } from "../plugins/musicbot/plugin";
 import dotenv from "dotenv";
 import DiscordOAuth, { DiscordUserData } from "./lib/DiscordOAuth";
 import CookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
-import { auth, guild, member, musicPlugin } from "./middlewares/discord";
-import { request } from "http";
-import { Track } from "discord-player";
+import { auth, guild, guildQueue, member } from "./middlewares/discord";
+import { Queue, Track } from "discord-player";
+import searchForTrack from "../plugins/musicbot/helpers/searchForTrack";
+import { GuildMember } from "discord.js";
 const discordOAuth = new DiscordOAuth(
     process.env.DISCORD_CLIENT_ID as string,
     process.env.DISCORD_CLIENT_SECRET as string,
@@ -17,9 +17,12 @@ const discordOAuth = new DiscordOAuth(
 dotenv.config();
 export default function api(bot: DiscordBot): ExpressApplication {
     const router = Express.Router();
-    const app = Express().use(Express.json());
+    const app = Express();
+    app.use(Express.json())
+    app.use(Express.urlencoded({
+        extended: false
+    }));
     app.use(CookieParser());
-    // Public Routes
 
     app.get("/login", (request, response) => {
         response.redirect(process.env.DISCORD_OAUTH_URL as string);
@@ -95,19 +98,20 @@ export default function api(bot: DiscordBot): ExpressApplication {
             });
         }
     });
+
     router.use("*", (request, response, next) => {
         request.context = {};
         next();
     })
 
     const guildMiddleware = guild(bot);
+    const guildQueueMiddleware = guildQueue(bot);
     const memberMiddleware = member(bot);
     const authMiddleware = auth(bot);
-    const musicPluginMiddleware = musicPlugin(bot);
 
     router.use("/api/v1/guild", authMiddleware, guildMiddleware, memberMiddleware);
     router.use("/api/v1/member", authMiddleware, guildMiddleware, memberMiddleware);
-    router.use("/api/v1/guild/player", authMiddleware, guildMiddleware, memberMiddleware, musicPluginMiddleware);
+    router.use("/api/v1/guild/queue", authMiddleware, guildMiddleware, memberMiddleware, guildQueueMiddleware);
 
     app.use("/", router);
 
@@ -116,18 +120,7 @@ export default function api(bot: DiscordBot): ExpressApplication {
     });
 
     app.get("/api/v1/guild/queue", (request: Request, response: Response) => {
-        const musicBotPlugin: MusicBotPlugin | undefined = bot.getPlugin("musicbot") as MusicBotPlugin | undefined;
-        if(!musicBotPlugin) return response.status(500).json({
-            error: "Could not fetch music bot plugin, is it missing?"
-        });
-        const player = musicBotPlugin.context?.getPlayer();
-        if(!player) return response.status(503).json({
-            error: "Could not fetch player!"
-        });
-        const queue = player.getQueue(request.context.guild);
-        if(!queue) return response.status(503).json({
-            error: "Could not fetch queue!"
-        });
+        const queue = request.context.queue;
         const tracks = queue.tracks.map((track: Track) => {
             const { requestedBy, url, thumbnail, views, duration, author, title, description, id } = track;
             return {
@@ -163,9 +156,24 @@ export default function api(bot: DiscordBot): ExpressApplication {
         }
         response.json(payload);
     });
-    app.get("/api/v1/guild/player", (request: Request, response: Response) => {
-        response.sendStatus(503);
-        console.log(request.context);
-    })
+
+    app.post("/api/v1/guild/queue/play", async (request: Request, response: Response) => {
+        const query = request.body.track;
+        if(!query || !query.toString().startsWith("http")) {
+            return response.status(400).json({
+                error: "Invalid body"
+            });
+        }
+        const queue = request.context.queue as Queue;
+        const player = queue.player;
+        const guild = queue.guild;
+        const member = request.context.member as GuildMember;
+        const track = await searchForTrack(player, guild, member.user, query);
+        if(!track) return response.status(404).json({
+            error: "Could not find track"
+        });
+        queue.addTrack(track);
+    });
+
     return app;
 }
