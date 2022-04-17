@@ -64,7 +64,7 @@ export function member(bot: DiscordBot) {
             console.log("member");
             return response.status(500).json({
                 error: "Internal server error!"
-            });        
+            });
         }
         const guild = request.context.guild as Guild;
         const member = await guild.members.fetch({ user: request.context.user.id});
