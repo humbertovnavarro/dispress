@@ -6,8 +6,8 @@ import {
 import { Queue, Track } from 'discord-player';
 import { CommandInteraction } from 'discord.js';
 import { UsePlayer, GetActiveChannel } from '../helpers/player';
-import addPlay from '../helpers/addPlay';
 import { QueueMeta } from '../../../lib/dispress';
+import searchForTrack from '../helpers/searchForTrack';
 
 const body = new SlashCommandBuilder()
   .setName('play')
@@ -73,29 +73,11 @@ export default {
     interaction.reply('Searching for ' + query);
     let track: Track | undefined = undefined;
     try {
-      track = await new Promise<Track | undefined>((resolve, reject) => {
-        setTimeout(() => {
-          reject("timed out.")
-        }, 10000);
-        musicPlayer.search(query, { requestedBy: interaction.user })
-        .then(result => {
-            for (const track of result.tracks) {
-              if (track.durationMS < 60 * 1000 * 20) {
-                resolve(track);
-                return;
-              }
-            }
-            return undefined;
-        })
-        .catch(error => {
-          reject(error);
-        });
-      });
+      track = await searchForTrack(musicPlayer, interaction.guild, interaction.user, query);
     } catch(error) {
       console.error(error);
     }
     if(!track) return interaction.channel?.send("an error occured while searching for song.");
-    await addPlay(track, interaction.guild);
 
     const channel = interaction.channel;
 
