@@ -6,7 +6,6 @@ import minecraft from './plugins/minecraft/plugin';
 import anime from './slashcommands/anime';
 import uptime from './slashcommands/uptime';
 import PrismaClient from './lib/PrismaClient';
-import DiscordBotRestApi from './rest/api';
 import DiscordBot from './lib/dispress/DiscordBot';
 const discordBot = new DiscordBot({
   intents: [
@@ -33,11 +32,7 @@ const main = async () => {
   discordBot.usePlugin(minecraft);
   discordBot.usePlugin(uptime);
 
-  const discordBotRestApi = DiscordBotRestApi(discordBot);
-  const port = process.env.API_PORT || 3000;
-  discordBotRestApi.listen(port, () => {
-    console.log("Rest api listening on port 3000")
-  });
+  const port = process.env.EXPRESS_PORT || 4000;
 
   if (require.main === module) {
     discordBot.login(process.env.DISCORD_TOKEN);
