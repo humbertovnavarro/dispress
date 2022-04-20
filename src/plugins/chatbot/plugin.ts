@@ -46,7 +46,7 @@ async function AiReply(message: Message): Promise<string | void> {
         message: content
     }
     chatHistory.push(userMessage);
-const prompt = 
+const prompt =
 `
 The following is a conversation with an AI assistant within a group chat. The next line is the AI.
 
