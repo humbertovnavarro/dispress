@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import waifu from './slashcommands/waifu';
 import musicbot from './plugins/musicbot/plugin';
+import chatbot from './plugins/chatbot/plugin';
 import anime from './slashcommands/anime';
 import uptime from './slashcommands/uptime';
 import PrismaClient from './lib/PrismaClient';
@@ -29,6 +30,7 @@ const main = async () => {
   discordBot.useCommand(waifu);
   discordBot.usePlugin(musicbot);
   discordBot.usePlugin(uptime);
+  discordBot.usePlugin(chatbot);
 
   const port = process.env.EXPRESS_PORT || 4000;
 
