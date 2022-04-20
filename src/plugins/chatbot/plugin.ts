@@ -15,6 +15,7 @@ const plugin: Plugin = {
         const uid = bot.user?.id;
         if(!uid) return;
         bot.on("messageCreate", async (message: Message) => {
+            if(message.author.bot) return;
             const doAiReply = Math.random() > 0.96 || message.content.toLowerCase().includes("patrick")
             if(doAiReply) {
                 try {
@@ -30,37 +31,56 @@ const plugin: Plugin = {
     }
 }
 
-const conversations = new Map<User, string>();
+interface ChatMessage {
+    username: string,
+    message: string
+}
+
+const chatHistory: ChatMessage[] = [];
+const maxChatHistoryLength = 10;
 
 async function AiReply(message: Message): Promise<string | void> {
-    const content = Util.cleanContent(message.content, message.channel);
-    const previous = conversations.get(message.author);
-    let newContent = `Human: ${content}\n\n`;
-    if(previous) newContent = previous + newContent;
-    const prompt = 
+    const content = Util.cleanContent(message.content, message.channel).trim();
+    const userMessage: ChatMessage = {
+        username: message.author.username,
+        message: content
+    }
+    chatHistory.push(userMessage);
+const prompt = 
 `
-The following is a conversation with an AI assistant. The assistant talks in a southern accent.
+The following is a conversation with an AI assistant within a group chat. The next line is the AI.
 
-Human: Hello, who are you?
+Kamaii: Who are you?
 
-AI: Howdy partner, I'm the assistant around these parts. Who might you be?
+AI: My name is Patrick. I am an AI assistant created by you.
 
-Human: My name is ${message.author.username}
-
-${newContent}
+${chatHistory.map(message => `${message.username}: ${message.message}\n\n`)}
 `;
-    const completion = await openai.createCompletion("text-davinci-002", {
-        prompt,
-        temperature: 0.6,
-        max_tokens: 150
-      });
+    let completion;
+    console.log(prompt);
+    try {
+        completion = await openai.createCompletion("text-davinci-002", {
+            prompt,
+            temperature: 0.6,
+            max_tokens: 500
+        });
+    } catch(error) {
+        console.error(error);
+        return;
+    }
     const choice = completion.data.choices?.at(0);
     if(!choice) return;
     const reply = choice.text;
     if(!reply) return;
-    newContent += reply + "\n\n";
-    conversations.set(message.author, newContent);
-    return reply.substring(reply.lastIndexOf(":") + 1).trim()
+    const botMessageContent = reply.substring(reply.lastIndexOf(":") + 1).trim()
+    chatHistory.push({
+        username: "AI",
+        message: botMessageContent.trim()
+    });
+    if(chatHistory.length >= 10) {
+        chatHistory.shift();
+    }
+    return botMessageContent.trim();
 }
 
 export default plugin;
