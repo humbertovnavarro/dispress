@@ -34,7 +34,7 @@ const plugin: Plugin = {
                 } catch(error) {
                     console.error(error);
                     return;
-                }  
+                }
             }
 
             const doAiReply = Math.random() > 0.96 || message.content.toLowerCase().includes("patrick")
@@ -67,7 +67,7 @@ async function AiReply(message: Message): Promise<string | void> {
         message: content
     }
     chatHistory.push(userMessage);
-const prompt = 
+const prompt =
 `
 The following is a conversation with an AI assistant within a group chat. The next line is the AI.
 
