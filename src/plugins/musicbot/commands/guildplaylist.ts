@@ -93,19 +93,20 @@ export default {
       });
     }
 
-    // get an array of promises that resolve when the music bot lib finds a song
-    const trackPromises = playlist.map(async url =>
-      player
+    for(let i = 0; i < playlist.length; i++) {
+      const url = playlist[i];
+      try {
+        const track = await player
         .search(url, { requestedBy: interaction.user })
         .then(result => result.tracks[0])
-    );
-    const tracks = (await Promise.all(trackPromises)).filter(track => track);
+        queue.addTrack(track);
+      } catch(error) {
+        console.error(error);
+      }
+    }
 
-    if (queue.playing) {
-      queue.addTracks(tracks);
-    } else {
-      queue.play(tracks.pop());
-      queue.addTracks(tracks);
+    if(!queue.playing) {
+      queue.play();
     }
 
     const embed = new MessageEmbed();

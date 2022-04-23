@@ -1,12 +1,11 @@
 import { Plugin } from '../../lib/dispress';
 import DiscordBot from '../../lib/dispress/DiscordBot';
 import { Configuration, OpenAIApi } from "openai";
-import { Message, User, Util } from 'discord.js';
+import { Message, Util } from 'discord.js';
 
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY
 });
-
 
 const openai = new OpenAIApi(configuration);
 const plugin: Plugin = {
@@ -16,6 +15,28 @@ const plugin: Plugin = {
         if(!uid) return;
         bot.on("messageCreate", async (message: Message) => {
             if(message.author.bot) return;
+
+            if(message.content.trim().toLowerCase() === "patrick forget") {
+                chatHistory = [];
+                message.reply("I forgot everything.")
+                return;
+            }
+
+            if(message.content.trim().toLowerCase().startsWith("patrick raw")) {
+                try {
+                    const completion = await openai.createCompletion("text-davinci-002", {
+                        prompt: message.content.substring("patrick raw".length + 1),
+                        temperature: 0.6,
+                        max_tokens: 2000
+                    });
+                    message.reply(completion.data.choices?.at(0)?.text || "error");
+                    return;
+                } catch(error) {
+                    console.error(error);
+                    return;
+                }  
+            }
+
             const doAiReply = Math.random() > 0.96 || message.content.toLowerCase().includes("patrick")
             if(doAiReply) {
                 try {
@@ -36,7 +57,7 @@ interface ChatMessage {
     message: string
 }
 
-const chatHistory: ChatMessage[] = [];
+let chatHistory: ChatMessage[] = [];
 const maxChatHistoryLength = 10;
 
 async function AiReply(message: Message): Promise<string | void> {
@@ -57,12 +78,11 @@ AI: My name is Patrick. I am an AI assistant created by you.
 ${chatHistory.map(message => `${message.username}: ${message.message}\n\n`)}
 `;
     let completion;
-    console.log(prompt);
     try {
         completion = await openai.createCompletion("text-davinci-002", {
             prompt,
             temperature: 0.6,
-            max_tokens: 500
+            max_tokens: 1900
         });
     } catch(error) {
         console.error(error);
@@ -72,7 +92,7 @@ ${chatHistory.map(message => `${message.username}: ${message.message}\n\n`)}
     if(!choice) return;
     const reply = choice.text;
     if(!reply) return;
-    const botMessageContent = reply.substring(reply.lastIndexOf(":") + 1).trim()
+    const botMessageContent = reply.substring(reply.lastIndexOf("I:") + 2).trim()
     chatHistory.push({
         username: "AI",
         message: botMessageContent.trim()
