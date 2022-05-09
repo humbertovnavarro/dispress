@@ -18,7 +18,11 @@ const plugin: Plugin = {
 
             if(message.content.trim().toLowerCase() === "patrick forget") {
                 chatHistory = [];
-                message.reply("I forgot everything.")
+                try {
+                    message.reply("I forgot everything.");
+                } catch(error) {
+                    console.error(error);
+                }
                 return;
             }
 
@@ -42,7 +46,7 @@ const plugin: Plugin = {
                 try {
                     const reply = await AiReply(message);
                     if(reply) {
-                        message.channel.send(reply);
+                            message.channel.send(reply);
                     }
                 } catch(error) {
                     console.error(error);
