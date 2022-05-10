@@ -93,21 +93,21 @@ export default {
       });
     }
     const tracks: Track[] = [];
-    for(let i = 0; i < playlist.length; i++) {
+    for (let i = 0; i < playlist.length; i++) {
       const url = playlist[i];
       try {
         const track = await player
-        .search(url, { requestedBy: interaction.user })
-        .then(result => result.tracks[0]);
-        if(track) tracks.push(track);
-      } catch(error) {
+          .search(url, { requestedBy: interaction.user })
+          .then(result => result.tracks[0]);
+        if (track) tracks.push(track);
+      } catch (error) {
         console.error(error);
       }
     }
 
     queue.addTracks(tracks);
 
-    if(!queue.playing) {
+    if (!queue.playing) {
       queue.play();
     }
 

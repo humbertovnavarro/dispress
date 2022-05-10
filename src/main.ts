@@ -21,7 +21,7 @@ const discordBot = new DiscordBot({
 const main = async () => {
   try {
     await PrismaClient.$connect();
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     process.exit(1);
   }
@@ -37,7 +37,6 @@ const main = async () => {
   if (require.main === module) {
     discordBot.login(process.env.DISCORD_TOKEN);
   }
-
-}
+};
 main();
 export default discordBot;

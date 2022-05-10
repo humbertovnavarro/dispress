@@ -57,7 +57,7 @@ export default {
     const musicPlayer = UsePlayer(interaction.client);
     const queue: Queue<QueueMeta> = musicPlayer.createQueue(interaction.guild, {
       metadata: {
-        channel: interaction.channel,
+        channel: interaction.channel
       }
     });
 
@@ -73,11 +73,19 @@ export default {
     interaction.reply('Searching for ' + query);
     let track: Track | undefined = undefined;
     try {
-      track = await searchForTrack(musicPlayer, interaction.guild, interaction.user, query);
-    } catch(error) {
+      track = await searchForTrack(
+        musicPlayer,
+        interaction.guild,
+        interaction.user,
+        query
+      );
+    } catch (error) {
       console.error(error);
     }
-    if(!track) return interaction.channel?.send("an error occured while searching for song.");
+    if (!track)
+      return interaction.channel?.send(
+        'an error occured while searching for song.'
+      );
 
     const channel = interaction.channel;
 

@@ -16,6 +16,8 @@ import addLike from './addLike';
 import { QueueMeta } from '../../../lib/dispress';
 import addDislike from './addDislike';
 import getTrackStatistics from './getTrack';
+import removeLike from './removeLike';
+import removeDislike from './removeDislike';
 
 let lyricsClient: {
   search: (query: string) => Promise<Lyrics.LyricsData>;
@@ -34,6 +36,7 @@ export function UsePlayer(client: Client): Player {
   lyricsClient = Lyrics.init();
   player.use('reverbnation', Reverbnation);
   player.on('trackStart', (queue, track) => {
+    cleanupCollectors();
     trackStart(queue as Queue<QueueMeta>, track);
   });
   player.on('queueEnd', cleanupCollectors);
@@ -55,27 +58,28 @@ export function GetActiveChannel(guild: Guild): VoiceBasedChannel | undefined {
 }
 
 export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
-  if(!queue.metadata) return;
+  if (!queue.metadata) return;
   const channel = queue.metadata?.channel;
   if (!channel) return;
   let { title, thumbnail, url, author } = track;
   author = `uploaded by ${author}`;
   let avatar: string =
     track.requestedBy.avatarURL() || track.requestedBy.defaultAvatarURL;
-  const playerEmbedOptions =  {
-      title,
-      avatar,
-      author,
-      thumbnail,
-      url,
-      track,
-      plays: 0,
-      likes: 0,
-      dislikes: 0
-  }
+  const playerEmbedOptions = {
+    title,
+    avatar,
+    author,
+    thumbnail,
+    url,
+    track,
+    plays: 0,
+    likes: 0,
+    dislikes: 0
+  };
   try {
     let trackStats = await getTrackStatistics(track, channel.guild);
-    if(!trackStats) throw new Error("song that was just added, not in database?");
+    if (!trackStats)
+      throw new Error('song that was just added, not in database?');
     const { likes, dislikes, plays } = trackStats;
     playerEmbedOptions.plays = plays;
     playerEmbedOptions.likes = likes;
@@ -83,22 +87,18 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
   } catch (error) {
     console.error(error);
   }
-  // if we already have an embed active, just edit it to be up to date and return.
-  if(queue.metadata.embed) {
-    queue.metadata.embed.edit({
-      embeds: [generateTrackEmbed(playerEmbedOptions)]
-    })
-    return;
-  }
 
   let message: Message;
   try {
-    message = (await channel.send({ embeds: [generateTrackEmbed(playerEmbedOptions)] })) as Message;
+    message = (await channel.send({
+      embeds: [generateTrackEmbed(playerEmbedOptions)]
+    })) as Message;
     queue.metadata.embed = message;
   } catch (error) {
     console.warn(error);
     return;
   }
+
   const reactions = ['⏸️', '🛑', '▶️', '⏭️', '❤️', '💩', '📖'];
   await raceWithTimeout(message.react(reactions[0]), 10);
   await raceWithTimeout(message.react(reactions[1]), 10);
@@ -140,20 +140,34 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
         player?.deleteQueue(channel.guild);
         break;
       case '❤️':
-        if (likeMap.has(user.id)) break;
-        likeMap.set(user.id, true);
-        addLike(track, message.guild);
+        try {
+          const success = await addLike(track, message.guild);
+          if (!success) {
+            removeLike(track, message.guild);
+          }
+        } catch (error) {
+          console.error(error);
+          break;
+        }
         playerEmbedOptions.likes = playerEmbedOptions.likes + 1;
-        message.edit({embeds: [generateTrackEmbed(playerEmbedOptions)]});
+        message.edit({ embeds: [generateTrackEmbed(playerEmbedOptions)] });
+        break;
+      case '💩':
+        try {
+          const success = await addDislike(track, message.guild);
+          if (!success) {
+            removeDislike(track, message.guild);
+          }
+        } catch (error) {
+          console.error(error);
+          break;
+        }
+        playerEmbedOptions.dislikes = playerEmbedOptions.dislikes + 1;
         break;
       case '📖':
         if (didOpenLyrics) return;
         postLyrics(channel, track as CustomTrack);
         didOpenLyrics = true;
-        break;
-      case '💩':
-        addDislike(track, message.guild);
-        playerEmbedOptions.dislikes = playerEmbedOptions.dislikes + 1;
         break;
     }
     reaction.users.remove(user);
@@ -209,19 +223,29 @@ function raceWithTimeout(promise: Promise<unknown>, timeout: number) {
 }
 
 interface TrackEmbedOptions {
-  title: string,
-  avatar: string,
-  author: string,
-  thumbnail: string,
-  url: string,
-  track: Track,
-  plays: Number,
-  likes: Number,
-  dislikes: Number
+  title: string;
+  avatar: string;
+  author: string;
+  thumbnail: string;
+  url: string;
+  track: Track;
+  plays: Number;
+  likes: Number;
+  dislikes: Number;
 }
 
 function generateTrackEmbed(options: TrackEmbedOptions): MessageEmbed {
-  const {title, avatar, author, thumbnail, url, track, likes, dislikes, plays } = options;
+  const {
+    title,
+    avatar,
+    author,
+    thumbnail,
+    url,
+    track,
+    likes,
+    dislikes,
+    plays
+  } = options;
   const embed = new MessageEmbed()
     .setTitle(`${title}`)
     .setThumbnail(avatar)
@@ -233,6 +257,6 @@ function generateTrackEmbed(options: TrackEmbedOptions): MessageEmbed {
       text: track.duration
     })
     .addField('requested by', track.requestedBy.tag)
-    .addField("stats", `\`❤️ ${likes} | 💩 ${dislikes} | ▶️ ${plays} \``);
+    .addField('stats', `\`❤️ ${likes} | 💩 ${dislikes} | ▶️ ${plays} \``);
   return embed;
 }

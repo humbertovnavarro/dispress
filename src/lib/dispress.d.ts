@@ -56,6 +56,7 @@ export interface BotOptions extends ClientOptions {
 export interface QueueMeta {
   channel: TextChannel;
   embed?: Message;
+  embedContext?: EmbedContext;
 }
 
 export interface TrackMeta {

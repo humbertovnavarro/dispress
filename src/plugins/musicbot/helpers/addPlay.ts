@@ -5,12 +5,12 @@ export default async function (track: Track, guild: Guild) {
   try {
     await prisma.songs.upsert({
       where: {
-        id: `${track.url}-${guild.id}`,
+        id: `${track.url}-${guild.id}`
       },
       update: {
         title: track.title,
         plays: {
-          increment: 1,
+          increment: 1
         }
       },
       create: {
@@ -19,17 +19,17 @@ export default async function (track: Track, guild: Guild) {
         guild: guild.id,
         title: track.title,
         duration: track.duration,
-        plays: 1,
+        plays: 1
       }
     });
     await prisma.plays.create({
       data: {
         user: track.requestedBy.id,
         song: track.url,
-        guild: guild.id,
+        guild: guild.id
       }
     });
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
-};
+}

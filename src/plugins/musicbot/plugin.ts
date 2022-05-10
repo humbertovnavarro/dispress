@@ -36,10 +36,8 @@ const plugin: MusicBotPlugin = {
   },
   // Expose the player through the context api
   context: {
-    getPlayer: () => player,
+    getPlayer: () => player
   }
 };
 
 export default plugin;
-
-
