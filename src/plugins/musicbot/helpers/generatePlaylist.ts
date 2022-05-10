@@ -46,6 +46,6 @@ const generatePlaylist = async (guild: Guild): Promise<string[]> => {
   ).map(song => song.song);
   const mostPlayedAndLiked = _.intersection(mostPlayed, mostLiked);
   const playlist = _.uniq(mostPlayedAndLiked.concat(mostPlayed, mostLiked));
-  return playlist;
+  return _.shuffle(playlist);
 };
 export default generatePlaylist;
