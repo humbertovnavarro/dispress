@@ -144,20 +144,26 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
           const success = await addLike(track, message.guild);
           if (!success) {
             removeLike(track, message.guild);
+            playerEmbedOptions.likes++;
+          } else {
+            playerEmbedOptions.likes--;
           }
+          message.edit({ embeds: [generateTrackEmbed(playerEmbedOptions)] });
         } catch (error) {
           console.error(error);
           break;
         }
-        playerEmbedOptions.likes = playerEmbedOptions.likes + 1;
-        message.edit({ embeds: [generateTrackEmbed(playerEmbedOptions)] });
         break;
       case '💩':
         try {
           const success = await addDislike(track, message.guild);
           if (!success) {
             removeDislike(track, message.guild);
+            playerEmbedOptions.dislikes--;
+          } else {
+            playerEmbedOptions.dislikes++;
           }
+          message.edit({ embeds: [generateTrackEmbed(playerEmbedOptions)] });
         } catch (error) {
           console.error(error);
           break;
