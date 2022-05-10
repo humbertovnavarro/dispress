@@ -54,11 +54,13 @@ export default {
     interaction.reply('Generating guild playlist...');
 
     const player = UsePlayer(interaction.client);
+
     const queue = player.createQueue(interaction.guild, {
       metadata: {
         channel: interaction.channel
       }
     }) as Queue;
+
     let maxSongs = 15;
 
     try {
@@ -71,7 +73,6 @@ export default {
     }
 
     maxSongs = Math.max(1, maxSongs);
-
     // get a playlist of songs from the sqlite database using generatePlaylist
     const playlist = (await generatePlaylist(interaction.guild)).slice(
       0,
@@ -87,23 +88,24 @@ export default {
     try {
       if (!queue.connection) await queue.connect(voiceChannel);
     } catch {
-      queue.destroy();
       return await channel.send({
         content: 'Could not join your voice channel!'
       });
     }
-
+    const tracks: Track[] = [];
     for(let i = 0; i < playlist.length; i++) {
       const url = playlist[i];
       try {
         const track = await player
         .search(url, { requestedBy: interaction.user })
         .then(result => result.tracks[0])
-        queue.addTrack(track);
+        tracks.push(track);
       } catch(error) {
         console.error(error);
       }
     }
+
+    await queue.addTracks(tracks);
 
     if(!queue.playing) {
       queue.play();
