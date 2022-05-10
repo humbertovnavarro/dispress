@@ -1,11 +1,16 @@
 import { Guild } from 'discord.js';
 import _ from 'lodash';
 import db from '../../../lib/PrismaClient';
-
+import dotenv from "dotenv";
+dotenv.config();
+const dislikeThreshold: number = Number.parseInt(process.env.DISLIKE_THRESHOLD || "1");
 const generatePlaylist = async (guild: Guild): Promise<string[]> => {
   const mostPlayed =  (await db.songs.findMany({
     where: {
       guild: guild.id,
+      dislikes: {
+        lt: dislikeThreshold
+      }
     },
     orderBy: {
       plays: 'desc',
@@ -21,6 +26,9 @@ const generatePlaylist = async (guild: Guild): Promise<string[]> => {
   const mostLiked = (await db.songs.findMany({
     where: {
       guild: guild.id,
+      dislikes: {
+        lt: dislikeThreshold
+      }
     },
     orderBy: {
       likes: 'desc',

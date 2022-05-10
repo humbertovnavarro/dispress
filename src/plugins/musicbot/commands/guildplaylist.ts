@@ -51,8 +51,8 @@ export default {
       }
     }
 
-    interaction.reply('Generating guild playlist...');
-
+    interaction.reply('Generating guild playlist...sit tight');
+    await channel.sendTyping();
     const player = UsePlayer(interaction.client);
 
     const queue = player.createQueue(interaction.guild, {
@@ -98,14 +98,14 @@ export default {
       try {
         const track = await player
         .search(url, { requestedBy: interaction.user })
-        .then(result => result.tracks[0])
-        tracks.push(track);
+        .then(result => result.tracks[0]);
+        if(track) tracks.push(track);
       } catch(error) {
         console.error(error);
       }
     }
 
-    await queue.addTracks(tracks);
+    queue.addTracks(tracks);
 
     if(!queue.playing) {
       queue.play();

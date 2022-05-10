@@ -57,7 +57,7 @@ export default {
     const musicPlayer = UsePlayer(interaction.client);
     const queue: Queue<QueueMeta> = musicPlayer.createQueue(interaction.guild, {
       metadata: {
-        channel: interaction.channel
+        channel: interaction.channel,
       }
     });
 
