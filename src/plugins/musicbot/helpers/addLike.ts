@@ -7,7 +7,8 @@ const addLike = async (track: Track, guild: Guild) => {
     const like = await prisma.likes.findFirst({
       where: {
         user: track.requestedBy.id,
-        song: track.url
+        song: track.url,
+        guild: guild.id
       }
     });
     if (like) return false;

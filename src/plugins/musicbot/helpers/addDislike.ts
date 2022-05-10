@@ -7,7 +7,8 @@ const addDislike = async (track: Track, guild: Guild) => {
     const dislike = await prisma.dislikes.findFirst({
       where: {
         user: track.requestedBy.id,
-        song: track.url
+        song: track.url,
+        guild: guild.id
       }
     });
     if (dislike) return false;

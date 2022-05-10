@@ -6,7 +6,8 @@ const removeDislike = async (track: Track, guild: Guild) => {
   return !!(await prisma.dislikes.deleteMany({
     where: {
       song: track.url,
-      user: track.requestedBy.id
+      user: track.requestedBy.id,
+      guild: guild.id
     }
   }));
 };

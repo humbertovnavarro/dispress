@@ -168,7 +168,6 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
           console.error(error);
           break;
         }
-        playerEmbedOptions.dislikes = playerEmbedOptions.dislikes + 1;
         break;
       case '📖':
         if (didOpenLyrics) return;
