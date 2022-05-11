@@ -1,17 +1,20 @@
-import { Track } from "discord-player";
-import { Guild } from "discord.js";
+import { Track } from 'discord-player';
+import { Guild } from 'discord.js';
 /**
- * 
- * @param guild 
- * @param track 
+ *
+ * @param guild
+ * @param track
  * @returns An object containing the delta between front and backend likes/dislikes
  */
-export default async function handleLikeInteraction(guild: Guild, track: Track): Promise<{
-    dislikeDelta: number,
-    likeDelta: number
+export default async function handleLikeInteraction(
+  guild: Guild,
+  track: Track
+): Promise<{
+  dislikeDelta: number;
+  likeDelta: number;
 }> {
-    return {
-        dislikeDelta: 0,
-        likeDelta: 0
-    }
+  return {
+    dislikeDelta: 0,
+    likeDelta: 0
+  };
 }

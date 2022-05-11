@@ -25,7 +25,8 @@ let player: Player | undefined;
 
 const activeCollectors: ReactionCollector[] = [];
 
-const cleanupCollectors = () => (activeCollectors.forEach(collector => collector.stop()));
+const cleanupCollectors = () =>
+  activeCollectors.forEach(collector => collector.stop());
 
 export function UsePlayer(client: Client): Player {
   if (player) return player;
@@ -142,7 +143,10 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
         await refreshTrackEmbed(playerEmbedOptions, message);
         break;
       case '💩':
-        const dislikeDeltas = await handleDislikeInteraction(channel.guild, track);
+        const dislikeDeltas = await handleDislikeInteraction(
+          channel.guild,
+          track
+        );
         playerEmbedOptions.likes += dislikeDeltas.likeDelta;
         playerEmbedOptions.dislikes += dislikeDeltas.dislikeDelta;
         await refreshTrackEmbed(playerEmbedOptions, message);
@@ -169,8 +173,11 @@ interface TrackEmbedOptions {
   dislikes: Number;
 }
 
-async function refreshTrackEmbed(options: TrackEmbedOptions, message: Message): Promise<void> {
-  await message.edit({embeds: [generateTrackEmbed(options)]});
+async function refreshTrackEmbed(
+  options: TrackEmbedOptions,
+  message: Message
+): Promise<void> {
+  await message.edit({ embeds: [generateTrackEmbed(options)] });
 }
 
 function generateTrackEmbed(options: TrackEmbedOptions): MessageEmbed {
