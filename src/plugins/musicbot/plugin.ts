@@ -9,7 +9,7 @@ import skip from './commands/skip';
 import summon from './commands/summon';
 import filters from './commands/filters';
 import DiscordBot from '../../lib/dispress/DiscordBot';
-import { UsePlayer } from './helpers/player';
+import { UsePlayer } from './lib/player/player';
 import type { Player } from 'discord-player';
 
 let player: Player | undefined;

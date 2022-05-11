@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction } from 'discord.js';
-import { UsePlayer, GetActiveChannel } from '../helpers/player';
+import { UsePlayer, GetActiveChannel } from '../lib/player/player';
 
 const body = new SlashCommandBuilder()
   .setName('stop')

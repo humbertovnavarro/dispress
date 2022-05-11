@@ -5,9 +5,9 @@ import {
 } from '@discordjs/builders';
 import { Queue, Track } from 'discord-player';
 import { CommandInteraction } from 'discord.js';
-import { UsePlayer, GetActiveChannel } from '../helpers/player';
+import { UsePlayer, GetActiveChannel } from '../lib/player/player';
 import { QueueMeta } from '../../../lib/dispress';
-import searchForTrack from '../helpers/searchForTrack';
+import searchForTrack from '../lib/player/searchForTrack';
 
 const body = new SlashCommandBuilder()
   .setName('play')

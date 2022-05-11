@@ -1,6 +1,6 @@
 import type { Track } from 'discord-player';
 import type { Guild } from 'discord.js';
-import prisma from '../../../lib/PrismaClient';
+import prisma from '../../../../lib/PrismaClient';
 export default async function (track: Track, guild: Guild) {
   try {
     await prisma.songs.upsert({

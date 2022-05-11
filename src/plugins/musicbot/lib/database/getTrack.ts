@@ -1,6 +1,6 @@
 import { Track } from 'discord-player';
 import { Guild } from 'discord.js';
-import prisma from '../../../lib/PrismaClient';
+import prisma from '../../../../lib/PrismaClient';
 
 export default async function getTrackStatistics(track: Track, guild: Guild) {
   return prisma.songs.findFirst({

@@ -1,6 +1,6 @@
 import { Guild } from 'discord.js';
 import _ from 'lodash';
-import db from '../../../lib/PrismaClient';
+import db from '../../../../lib/PrismaClient';
 import dotenv from 'dotenv';
 dotenv.config();
 const dislikeThreshold: number = Number.parseInt(

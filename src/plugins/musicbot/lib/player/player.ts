@@ -1,34 +1,31 @@
 import { Player, Queue, Track } from 'discord-player';
 import {
   Client,
-  Collection,
   Guild,
   Message,
   MessageEmbed,
   ReactionCollector,
-  TextChannel,
-  User,
   VoiceBasedChannel
 } from 'discord.js';
 import { Reverbnation, Lyrics } from '@discord-player/extractor';
 import _ from 'lodash';
-import addLike from './addLike';
-import { QueueMeta } from '../../../lib/dispress';
-import addDislike from './addDislike';
-import getTrackStatistics from './getTrack';
-import removeLike from './removeLike';
-import removeDislike from './removeDislike';
+import { QueueMeta } from '../../../../lib/dispress';
+import getTrackStatistics from '../database/getTrack';
+import handleLikeInteraction from './handleLikeInteraction';
+import handleDislikeInteraction from './handleDislikeInteraction';
+import postLyrics from './postLyrics';
+import userInBotChannel from '../utils/userInBotChannel';
+import { raceWithTimeout } from '../utils/promises';
 
 let lyricsClient: {
   search: (query: string) => Promise<Lyrics.LyricsData>;
 };
 
 let player: Player | undefined;
+
 const activeCollectors: ReactionCollector[] = [];
 
-const cleanupCollectors = () => {
-  activeCollectors.forEach(collector => collector.stop());
-};
+const cleanupCollectors = () => (activeCollectors.forEach(collector => collector.stop()));
 
 export function UsePlayer(client: Client): Player {
   if (player) return player;
@@ -121,7 +118,6 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
     }
   });
   activeCollectors.push(collector);
-  const likeMap = new Collection();
   let didOpenLyrics = false;
   collector.on('collect', async (reaction, user) => {
     if (!message.guild || user.bot || !userInBotChannel(user, channel.guild))
@@ -140,92 +136,26 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
         player?.deleteQueue(channel.guild);
         break;
       case '❤️':
-        try {
-          const success = await addLike(track, message.guild);
-          if (!success) {
-            removeLike(track, message.guild);
-            playerEmbedOptions.likes++;
-          } else {
-            playerEmbedOptions.likes--;
-          }
-          message.edit({ embeds: [generateTrackEmbed(playerEmbedOptions)] });
-        } catch (error) {
-          console.error(error);
-          break;
-        }
+        const likeDeltas = await handleLikeInteraction(channel.guild, track);
+        playerEmbedOptions.likes += likeDeltas.likeDelta;
+        playerEmbedOptions.dislikes += likeDeltas.dislikeDelta;
+        await refreshTrackEmbed(playerEmbedOptions, message);
         break;
       case '💩':
-        try {
-          const success = await addDislike(track, message.guild);
-          if (!success) {
-            removeDislike(track, message.guild);
-            playerEmbedOptions.dislikes--;
-          } else {
-            playerEmbedOptions.dislikes++;
-          }
-          message.edit({ embeds: [generateTrackEmbed(playerEmbedOptions)] });
-        } catch (error) {
-          console.error(error);
-          break;
-        }
+        const dislikeDeltas = await handleDislikeInteraction(channel.guild, track);
+        playerEmbedOptions.likes += dislikeDeltas.likeDelta;
+        playerEmbedOptions.dislikes += dislikeDeltas.dislikeDelta;
+        await refreshTrackEmbed(playerEmbedOptions, message);
         break;
       case '📖':
         if (didOpenLyrics) return;
-        postLyrics(channel, track as CustomTrack);
+        postLyrics(lyricsClient, channel, track);
         didOpenLyrics = true;
         break;
     }
     reaction.users.remove(user);
   });
 };
-
-export function userInBotChannel(user: User, guild: Guild): boolean {
-  const channel = GetActiveChannel(guild);
-  let match = false;
-
-  channel?.members.forEach(member => {
-    if (member.id === user.id) {
-      match = true;
-    }
-  });
-
-  return match;
-}
-
-interface CustomTrack extends Track {
-  query: string;
-}
-
-async function postLyrics(channel: TextChannel, track: CustomTrack) {
-  channel.sendTyping();
-  let lyrics: string | undefined;
-  try {
-    let res = await lyricsClient.search(track.title);
-    if (res.lyrics) lyrics = res.lyrics;
-  } catch {
-    try {
-      let res = await lyricsClient.search(track.query);
-      if (res.lyrics) lyrics = res.lyrics;
-    } catch (error) {
-      console.warn(error);
-      return;
-    }
-  }
-
-  if (!lyrics) return;
-
-  lyrics = '\n' + 'Lyrics: ' + '\n\n' + lyrics;
-
-  return channel.send(lyrics.slice(0, 2000));
-}
-
-function waitForMS(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function raceWithTimeout(promise: Promise<unknown>, timeout: number) {
-  return Promise.race([promise, waitForMS(timeout)]);
-}
 
 interface TrackEmbedOptions {
   title: string;
@@ -237,6 +167,10 @@ interface TrackEmbedOptions {
   plays: Number;
   likes: Number;
   dislikes: Number;
+}
+
+async function refreshTrackEmbed(options: TrackEmbedOptions, message: Message): Promise<void> {
+  await message.edit({embeds: [generateTrackEmbed(options)]});
 }
 
 function generateTrackEmbed(options: TrackEmbedOptions): MessageEmbed {

@@ -1,6 +1,6 @@
 import type { Track } from 'discord-player';
 import type { Guild } from 'discord.js';
-import prisma from '../../../lib/PrismaClient';
+import prisma from "../../../../lib/PrismaClient";
 const addLike = async (track: Track, guild: Guild) => {
   const userId = track.requestedBy.id;
   try {

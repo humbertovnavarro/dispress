@@ -3,8 +3,8 @@ import {
   SlashCommandStringOption
 } from '@discordjs/builders';
 import { CommandInteraction, MessageEmbed } from 'discord.js';
-import generatePlaylist from '../helpers/generatePlaylist';
-import { UsePlayer, GetActiveChannel } from '../helpers/player';
+import generatePlaylist from '../lib/database/generatePlaylist';
+import { UsePlayer, GetActiveChannel } from '../lib/player/player';
 import { Queue, Track } from 'discord-player';
 const body = new SlashCommandBuilder()
   .setName('guildplaylist')

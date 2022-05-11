@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Queue } from 'discord-player';
 import { CommandInteraction } from 'discord.js';
-import { userInBotChannel, UsePlayer } from '../helpers/player';
-
+import { UsePlayer } from '../lib/player/player';
+import userInBotChannel from '../lib/utils/userInBotChannel';
 const body = new SlashCommandBuilder()
   .setName('pause')
   .setDescription('pauses the song queue');
