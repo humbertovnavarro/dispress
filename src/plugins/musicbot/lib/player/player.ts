@@ -13,7 +13,6 @@ import _ from 'lodash';
 import { QueueMeta } from '../../../../lib/dispress';
 import getTrackStatistics from '../database/getTrack';
 import handleLikeInteraction from './handleLikeInteraction';
-import handleDislikeInteraction from './handleDislikeInteraction';
 import postLyrics from './postLyrics';
 import userInBotChannel from '../utils/userInBotChannel';
 import { raceWithTimeout } from '../utils/promises';
@@ -41,8 +40,14 @@ export function UsePlayer(client: Client): Player {
   });
 
   player.on("botDisconnect", (queue: Queue) => {
+    cleanupCollectors();
     queue.destroy();
   });
+
+  player.on("channelEmpty", (queue: Queue) => {
+    cleanupCollectors();
+    queue.destroy();
+  })
 
   player.on('queueEnd', (queue: Queue) => {
     cleanupCollectors();
@@ -136,6 +141,10 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
   collector.on('collect', async (reaction, user) => {
     if (!message.guild || user.bot || !userInBotChannel(user, channel.guild))
       return;
+    let likeDeltas: {
+      likes: number,
+      dislikes: number
+    }
     switch (reaction.emoji.name) {
       case '⏸️':
         queue.setPaused(true);
@@ -150,18 +159,25 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
         player?.deleteQueue(channel.guild);
         break;
       case '❤️':
-        const likeDeltas = await handleLikeInteraction(channel.guild, track);
-        playerEmbedOptions.likes += likeDeltas.likeDelta;
-        playerEmbedOptions.dislikes += likeDeltas.dislikeDelta;
+        try {
+          likeDeltas = await handleLikeInteraction(channel.guild, track, false);
+        } catch(error) {
+          console.error(error);
+          break;
+        }
+        playerEmbedOptions.likes = likeDeltas.likes;
+        playerEmbedOptions.dislikes = likeDeltas.dislikes;
         await refreshTrackEmbed(playerEmbedOptions, message);
         break;
       case '💩':
-        const dislikeDeltas = await handleDislikeInteraction(
-          channel.guild,
-          track
-        );
-        playerEmbedOptions.likes += dislikeDeltas.likeDelta;
-        playerEmbedOptions.dislikes += dislikeDeltas.dislikeDelta;
+        try {
+          likeDeltas = await handleLikeInteraction(channel.guild, track, true);
+        } catch(error) {
+          console.error(error);
+          break;
+        }
+        playerEmbedOptions.likes = likeDeltas.likes;
+        playerEmbedOptions.dislikes = likeDeltas.dislikes;
         await refreshTrackEmbed(playerEmbedOptions, message);
         break;
       case '📖':

@@ -28,14 +28,7 @@ model Likes {
   song      String
   createdAt DateTime @default(now())
   guild     String
-}
-
-model Dislikes {
-  id        Int      @id @default(autoincrement())
-  user      String
-  song      String
-  createdAt DateTime @default(now())
-  guild     String
+  dislike   Boolean
 }
 
 model Plays {
