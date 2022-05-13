@@ -40,13 +40,19 @@ export function UsePlayer(client: Client): Player {
     trackStart(queue as Queue<QueueMeta>, track);
   });
 
+  player.on("botDisconnect", (queue: Queue) => {
+    queue.destroy();
+  });
+
   player.on('queueEnd', (queue: Queue) => {
     cleanupCollectors();
     queue.connection.disconnect();
   });
 
   player.on('botDisconnect', cleanupCollectors);
+
   player.on('connectionError', cleanupCollectors);
+  
   return player;
 }
 
