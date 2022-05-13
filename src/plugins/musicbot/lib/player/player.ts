@@ -1,3 +1,4 @@
+import "discord-player/smoothVolume"
 import { Player, Queue, Track } from 'discord-player';
 import {
   Client,
@@ -33,11 +34,17 @@ export function UsePlayer(client: Client): Player {
   player = new Player(client);
   lyricsClient = Lyrics.init();
   player.use('reverbnation', Reverbnation);
+
   player.on('trackStart', (queue, track) => {
     cleanupCollectors();
     trackStart(queue as Queue<QueueMeta>, track);
   });
-  player.on('queueEnd', cleanupCollectors);
+
+  player.on('queueEnd', (queue: Queue) => {
+    cleanupCollectors();
+    queue.connection.disconnect();
+  });
+
   player.on('botDisconnect', cleanupCollectors);
   player.on('connectionError', cleanupCollectors);
   return player;
