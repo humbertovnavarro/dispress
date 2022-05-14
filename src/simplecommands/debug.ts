@@ -16,11 +16,21 @@ const debug: SimpleCommand = {
             return await message.reply("You don't have permission to use this command.")
         }
         try {
+            // There are still some sneaky ways to get the token, the best practice of this command is to always use caution and never use it in a public channel.
+            if(javascript.includes("client.token"))  {
+                return message.channel.send("nice try");
+            }
             let results = eval(javascript) as {[key: string]: any}
+            if(typeof results == "string" && results == message.client.token) {
+                return message.channel.send("nice try");
+            }
             const resultsKeys = Object.keys(results);
             resultsKeys.forEach(key => {
                 if(typeof results[key] === "function") {
                     results[key] = results[key]?.toString();
+                }
+                if(results[key] === message.client.token) {
+                    results[key] = "nice try";
                 }
             });
             let resultsString = `${results}`;
