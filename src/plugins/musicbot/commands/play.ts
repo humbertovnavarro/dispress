@@ -6,7 +6,7 @@ import {
 import { Queue, Track } from 'discord-player';
 import { CommandInteraction } from 'discord.js';
 import { UsePlayer, GetActiveChannel } from '../lib/player/player';
-import { QueueMeta } from '../../../lib/dispress';
+import { QueueMeta } from '../../../lib/dispress/dispress';
 import searchForTrack from '../lib/player/searchForTrack';
 
 const body = new SlashCommandBuilder()

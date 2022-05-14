@@ -1,4 +1,4 @@
-import { Plugin } from '../../lib/dispress';
+import { Plugin } from '../../lib/dispress/dispress';
 import DiscordBot from '../../lib/dispress/DiscordBot';
 import { Configuration, OpenAIApi } from 'openai';
 import { Message, Util } from 'discord.js';

@@ -10,7 +10,7 @@ import {
 } from 'discord.js';
 import { Reverbnation, Lyrics } from '@discord-player/extractor';
 import _ from 'lodash';
-import { QueueMeta } from '../../../../lib/dispress';
+import { QueueMeta } from '../../../../lib/dispress/dispress';
 import getTrackStatistics from '../database/getTrack';
 import handleLikeInteraction from './handleLikeInteraction';
 import postLyrics from './postLyrics';
@@ -57,7 +57,7 @@ export function UsePlayer(client: Client): Player {
   player.on('botDisconnect', cleanupCollectors);
 
   player.on('connectionError', cleanupCollectors);
-  
+
   return player;
 }
 

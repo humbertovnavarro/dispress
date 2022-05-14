@@ -1,4 +1,4 @@
-import { Plugin } from '../../lib/dispress';
+import { Plugin } from '../../lib/dispress/dispress';
 import pause from './commands/pause';
 import queue from './commands/queue';
 import unpause from './commands/unpause';

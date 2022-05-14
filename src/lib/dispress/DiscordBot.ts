@@ -8,7 +8,7 @@ import {
 import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
 import { Routes } from 'discord-api-types/v9';
 import { REST } from '@discordjs/rest';
-import { BotOptions, Command, Plugin } from '../dispress';
+import { BotOptions, Command, Plugin } from './dispress';
 
 export default class DiscordBot extends DiscordClient {
   prefix: string = '!';

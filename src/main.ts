@@ -7,6 +7,9 @@ import anime from './slashcommands/anime';
 import uptime from './slashcommands/uptime';
 import PrismaClient from './lib/PrismaClient';
 import DiscordBot from './lib/dispress/DiscordBot';
+import SimpleCommandParser from "./plugins/simplecommandparser/plugin";
+import SimpleCommand from './plugins/simplecommandparser/SimpleCommand';
+import debug from "./simplecommands/debug";
 const discordBot = new DiscordBot({
   intents: [
     'GUILDS',
@@ -19,24 +22,51 @@ const discordBot = new DiscordBot({
 });
 
 const main = async () => {
+  init();
+  // Dereferencing and binding for readability
+  let { useCommand, usePlugin } = discordBot;
+  useCommand = useCommand.bind(discordBot);
+  usePlugin = usePlugin.bind(discordBot);
+
+  const useSimpleCommand = SimpleCommandParser.context?.useCommand as (command: SimpleCommand) => void;
+  //#region Simple Commands
+  useSimpleCommand(debug)
+  //#endregion
+  //#region Slash Commands
+  useCommand(anime);
+  useCommand(waifu);
+  //#endregion
+  //#region Plugins
+  usePlugin(musicbot);
+  usePlugin(uptime);
+  usePlugin(chatbot);
+  usePlugin(SimpleCommandParser);
+  //#endregion
+  listen();
+};
+
+/**
+ * Initialise the database and other components
+ */
+const init = async () => {
   try {
     await PrismaClient.$connect();
   } catch (error) {
     console.error(error);
     process.exit(1);
   }
-
-  discordBot.useCommand(anime);
-  discordBot.useCommand(waifu);
-  discordBot.usePlugin(musicbot);
-  discordBot.usePlugin(uptime);
-  discordBot.usePlugin(chatbot);
-
-  const port = process.env.EXPRESS_PORT || 4000;
-
+}
+/**
+ * Start the bot and any other sockets
+ */
+const listen = async () => {
   if (require.main === module) {
     discordBot.login(process.env.DISCORD_TOKEN);
   }
-};
+  discordBot.on("ready", () => {
+    console.log("Logged in")
+  })
+}
+
 main();
 export default discordBot;
