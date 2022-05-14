@@ -9,7 +9,7 @@
     "resolveJsonModule": true,
     "outDir": "dist",
     "rootDir": "src",
-    "typeRoots": ["./types"]
+    "typeRoots": ["./src/types"]
   },
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

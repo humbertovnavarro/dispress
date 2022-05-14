@@ -46,3 +46,8 @@ model Playlists {
   song         String
   user         String
 }
+
+model Config {
+  key  String @id
+  value   String?
+}
