@@ -1,5 +1,4 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import { getEnv } from "./lib/config";
 import waifu from './slashcommands/waifu';
 import musicbot from './plugins/musicbot/plugin';
 import chatbot from './plugins/chatbot/plugin';
@@ -61,7 +60,7 @@ const init = async () => {
  */
 const listen = async () => {
   if (require.main === module) {
-    discordBot.login(process.env.DISCORD_TOKEN);
+    discordBot.login(getEnv("DISCORD_TOKEN"));
   }
   discordBot.on("ready", () => {
     console.log("Logged in")

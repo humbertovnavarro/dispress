@@ -1,6 +1,8 @@
 import prisma from "./PrismaClient";
 import CONFIG from "../config.json";
 import type { Config } from "@prisma/client";
+import dotenv from "dotenv";
+dotenv.config();
 const setKey = async (key: string, value: string): Promise<Config> => {
     const existing = await prisma.config.findUnique({
         where: {
@@ -35,9 +37,6 @@ const deleteKey = async (key: string): Promise<Config> => {
 }
 
 const getKey = async (key: string): Promise<string> => {
-    if(process.env[key]) {
-        return process.env[key] as string;
-    }
     const configJSON = CONFIG as {[key: string]: number | boolean | string};
     if(configJSON[key]) return configJSON[key].toString();
     const config = await prisma.config.findUnique({
@@ -48,6 +47,18 @@ const getKey = async (key: string): Promise<string> => {
     return config?.value || "";
 }
 
+const getConfig = (key: string) : string | undefined => {
+    const configJSON = CONFIG as {[key: string]: number | boolean | string};
+    if(configJSON[key]) return configJSON[key].toString();
+    return undefined;
+}
+
+const getEnv = (key: string) : string | undefined => {
+    if(process.env[key]) {
+        return process.env[key] as string;
+    }
+}
+
 export {
-    getKey, setKey, deleteKey
+    getKey, setKey, deleteKey, getEnv, getConfig
 }
