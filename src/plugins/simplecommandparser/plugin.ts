@@ -2,7 +2,7 @@ import { Plugin } from '../../lib/dispress/dispress';
 import DiscordBot from '../../lib/dispress/DiscordBot';
 import { Message } from 'discord.js';
 import SimpleCommand from './SimpleCommand';
-import { getKey } from '../../lib/config/config';
+import { getKey } from '../../lib/config';
 const commands: Map<string, SimpleCommand> = new Map<string, SimpleCommand>();
 let prefix: string = "!"
 

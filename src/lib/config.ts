@@ -1,5 +1,5 @@
-import prisma from "../PrismaClient";
-import CONFIG from "../../config.json";
+import prisma from "./PrismaClient";
+import CONFIG from "../config.json";
 import type { Config } from "@prisma/client";
 const setKey = async (key: string, value: string): Promise<Config> => {
     const existing = await prisma.config.findUnique({
@@ -35,6 +35,9 @@ const deleteKey = async (key: string): Promise<Config> => {
 }
 
 const getKey = async (key: string): Promise<string> => {
+    if(process.env[key]) {
+        return process.env[key] as string;
+    }
     const configJSON = CONFIG as {[key: string]: number | boolean | string};
     if(configJSON[key]) return configJSON[key].toString();
     const config = await prisma.config.findUnique({
