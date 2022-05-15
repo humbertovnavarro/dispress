@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import SimpleCommand from "../plugins/simplecommandparser/SimpleCommand";
-import { getKey } from "../lib/config";
+import { getConfig, getKey } from "../lib/config";
 import os from "os";
 import path from "path";
 import { promises as fs } from "fs";
@@ -11,9 +11,9 @@ const debug: SimpleCommand = {
     handler: async (message: Message, args: string[]): Promise<unknown> => {
         const javascript = args.slice(1).join(" ");
         if(!javascript) return await message.reply("No javascript to evaluate");
-        const developer = await getKey("command.debug.developer");
+        const developer = getConfig("owner");
         if(developer != message.author.id.toString()) {
-            return await message.reply("You don't have permission to use this command.")
+            return await message.reply("Only the bot operator can use this command");
         }
         try {
             // There are still some sneaky ways to get the token, the best practice of this command is to always use caution and never use it in a public channel.

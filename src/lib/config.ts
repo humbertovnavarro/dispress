@@ -37,8 +37,6 @@ const deleteKey = async (key: string): Promise<Config> => {
 }
 
 const getKey = async (key: string): Promise<string> => {
-    const configJSON = CONFIG as {[key: string]: number | boolean | string};
-    if(configJSON[key]) return configJSON[key].toString();
     const config = await prisma.config.findUnique({
         where: {
             key

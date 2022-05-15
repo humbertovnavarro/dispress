@@ -9,6 +9,7 @@ import DiscordBot from './lib/dispress/DiscordBot';
 import SimpleCommandParser from "./plugins/simplecommandparser/plugin";
 import SimpleCommand from './plugins/simplecommandparser/SimpleCommand';
 import debug from "./simplecommands/debug";
+import admin from "./plugins/admin/plugin";
 const discordBot = new DiscordBot({
   intents: [
     'GUILDS',
@@ -40,6 +41,7 @@ const main = async () => {
   usePlugin(uptime);
   usePlugin(chatbot);
   usePlugin(SimpleCommandParser);
+  usePlugin(admin);
   //#endregion
   listen();
 };
