@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 import SimpleCommand from "../plugins/simplecommandparser/SimpleCommand";
-import { getKey } from "../lib/config/config";
+import { getKey } from "../lib/config";
 import os from "os";
 import path from "path";
 import { promises as fs } from "fs";
