@@ -45,9 +45,9 @@ const getKey = async (key: string): Promise<string> => {
     return config?.value || "";
 }
 
-const getConfig = (key: string) : string | undefined => {
-    const configJSON = CONFIG as {[key: string]: number | boolean | string};
-    if(configJSON[key]) return configJSON[key].toString();
+const getConfig = <T = string>(key: string) : T | undefined => {
+    const configJSON = CONFIG as {[key: string]: any };
+    if(configJSON[key]) return configJSON[key] as T;
     return undefined;
 }
 

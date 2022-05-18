@@ -1,5 +1,8 @@
 {
     "command.debug.developer": "141320459244404736",
     "config.musicbot.dislikeThreshold": "1",
-    "owner": "141320459244404736"
+    "owner": "141320459244404736",
+    "guildwhitelist": [
+        "696300344161992706"
+    ]
 }

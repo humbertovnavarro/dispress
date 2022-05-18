@@ -5,3 +5,4 @@ dist
 *.log
 *.db
 node_modules
+discord.log
