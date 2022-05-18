@@ -16,11 +16,12 @@ export default async function handleLikeInteraction(
   likes: number;
   dislikes: number;
 }> {
+  const user = track.requestedBy.id;
   const exists = await prisma.likes.findFirst({
     where: {
       guild: guild.id,
       song: track.url,
-      user: track.requestedBy.id
+      user
     }
   });
   if(dislike === exists?.dislike) {
@@ -28,7 +29,7 @@ export default async function handleLikeInteraction(
       where: {
         guild: guild.id,
         song: track.url,
-        user: track.requestedBy.id
+        user
       }
     });
     return await getLikesAndDislikes(guild, track);
@@ -38,7 +39,7 @@ export default async function handleLikeInteraction(
       where: {
         guild: guild.id,
         song: track.url,
-        user: track.requestedBy.id,
+        user
       },
       data: {
         dislike
@@ -50,7 +51,7 @@ export default async function handleLikeInteraction(
     data: {
       guild: guild.id,
       song: track.url,
-      user: track.requestedBy.id,
+      user,
       dislike
     }
   });

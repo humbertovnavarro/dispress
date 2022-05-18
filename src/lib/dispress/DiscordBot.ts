@@ -28,7 +28,9 @@ export default class DiscordBot extends DiscordClient {
       this.prefix = options.prefix;
     }
   }
-
+  async login(token?: string | undefined) {
+    return super.login(token);
+  }
   private async ready() {
     this.plugins.forEach(plugin => {
       try {
@@ -52,7 +54,7 @@ export default class DiscordBot extends DiscordClient {
             body: this.slashCommands
           })
           .catch(error => {
-            console.error(error.message);
+            console.error(`Could not update slash commands for guild ${guild.name}, caused by "${error.message}"`);
           });
     });
     this.commands.forEach(command => {

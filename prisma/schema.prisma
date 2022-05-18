@@ -51,3 +51,14 @@ model Config {
   key  String @id
   value   String?
 }
+
+model GuildsWhitelist {
+  id        String @id
+}
+
+model Logs {
+  id        String @id @default(cuid())
+  createdAt DateTime @default(now())
+  text      String
+  level     String
+}

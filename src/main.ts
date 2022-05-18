@@ -1,3 +1,4 @@
+import "./lib/customConsole";
 import { getEnv } from "./lib/config";
 import waifu from './slashcommands/waifu';
 import musicbot from './plugins/musicbot/plugin';
@@ -10,6 +11,7 @@ import SimpleCommandParser from "./plugins/simplecommandparser/plugin";
 import SimpleCommand from './plugins/simplecommandparser/SimpleCommand';
 import debug from "./simplecommands/debug";
 import admin from "./plugins/admin/plugin";
+import guildwhitelist from "./plugins/guildwhitelist/plugin";
 const discordBot = new DiscordBot({
   intents: [
     'GUILDS',
@@ -42,6 +44,7 @@ const main = async () => {
   usePlugin(chatbot);
   usePlugin(SimpleCommandParser);
   usePlugin(admin);
+  usePlugin(guildwhitelist);
   //#endregion
   listen();
 };
@@ -61,11 +64,16 @@ const init = async () => {
  * Start the bot and any other sockets
  */
 const listen = async () => {
+  const token = getEnv('DISCORD_TOKEN');
+  if (!token) {
+    console.error('No token found, please set the DISCORD_TOKEN environment variable');
+    process.exit(1);
+  }
   if (require.main === module) {
-    discordBot.login(getEnv("DISCORD_TOKEN"));
+    discordBot.login(token);
   }
   discordBot.on("ready", () => {
-    console.log("Logged in")
+    console.log(`Logged in as ${discordBot.user?.tag}`);
   })
 }
 
