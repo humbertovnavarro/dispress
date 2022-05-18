@@ -20,7 +20,7 @@ export default async function handleLikeInteraction(
     where: {
       guild: guild.id,
       song: track.url,
-      user: track.requestedBy.id 
+      user: track.requestedBy.id
     }
   });
   if(dislike === exists?.dislike) {
