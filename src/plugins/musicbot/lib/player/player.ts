@@ -1,4 +1,4 @@
-import "discord-player/smoothVolume"
+import 'discord-player/smoothVolume';
 import { Player, Queue, Track } from 'discord-player';
 import {
   Client,
@@ -39,15 +39,15 @@ export function UsePlayer(client: Client): Player {
     trackStart(queue as Queue<QueueMeta>, track);
   });
 
-  player.on("botDisconnect", (queue: Queue) => {
+  player.on('botDisconnect', (queue: Queue) => {
     cleanupCollectors();
     queue.destroy();
   });
 
-  player.on("channelEmpty", (queue: Queue) => {
+  player.on('channelEmpty', (queue: Queue) => {
     cleanupCollectors();
     queue.destroy();
-  })
+  });
 
   player.on('queueEnd', (queue: Queue) => {
     cleanupCollectors();
@@ -142,9 +142,9 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
     if (!message.guild || user.bot || !userInBotChannel(user, channel.guild))
       return;
     let likeDeltas: {
-      likes: number,
-      dislikes: number
-    }
+      likes: number;
+      dislikes: number;
+    };
     switch (reaction.emoji.name) {
       case '⏸️':
         queue.setPaused(true);
@@ -161,7 +161,7 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
       case '❤️':
         try {
           likeDeltas = await handleLikeInteraction(channel.guild, track, false);
-        } catch(error) {
+        } catch (error) {
           console.error(error);
           break;
         }
@@ -172,7 +172,7 @@ export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
       case '💩':
         try {
           likeDeltas = await handleLikeInteraction(channel.guild, track, true);
-        } catch(error) {
+        } catch (error) {
           console.error(error);
           break;
         }
