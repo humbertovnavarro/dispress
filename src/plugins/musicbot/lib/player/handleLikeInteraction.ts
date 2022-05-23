@@ -1,7 +1,7 @@
-import prisma from "../../../../lib/PrismaClient";
+import prisma from '../../../../lib/PrismaClient';
 import { Track } from 'discord-player';
 import { Guild } from 'discord.js';
-import getLikesAndDislikes from "../database/getLikesAndDislikes";
+import getLikesAndDislikes from '../database/getLikesAndDislikes';
 /**
  *
  * @param guild
@@ -24,7 +24,7 @@ export default async function handleLikeInteraction(
       user
     }
   });
-  if(dislike === exists?.dislike) {
+  if (dislike === exists?.dislike) {
     await prisma.likes.deleteMany({
       where: {
         guild: guild.id,
@@ -33,8 +33,7 @@ export default async function handleLikeInteraction(
       }
     });
     return await getLikesAndDislikes(guild, track);
-  }
-  else if(exists) {
+  } else if (exists) {
     await prisma.likes.updateMany({
       where: {
         guild: guild.id,

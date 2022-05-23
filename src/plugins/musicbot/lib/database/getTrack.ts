@@ -15,5 +15,5 @@ export default async function getTrackStatistics(track: Track, guild: Guild) {
     plays: song?.plays || 1,
     likes,
     dislikes
-  }
+  };
 }

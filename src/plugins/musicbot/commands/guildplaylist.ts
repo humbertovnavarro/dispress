@@ -87,10 +87,15 @@ export default {
     for (let i = 0; i < playlist.length; i++) {
       const url = playlist[i];
       try {
-        const track = await searchForTrack(musicPlayer, interaction.guild, interaction.user, url);
-        if(!track) continue;
+        const track = await searchForTrack(
+          musicPlayer,
+          interaction.guild,
+          interaction.user,
+          url
+        );
+        if (!track) continue;
         queue.addTrack(track);
-      } catch(error) {
+      } catch (error) {
         console.error(error);
       }
     }

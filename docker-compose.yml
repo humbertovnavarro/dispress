@@ -1,0 +1,7 @@
+services:
+  bot:
+    build: .
+    volumes:
+      - ./prisma/userdata.db:/app/prisma/userdata.db
+    env_file:
+      - .env

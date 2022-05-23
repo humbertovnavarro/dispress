@@ -1,5 +1,5 @@
-import "./lib/customConsole";
-import { getEnv } from "./lib/config";
+import './lib/customConsole';
+import { assertGetEnv } from './lib/config';
 import waifu from './slashcommands/waifu';
 import musicbot from './plugins/musicbot/plugin';
 import chatbot from './plugins/chatbot/plugin';
@@ -7,11 +7,11 @@ import anime from './slashcommands/anime';
 import uptime from './slashcommands/uptime';
 import PrismaClient from './lib/PrismaClient';
 import DiscordBot from './lib/dispress/DiscordBot';
-import SimpleCommandParser from "./plugins/simplecommandparser/plugin";
+import SimpleCommandParser from './plugins/simplecommandparser/plugin';
 import SimpleCommand from './plugins/simplecommandparser/SimpleCommand';
-import debug from "./simplecommands/debug";
-import admin from "./plugins/admin/plugin";
-import guildwhitelist from "./plugins/guildwhitelist/plugin";
+import debug from './simplecommands/debug';
+import admin from './plugins/admin/plugin';
+import guildwhitelist from './plugins/guildwhitelist/plugin';
 const discordBot = new DiscordBot({
   intents: [
     'GUILDS',
@@ -30,9 +30,11 @@ const main = async () => {
   useCommand = useCommand.bind(discordBot);
   usePlugin = usePlugin.bind(discordBot);
 
-  const useSimpleCommand = SimpleCommandParser.context?.useCommand as (command: SimpleCommand) => void;
+  const useSimpleCommand = SimpleCommandParser.context?.useCommand as (
+    command: SimpleCommand
+  ) => void;
   //#region Simple Commands
-  useSimpleCommand(debug)
+  useSimpleCommand(debug);
   //#endregion
   //#region Slash Commands
   useCommand(anime);
@@ -59,23 +61,18 @@ const init = async () => {
     console.error(error);
     process.exit(1);
   }
-}
+};
 /**
  * Start the bot and any other sockets
  */
 const listen = async () => {
-  const token = getEnv('DISCORD_TOKEN');
-  if (!token) {
-    console.error('No token found, please set the DISCORD_TOKEN environment variable');
-    process.exit(1);
-  }
   if (require.main === module) {
-    discordBot.login(token);
+    discordBot.login(assertGetEnv('DISCORD_TOKEN'));
   }
-  discordBot.on("ready", () => {
+  discordBot.on('ready', () => {
     console.log(`Logged in as ${discordBot.user?.tag}`);
-  })
-}
+  });
+};
 
 main();
 export default discordBot;

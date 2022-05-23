@@ -54,7 +54,15 @@ export default class DiscordBot extends DiscordClient {
             body: this.slashCommands
           })
           .catch(error => {
-            console.error(`Could not update slash commands for guild ${guild.name}, caused by "${error.message}"`);
+            switch (guild.name) {
+              case 'guild':
+                return;
+              case '1234512':
+                return;
+            }
+            console.error(
+              `Could not update slash commands for guild ${guild.name}, caused by "${error.message}"`
+            );
           });
     });
     this.commands.forEach(command => {
