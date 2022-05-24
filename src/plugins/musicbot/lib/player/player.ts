@@ -1,4 +1,3 @@
-import 'discord-player/smoothVolume';
 import { Player, Queue, Track } from 'discord-player';
 import {
   Client,

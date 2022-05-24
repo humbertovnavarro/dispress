@@ -12,27 +12,24 @@ import SimpleCommand from './plugins/simplecommandparser/SimpleCommand';
 import debug from './simplecommands/debug';
 import admin from './plugins/admin/plugin';
 import guildwhitelist from './plugins/guildwhitelist/plugin';
-const discordBot = new DiscordBot({
-  intents: [
-    'GUILDS',
-    'GUILD_MESSAGES',
-    'GUILD_VOICE_STATES',
-    'GUILD_MESSAGE_REACTIONS'
-  ],
-  restTimeOffset: 0,
-  prefix: '/'
-});
-
-const main = async () => {
-  init();
+const botFactory = async () => {
+  const discordBot = new DiscordBot({
+    intents: [
+      'GUILDS',
+      'GUILD_MESSAGES',
+      'GUILD_VOICE_STATES',
+      'GUILD_MESSAGE_REACTIONS'
+    ],
+    restTimeOffset: 0,
+    prefix: '/'
+  });
   // Dereferencing and binding for readability
-  let { useCommand, usePlugin } = discordBot;
-  useCommand = useCommand.bind(discordBot);
-  usePlugin = usePlugin.bind(discordBot);
-
   const useSimpleCommand = SimpleCommandParser.context?.useCommand as (
     command: SimpleCommand
   ) => void;
+  let { useCommand, usePlugin } = discordBot;
+  useCommand = useCommand.bind(discordBot);
+  usePlugin = usePlugin.bind(discordBot);
   //#region Simple Commands
   useSimpleCommand(debug);
   //#endregion
@@ -48,24 +45,17 @@ const main = async () => {
   usePlugin(admin);
   usePlugin(guildwhitelist);
   //#endregion
-  listen();
+  return discordBot;
 };
 
-/**
- * Initialise the database and other components
- */
-const init = async () => {
+const main = async () => {
   try {
     await PrismaClient.$connect();
   } catch (error) {
     console.error(error);
     process.exit(1);
   }
-};
-/**
- * Start the bot and any other sockets
- */
-const listen = async () => {
+  const discordBot = await botFactory();
   if (require.main === module) {
     discordBot.login(assertGetEnv('DISCORD_TOKEN'));
   }
@@ -73,6 +63,7 @@ const listen = async () => {
     console.log(`Logged in as ${discordBot.user?.tag}`);
   });
 };
-
-main();
-export default discordBot;
+if(require.main === module) {
+  main();
+}
+export default botFactory;
