@@ -7,8 +7,7 @@
     "test": "jest",
     "dev": "nodemon src/main.ts",
     "build": "tsc",
-    "start": "node dist/main.js",
-    "postinstall": "prisma db push"
+    "start": "node dist/main.js"
   },
   "keywords": [
     "discord",
@@ -16,7 +15,7 @@
     "framework"
   ],
   "author": "Humberto Navarro",
-  "license": "GPL-2.0-only",
+  "license": "All rights reserved",
   "dependencies": {
     "@discord-player/downloader": "^3.0.1",
     "@discord-player/extractor": "^3.0.2",
@@ -56,9 +55,14 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "__tests__",
       "dist"
     ],
     "delay": 2500
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn jest --bail",
+      "pre-push": "yarn prettier --write" 
+    }
   }
 }

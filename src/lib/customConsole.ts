@@ -93,8 +93,8 @@ function getColor(level: LogLevel) {
 }
 
 processors.push(function (log: string) {
-  const location = path.resolve(getConfig('LOG_FILE') || './discord.log');
-  fs.writeFileSync('./log.txt', log + '\n', { flag: 'a' });
+  const location = path.resolve(getConfig('LOG_FILE') || './dispress.log');
+  fs.writeFileSync('./dispress.log', log + '\n', { flag: 'a' });
 });
 
 processors.push(async function (log: string, level: LogLevel) {
