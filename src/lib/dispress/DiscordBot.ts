@@ -31,7 +31,7 @@ export default class DiscordBot extends DiscordClient {
   async login(token?: string | undefined) {
     return super.login(token);
   }
-  private async ready() {
+  private async triggerPluginOnReady() {
     this.plugins.forEach(plugin => {
       try {
         plugin.onReady?.(this);
@@ -40,6 +40,20 @@ export default class DiscordBot extends DiscordClient {
         console.error(`Error while running plugin: ${plugin.name}`);
       }
     });
+  }
+  private async triggerCommandOnReady() {
+    this.commands.forEach(command => {
+      try {
+        command.onReady?.(this);
+      } catch (error) {
+        console.error(error);
+        console.error(
+          `Error while running ready function for command: ${command.body.name}`
+        );
+      }
+    });
+  }
+  private async postSlashCommands() {
     if (this.token) {
       this.slashCommandRest.setToken(this.token);
     } else {
@@ -65,16 +79,26 @@ export default class DiscordBot extends DiscordClient {
             );
           });
     });
-    this.commands.forEach(command => {
-      try {
-        command.onReady?.(this);
-      } catch (error) {
-        console.error(error);
-        console.error(
-          `Error while running ready function for command: ${command.body.name}`
-        );
+  }
+  private async triggerLoadedCallbacks() {
+    const commandsArray = Array.from(this.commands.values());
+    const pluginsArray = Array.from(this.plugins.values());
+    this.plugins.forEach((plugin: Plugin) => {
+      if(plugin.onPluginsLoaded) {
+        plugin.onPluginsLoaded(pluginsArray);
+      }
+      if(plugin.onCommandsLoaded) {
+        plugin.onCommandsLoaded(commandsArray);
       }
     });
+  }
+  private async ready() {
+    const onCommandsLoadedCallbacks: Array<(commands: Command[]) => unknown> = [];
+    const onPluginsLoadedCallbacks: Array<(plugins: Plugin[]) => unknown> = [];
+    this.triggerPluginOnReady();
+    this.postSlashCommands();
+    this.triggerCommandOnReady();
+    this.triggerLoadedCallbacks();
   }
 
   private async guildCreate(guild: Guild) {

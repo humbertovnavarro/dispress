@@ -46,6 +46,8 @@ export interface Plugin<PluginContext = unknown> {
   /**
    * Any state that the plugin wants to share with other plugins and commands
    */
+  onCommandsLoaded?: (commands: Command[]) => unknown;
+  onPluginsLoaded?: (plugins: Plugin[]) => unknown;
   context?: PluginContext;
 }
 
