@@ -60,11 +60,5 @@
       "dist"
     ],
     "delay": 2500
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn jest --bail",
-      "pre-push": "yarn prettier --write"
-    }
   }
 }
