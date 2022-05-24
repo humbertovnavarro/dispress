@@ -5,7 +5,7 @@ import { Guild, Message, Util } from 'discord.js';
 import { getEnv } from '../../lib/config';
 
 const configuration = new Configuration({
-  apiKey: getEnv("OPENAI_API_KEY")
+  apiKey: getEnv('OPENAI_API_KEY')
 });
 
 const openai = new OpenAIApi(configuration);
@@ -18,8 +18,7 @@ const plugin: Plugin = {
     bot.on('messageCreate', async (message: Message) => {
       if (message.author.bot) return;
       if (message.content.trim().toLowerCase() === 'dispress forget') {
-        if(message.guild)
-        chatGuildHistoryMap.set(message.guild, []);
+        if (message.guild) chatGuildHistoryMap.set(message.guild, []);
         try {
           message.reply('I forgot everything.');
         } catch (error) {
@@ -65,11 +64,10 @@ interface ChatMessage {
   message: string;
 }
 
-
 const maxChatHistoryLength = 10;
 
 async function AiReply(message: Message): Promise<string | void> {
-  if(!message.guild) return;
+  if (!message.guild) return;
   const content = Util.cleanContent(message.content, message.channel).trim();
   const userMessage: ChatMessage = {
     username: message.author.username,
