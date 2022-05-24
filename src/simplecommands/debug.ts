@@ -1,14 +1,16 @@
 import { Message } from 'discord.js';
 import SimpleCommand from '../plugins/simplecommandparser/SimpleCommand';
-import { getConfig } from '../lib/config';
+import { getConfig, getEnv } from '../lib/config';
 import os from 'os';
 import path from 'path';
 import { promises as fs } from 'fs';
 const MAX_DISCORD_MESSAGE_LENGTH = 2000;
+const debugMode = getEnv("DEBUG");
 const debug: SimpleCommand = {
   name: 'debug',
   aliases: ['eval', 'evaluate', 'cal', 'calc'],
   handler: async (message: Message, args: string[]): Promise<unknown> => {
+    if(!debug) return;
     const javascript = args.slice(1).join(' ');
     if (!javascript) return await message.reply('No javascript to evaluate');
     const developer = getConfig('owner');
