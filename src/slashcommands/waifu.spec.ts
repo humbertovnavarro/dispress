@@ -4,7 +4,7 @@ describe('Anime slash command tests', () => {
   test('Assert body', () => {
     expect(waifu.body.name).toBe('waifu');
     expect(waifu.body.description).toBe('Get a random waifu');
-    expect(waifu.body.options.length).toBe(2);
+    expect(waifu.body.options.length).toBe(3);
   });
   test('Get response works as intended', () => {
     const user = {

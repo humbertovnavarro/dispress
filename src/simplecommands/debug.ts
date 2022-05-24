@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import SimpleCommand from '../plugins/simplecommandparser/SimpleCommand';
-import { getConfig, getKey } from '../lib/config';
+import { getConfig } from '../lib/config';
 import os from 'os';
 import path from 'path';
 import { promises as fs } from 'fs';
@@ -16,7 +16,7 @@ const debug: SimpleCommand = {
       return await message.reply('Only the bot operator can use this command');
     }
     try {
-      // There are still some sneaky ways to get the token, the best practice of this command is to always use caution and never use it in a public channel.
+      // There are still some sneaky ways to get the token, the best practice of this command is to always use caution.
       if (javascript.includes('client.token')) {
         return message.channel.send('nice try');
       }
