@@ -9,7 +9,8 @@ import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
 import { Routes } from 'discord-api-types/v9';
 import { REST } from '@discordjs/rest';
 import { BotOptions, Command, Plugin } from './dispress';
-
+import dependencyChecker from "../../plugins/dependencycheck/plugin";
+import simpleCommandParser from "../../plugins/simplecommandparser/plugin";
 export default class DiscordBot extends DiscordClient {
   prefix: string = '!';
   slashCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
@@ -27,6 +28,9 @@ export default class DiscordBot extends DiscordClient {
     if (options.prefix) {
       this.prefix = options.prefix;
     }
+    // Built in plugins
+    this.usePlugin(dependencyChecker);
+    this.usePlugin(simpleCommandParser);
   }
   // @override
   async login(token?: string | undefined) {
