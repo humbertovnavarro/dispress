@@ -28,6 +28,7 @@ export default class DiscordBot extends DiscordClient {
       this.prefix = options.prefix;
     }
   }
+  // @override
   async login(token?: string | undefined) {
     return super.login(token);
   }
