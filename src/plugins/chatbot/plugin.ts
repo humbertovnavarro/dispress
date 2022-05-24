@@ -1,13 +1,15 @@
 import { Plugin } from '../../lib/dispress/dispress';
 import DiscordBot from '../../lib/dispress/DiscordBot';
 import { Configuration, OpenAIApi } from 'openai';
-import { Message, Util } from 'discord.js';
+import { Guild, Message, Util } from 'discord.js';
+import { getEnv } from '../../lib/config';
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: getEnv("OPENAI_API_KEY")
 });
 
 const openai = new OpenAIApi(configuration);
+const chatGuildHistoryMap: Map<Guild, ChatMessage[]> = new Map();
 const plugin: Plugin = {
   name: 'chatbot',
   onReady: (bot: DiscordBot) => {
@@ -15,9 +17,9 @@ const plugin: Plugin = {
     if (!uid) return;
     bot.on('messageCreate', async (message: Message) => {
       if (message.author.bot) return;
-
-      if (message.content.trim().toLowerCase() === 'patrick forget') {
-        chatHistory = [];
+      if (message.content.trim().toLowerCase() === 'dispress forget') {
+        if(message.guild)
+        chatGuildHistoryMap.set(message.guild, []);
         try {
           message.reply('I forgot everything.');
         } catch (error) {
@@ -26,10 +28,10 @@ const plugin: Plugin = {
         return;
       }
 
-      if (message.content.trim().toLowerCase().startsWith('patrick raw')) {
+      if (message.content.trim().toLowerCase().startsWith('dispress raw')) {
         try {
           const completion = await openai.createCompletion('text-davinci-002', {
-            prompt: message.content.substring('patrick raw'.length + 1),
+            prompt: message.content.substring('dispress raw'.length + 1),
             temperature: 0.6,
             max_tokens: 2000
           });
@@ -43,7 +45,7 @@ const plugin: Plugin = {
 
       const doAiReply =
         Math.random() > 0.96 ||
-        message.content.toLowerCase().includes('patrick');
+        message.content.toLowerCase().includes('dispress');
       if (doAiReply) {
         try {
           const reply = await AiReply(message);
@@ -63,22 +65,24 @@ interface ChatMessage {
   message: string;
 }
 
-let chatHistory: ChatMessage[] = [];
+
 const maxChatHistoryLength = 10;
 
 async function AiReply(message: Message): Promise<string | void> {
+  if(!message.guild) return;
   const content = Util.cleanContent(message.content, message.channel).trim();
   const userMessage: ChatMessage = {
     username: message.author.username,
     message: content
   };
+  const chatHistory = chatGuildHistoryMap.get(message.guild) || [];
   chatHistory.push(userMessage);
   const prompt = `
 The following is a conversation with an AI assistant within a group chat. The next line is the AI.
 
 Kamaii: Who are you?
 
-AI: My name is Patrick. I am an AI assistant created by you.
+AI: My name is Dispress. I am an AI assistant, how may I assist you?
 
 ${chatHistory.map(message => `${message.username}: ${message.message}\n\n`)}
 `;
@@ -105,6 +109,7 @@ ${chatHistory.map(message => `${message.username}: ${message.message}\n\n`)}
   if (chatHistory.length >= 10) {
     chatHistory.shift();
   }
+  chatGuildHistoryMap.set(message.guild, chatHistory);
   return botMessageContent.trim();
 }
 

@@ -52,6 +52,12 @@ model Config {
   value   String?
 }
 
+model GuildConfig {
+  guild String @id
+  key String
+  value String?
+}
+
 model GuildsWhitelist {
   id        String @id
 }
