@@ -63,7 +63,7 @@ const main = async () => {
     console.log(`Logged in as ${discordBot.user?.tag}`);
   });
 };
-if(require.main === module) {
+if (require.main === module) {
   main();
 }
 export default botFactory;

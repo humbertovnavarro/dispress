@@ -84,16 +84,17 @@ export default class DiscordBot extends DiscordClient {
     const commandsArray = Array.from(this.commands.values());
     const pluginsArray = Array.from(this.plugins.values());
     this.plugins.forEach((plugin: Plugin) => {
-      if(plugin.onPluginsLoaded) {
+      if (plugin.onPluginsLoaded) {
         plugin.onPluginsLoaded(pluginsArray);
       }
-      if(plugin.onCommandsLoaded) {
+      if (plugin.onCommandsLoaded) {
         plugin.onCommandsLoaded(commandsArray);
       }
     });
   }
   private async ready() {
-    const onCommandsLoadedCallbacks: Array<(commands: Command[]) => unknown> = [];
+    const onCommandsLoadedCallbacks: Array<(commands: Command[]) => unknown> =
+      [];
     const onPluginsLoadedCallbacks: Array<(plugins: Plugin[]) => unknown> = [];
     this.triggerPluginOnReady();
     this.postSlashCommands();

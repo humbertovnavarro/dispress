@@ -39,9 +39,9 @@ const body = new SlashCommandBuilder()
   )
   .addBooleanOption(
     new SlashCommandBooleanOption()
-    .setName("nsfw")
-    .setDescription("Posts a nsfw waifu in a nsfw channel.")
-  )
+      .setName('nsfw')
+      .setDescription('Posts a nsfw waifu in a nsfw channel.')
+  );
 export default {
   body,
   handler: async (interaction: CommandInteraction) => {
@@ -55,9 +55,11 @@ export default {
       return interaction.reply('Command must be used in a text channel');
     }
     try {
-      const nsfw = interaction.options.getBoolean("nsfw", false);
-      if(!channel.nsfw && nsfw) {
-        return interaction.reply("You cannot send a nsfw waifu in a sfw channel!");
+      const nsfw = interaction.options.getBoolean('nsfw', false);
+      if (!channel.nsfw && nsfw) {
+        return interaction.reply(
+          'You cannot send a nsfw waifu in a sfw channel!'
+        );
       }
       const resp = await axios.get(
         `https://api.waifu.pics/${nsfw ? 'nsfw' : 'sfw'}/${category}`

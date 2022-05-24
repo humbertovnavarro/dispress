@@ -5,12 +5,12 @@ import os from 'os';
 import path from 'path';
 import { promises as fs } from 'fs';
 const MAX_DISCORD_MESSAGE_LENGTH = 2000;
-const debugMode = getEnv("DEBUG");
+const debugMode = getEnv('DEBUG');
 const debug: SimpleCommand = {
   name: 'debug',
   aliases: ['eval', 'evaluate', 'cal', 'calc'],
   handler: async (message: Message, args: string[]): Promise<unknown> => {
-    if(!debug) return;
+    if (!debug) return;
     const javascript = args.slice(1).join(' ');
     if (!javascript) return await message.reply('No javascript to evaluate');
     const developer = getConfig('owner');
