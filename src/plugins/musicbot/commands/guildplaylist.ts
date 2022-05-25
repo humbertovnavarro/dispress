@@ -83,9 +83,8 @@ export default {
         `not enough data to generate a guild playlist, try playing and liking songs.`
       );
     }
-
-    for (let i = 0; i < playlist.length; i++) {
-      const url = playlist[i];
+    const foundTracks = [];
+    for (const url of playlist) {
       try {
         const track = await searchForTrack(
           musicPlayer,
@@ -93,13 +92,22 @@ export default {
           interaction.user,
           url
         );
-        if (!track) continue;
+        if (!track) {
+          interaction.channel.send(
+            `Couldn't find a track for ${url}...skipping `
+          );
+          continue;
+        }
         queue.addTrack(track);
+        foundTracks.push(track);
+        interaction.channel.send(`Added ${track.title} to the queue`);
+        await new Promise(resolve => {
+          setTimeout(() => resolve(null), 1000);
+        });
       } catch (error) {
         console.error(error);
       }
     }
-
     try {
       if (!queue.connection) await queue.connect(voiceChannel);
     } catch {
@@ -121,7 +129,7 @@ export default {
     if (playing) {
       embed.addField(`Playing -- **${playing.title}**`, playing.duration);
     }
-    queue.tracks.forEach((track: Track, index: number) => {
+    foundTracks.forEach((track: Track, index: number) => {
       embed.addField(`\`${index + 1}.\` **${track.title}**`, track.duration);
     });
 

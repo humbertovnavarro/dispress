@@ -16,7 +16,6 @@
     "framework"
   ],
   "author": "Humberto Navarro",
-  "license": "All rights reserved",
   "dependencies": {
     "@discord-player/downloader": "^3.0.1",
     "@discord-player/extractor": "^3.0.2",
