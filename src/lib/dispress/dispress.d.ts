@@ -1,4 +1,10 @@
-import type { ClientOptions, Client, MessageEmbed, Message } from 'discord.js';
+import type {
+  ClientOptions,
+  Client,
+  MessageEmbed,
+  Message,
+  ReactionCollector
+} from 'discord.js';
 
 export interface SlashCommandBody {
   toJSON: () => RESTPostAPIApplicationCommandsJSONBody;
@@ -55,10 +61,16 @@ export interface BotOptions extends ClientOptions {
   prefix?: string;
 }
 
+export interface TrackEmbed {
+  message: Message;
+  interval: NodeJS.Timer;
+  collector: ReactionCollector;
+  destroy: () => void;
+}
+
 export interface QueueMeta {
   channel: TextChannel;
-  embed?: Message;
-  embedContext?: EmbedContext;
+  embed?: TrackEmbed;
 }
 
 export interface TrackMeta {

@@ -12,13 +12,15 @@ import SimpleCommand from './plugins/simplecommandparser/SimpleCommand';
 import debug from './simplecommands/debug';
 import admin from './plugins/admin/plugin';
 import guildwhitelist from './plugins/guildwhitelist/plugin';
+import { Intents } from 'discord.js';
 const botFactory = async () => {
   const discordBot = new DiscordBot({
     intents: [
       'GUILDS',
       'GUILD_MESSAGES',
       'GUILD_VOICE_STATES',
-      'GUILD_MESSAGE_REACTIONS'
+      'GUILD_MESSAGE_REACTIONS',
+      Intents.FLAGS.GUILD_VOICE_STATES
     ],
     restTimeOffset: 0,
     prefix: '/'
