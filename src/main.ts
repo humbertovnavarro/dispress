@@ -13,18 +13,7 @@ import debug from './simplecommands/debug';
 import admin from './plugins/admin/plugin';
 import guildwhitelist from './plugins/guildwhitelist/plugin';
 import { Intents } from 'discord.js';
-const botFactory = async () => {
-  const discordBot = new DiscordBot({
-    intents: [
-      'GUILDS',
-      'GUILD_MESSAGES',
-      'GUILD_VOICE_STATES',
-      'GUILD_MESSAGE_REACTIONS',
-      Intents.FLAGS.GUILD_VOICE_STATES
-    ],
-    restTimeOffset: 0,
-    prefix: '/'
-  });
+const botFactory = (discordBot: DiscordBot) => {
   // Dereferencing and binding for readability
   const useSimpleCommand = SimpleCommandParser.context?.useCommand as (
     command: SimpleCommand
@@ -57,7 +46,17 @@ const main = async () => {
     console.error(error);
     process.exit(1);
   }
-  const discordBot = await botFactory();
+  const discordBot = await botFactory(new DiscordBot({
+    intents: [
+      'GUILDS',
+      'GUILD_MESSAGES',
+      'GUILD_VOICE_STATES',
+      'GUILD_MESSAGE_REACTIONS',
+      Intents.FLAGS.GUILD_VOICE_STATES
+    ],
+    restTimeOffset: 0,
+    prefix: '/'
+  }));
   if (require.main === module) {
     discordBot.login(assertGetEnv('DISCORD_TOKEN'));
   }

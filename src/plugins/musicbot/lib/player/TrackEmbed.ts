@@ -133,7 +133,8 @@ export const createTrackEmbed = async (
   trackEmbed.destroy = trackEmbed.destroy.bind(trackEmbed);
   return trackEmbed;
 };
-interface TrackEmbedOptions {
+
+export interface TrackEmbedOptions {
   title: string;
   avatar: string;
   author: string;
@@ -146,7 +147,7 @@ interface TrackEmbedOptions {
   startedAt: number;
 }
 
-function generateTrackEmbed(options: TrackEmbedOptions): MessageEmbed {
+export function generateTrackEmbed(options: TrackEmbedOptions): MessageEmbed {
   const {
     title,
     avatar,
@@ -187,10 +188,10 @@ async function refreshTrackEmbed(
 }
 
 const progressBarLength = 24;
-const progressBarBackgroundCharacter = '⬛';
-const progressBarForegroundCharacter = '🟩';
+export const progressBarBackgroundCharacter = '⬛';
+export const progressBarForegroundCharacter = '🟩';
 
-function percentageToProgressBar(percentage: number): string {
+export function percentageToProgressBar(percentage: number): string {
   const index = Math.floor((percentage / 100) * progressBarLength);
   const foreground = progressBarForegroundCharacter.repeat(index);
   const background = progressBarBackgroundCharacter.repeat(

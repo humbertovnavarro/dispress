@@ -9,7 +9,7 @@ import {
 import { Reverbnation } from '@discord-player/extractor';
 import _ from 'lodash';
 import { QueueMeta } from '../../../../lib/dispress/dispress';
-import { createTrackEmbed } from './createPlayerEmbed';
+import { createTrackEmbed } from './TrackEmbed';
 
 let player: Player | undefined;
 
