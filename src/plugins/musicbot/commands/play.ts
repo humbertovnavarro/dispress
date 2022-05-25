@@ -8,7 +8,7 @@ import { CommandInteraction } from 'discord.js';
 import { UsePlayer, GetActiveChannel } from '../lib/player/player';
 import { QueueMeta } from '../../../lib/dispress/dispress';
 import searchForTrack from '../lib/player/searchForTrack';
-
+import { getConfig } from '../../../lib/config';
 const body = new SlashCommandBuilder()
   .setName('play')
   .setDescription('adds a song to the player queue')
@@ -60,6 +60,14 @@ export default {
         channel: interaction.channel
       }
     });
+
+    const maxQueueSize = getConfig<number>('musicbot.maxQueueSize');
+    if (
+      maxQueueSize >= 0 &&
+      queue.tracks.length > getConfig<number>('dispress.maxQueueSize')
+    ) {
+      return interaction.reply('The queue is full');
+    }
 
     try {
       if (!queue.connection) await queue.connect(voiceChannel);

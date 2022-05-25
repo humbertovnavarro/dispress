@@ -9,7 +9,8 @@ const guildIdToWhitelist = new Map<string, boolean>();
 const plugin: Plugin = {
   name: 'guildwhitelist',
   beforeReady(bot: DiscordBot) {
-    const whitelist = getConfig<string[]>('guildwhitelist') || [];
+    const whitelist =
+      getConfig<string[]>('plugins.guildwhitelist.whitelist') || [];
     if (!Array.isArray(whitelist)) {
       console.error(`guildwhitelist is not an array!`);
       return;

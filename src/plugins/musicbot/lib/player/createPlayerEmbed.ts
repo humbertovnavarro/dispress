@@ -1,5 +1,6 @@
 import { Queue, Track } from 'discord-player';
 import { Message, MessageEmbed } from 'discord.js';
+import { getConfig } from '../../../../lib/config';
 import { QueueMeta, TrackEmbed } from '../../../../lib/dispress/dispress';
 import getTrackStatistics from '../database/getTrack';
 import { raceWithTimeout } from '../utils/promises';
@@ -60,7 +61,7 @@ export const createTrackEmbed = async (
   await raceWithTimeout(message.react(reactions[4]), 10);
   await raceWithTimeout(message.react(reactions[5]), 10);
   const collector = message.createReactionCollector({
-    time: 3600000,
+    time: getConfig<number>('plugins.musicplayer.reactionCollectorTimeout'),
     filter: reaction => {
       return (
         reaction.emoji.name === '⏸️' ||

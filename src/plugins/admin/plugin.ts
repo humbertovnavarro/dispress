@@ -26,7 +26,7 @@ const plugin: Plugin = {
             .setDescription('the value to set')
         ),
       handler(interaction: CommandInteraction) {
-        if (interaction.user.id != getConfig('owner')) return;
+        if (interaction.user.id != getConfig('dispress.owner')) return;
         interaction.reply('You are not the owner');
 
         const userKey = interaction.options.getString('key', true);
@@ -40,7 +40,7 @@ const plugin: Plugin = {
         .setName('getkey')
         .setDescription('View the value of a key'),
       handler(interaction: CommandInteraction) {
-        if (interaction.user.id != getConfig('owner')) return;
+        if (interaction.user.id != getConfig('dispress.owner')) return;
         interaction.reply('You are not the owner');
 
         const userKey = interaction.options.getString('key', true);

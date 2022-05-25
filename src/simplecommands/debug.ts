@@ -13,7 +13,7 @@ const debug: SimpleCommand = {
     if (!debug) return;
     const javascript = args.slice(1).join(' ');
     if (!javascript) return await message.reply('No javascript to evaluate');
-    const developer = getConfig('owner');
+    const developer = getConfig('dispress.owner');
     if (developer != message.author.id.toString()) {
       return await message.reply('Only the bot operator can use this command');
     }

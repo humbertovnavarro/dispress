@@ -1,6 +1,18 @@
 {
-  "command.debug.developer": "141320459244404736",
-  "config.musicbot.dislikeThreshold": "1",
-  "owner": "141320459244404736",
-  "guildwhitelist": ["696300344161992706"]
+  "dispress": {
+    "owner": "141320459244404736",
+    "logLocation": "./logs/dispress.log",
+    "logToFile": false
+  },
+  "plugins": {
+    "musicbot": {
+      "reactionCollectorTimeout": 3000000,
+      "dislikeThreshold": 1,
+      "maxQueueSize": 10,
+      "maxGuildPlaylistSize": 10
+    },
+    "guildwhitelist": {
+      "whitelist": ["696300344161992706"]
+    }
+  }
 }

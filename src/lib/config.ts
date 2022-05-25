@@ -45,10 +45,19 @@ const getKey = async (key: string): Promise<string> => {
   return config?.value || '';
 };
 
-const getConfig = <T = string>(key: string): T | undefined => {
+const getConfig = <T = string>(key: string): T => {
   const configJSON = CONFIG as { [key: string]: any };
-  if (configJSON[key]) return configJSON[key] as T;
-  return undefined;
+  const keys = key.split('.');
+  let value = configJSON;
+  while (keys.length > 0) {
+    try {
+      value = value[keys.shift() as string];
+    } catch (error) {
+      console.error(`Could not load config value, ${key}`);
+      process.exit(1);
+    }
+  }
+  return value as T;
 };
 
 const getEnv = (key: string): string | undefined => {
