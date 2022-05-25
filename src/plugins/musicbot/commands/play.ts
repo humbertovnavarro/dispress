@@ -4,7 +4,7 @@ import {
   SlashCommandStringOption
 } from '@discordjs/builders';
 import { Queue, Track } from 'discord-player';
-import { CommandInteraction } from 'discord.js';
+import { CommandInteraction, TextChannel } from 'discord.js';
 import { UsePlayer, GetActiveChannel } from '../lib/player/player';
 import { QueueMeta } from '../../../lib/dispress/dispress';
 import searchForTrack from '../lib/player/searchForTrack';
@@ -57,7 +57,7 @@ export default {
     const musicPlayer = UsePlayer(interaction.client);
     const queue: Queue<QueueMeta> = musicPlayer.createQueue(interaction.guild, {
       metadata: {
-        channel: interaction.channel
+        channel: interaction.channel as unknown as TextChannel
       }
     });
 

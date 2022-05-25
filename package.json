@@ -4,7 +4,7 @@
   "description": "A discord bot starter",
   "scripts": {
     "lint": "prettier --write .",
-    "test": "jest",
+    "test": "jest --forceExit",
     "dev": "nodemon src/main.ts",
     "build": "tsc",
     "start": "node dist/main.js",
