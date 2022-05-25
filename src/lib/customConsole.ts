@@ -92,10 +92,13 @@ function getColor(level: LogLevel) {
   }
 }
 
-processors.push(function (log: string) {
-  const location = path.resolve(getConfig('LOG_FILE') || './dispress.log');
-  fs.writeFileSync('./dispress.log', log + '\n', { flag: 'a' });
-});
+if (getConfig('dispress.logToFile'))
+  processors.push(function (log: string) {
+    const location = path.resolve(
+      getConfig('dispress.logLocation') || './dispress.log'
+    );
+    fs.writeFileSync('./dispress.log', log + '\n', { flag: 'a' });
+  });
 
 processors.push(async function (log: string, level: LogLevel) {
   let levelString = 'log';
