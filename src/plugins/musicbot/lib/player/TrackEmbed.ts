@@ -41,12 +41,17 @@ export const createTrackEmbed = async (
   } catch (error) {
     console.error(error);
   }
-
   let message: Message;
   try {
-    message = (await channel.send({
-      embeds: [generateTrackEmbed(playerEmbedOptions)]
-    })) as Message;
+    if (channel.lastMessage?.editable) {
+      message = (await channel.lastMessage.edit({
+        embeds: [generateTrackEmbed(playerEmbedOptions)]
+      })) as Message;
+    } else {
+      message = (await channel.send({
+        embeds: [generateTrackEmbed(playerEmbedOptions)]
+      })) as Message;
+    }
   } catch (error) {
     console.error(error);
     return;

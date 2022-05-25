@@ -3,7 +3,9 @@ import type {
   Client,
   MessageEmbed,
   Message,
-  ReactionCollector
+  ReactionCollector,
+  GuildChannel,
+  TextChannel
 } from 'discord.js';
 
 export interface SlashCommandBody {
