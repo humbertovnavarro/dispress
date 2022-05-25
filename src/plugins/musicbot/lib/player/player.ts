@@ -1,11 +1,5 @@
 import { Player, Queue, Track } from 'discord-player';
-import {
-  Client,
-  Guild,
-  Message,
-  ReactionCollector,
-  VoiceBasedChannel
-} from 'discord.js';
+import { Client, Guild, VoiceBasedChannel } from 'discord.js';
 import { Reverbnation } from '@discord-player/extractor';
 import _ from 'lodash';
 import { QueueMeta } from '../../../../lib/dispress/dispress';

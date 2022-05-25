@@ -1,43 +1,9 @@
 import './lib/customConsole';
 import { assertGetEnv } from './lib/config';
-import waifu from './slashcommands/waifu';
-import musicbot from './plugins/musicbot/plugin';
-import chatbot from './plugins/chatbot/plugin';
-import anime from './slashcommands/anime';
-import uptime from './slashcommands/uptime';
 import PrismaClient from './lib/PrismaClient';
 import DiscordBot from './lib/dispress/DiscordBot';
-import SimpleCommandParser from './plugins/simplecommandparser/plugin';
-import SimpleCommand from './plugins/simplecommandparser/SimpleCommand';
-import debug from './simplecommands/debug';
-import admin from './plugins/admin/plugin';
-import guildwhitelist from './plugins/guildwhitelist/plugin';
 import { Intents } from 'discord.js';
-const botFactory = (discordBot: DiscordBot) => {
-  // Dereferencing and binding for readability
-  const useSimpleCommand = SimpleCommandParser.context?.useCommand as (
-    command: SimpleCommand
-  ) => void;
-  let { useCommand, usePlugin } = discordBot;
-  useCommand = useCommand.bind(discordBot);
-  usePlugin = usePlugin.bind(discordBot);
-  //#region Simple Commands
-  useSimpleCommand(debug);
-  //#endregion
-  //#region Slash Commands
-  useCommand(anime);
-  useCommand(waifu);
-  //#endregion
-  //#region Plugins
-  usePlugin(musicbot);
-  usePlugin(uptime);
-  usePlugin(chatbot);
-  usePlugin(SimpleCommandParser);
-  usePlugin(admin);
-  usePlugin(guildwhitelist);
-  //#endregion
-  return discordBot;
-};
+import botFactory from './botFactory';
 
 const main = async () => {
   try {
@@ -46,17 +12,19 @@ const main = async () => {
     console.error(error);
     process.exit(1);
   }
-  const discordBot = await botFactory(new DiscordBot({
-    intents: [
-      'GUILDS',
-      'GUILD_MESSAGES',
-      'GUILD_VOICE_STATES',
-      'GUILD_MESSAGE_REACTIONS',
-      Intents.FLAGS.GUILD_VOICE_STATES
-    ],
-    restTimeOffset: 0,
-    prefix: '/'
-  }));
+  const discordBot = await botFactory(
+    new DiscordBot({
+      intents: [
+        'GUILDS',
+        'GUILD_MESSAGES',
+        'GUILD_VOICE_STATES',
+        'GUILD_MESSAGE_REACTIONS',
+        Intents.FLAGS.GUILD_VOICE_STATES
+      ],
+      restTimeOffset: 0,
+      prefix: '/'
+    })
+  );
   if (require.main === module) {
     discordBot.login(assertGetEnv('DISCORD_TOKEN'));
   }
@@ -67,4 +35,3 @@ const main = async () => {
 if (require.main === module) {
   main();
 }
-export default botFactory;

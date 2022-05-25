@@ -1,7 +1,7 @@
 import fs from 'fs';
 import DiscordBot from './lib/dispress/DiscordBot';
 import { Plugin } from './lib/dispress/dispress';
-import botFactory from './main';
+import botFactory from './botFactory';
 function getPlugins(): string[] {
   const plugins = fs.readdirSync('./src/plugins');
   return plugins;
@@ -10,14 +10,16 @@ function getPlugins(): string[] {
 describe('discordBot', () => {
   it('should have plugins in plugins folder', () => {
     const loadedPlugins = new Map<string, boolean>();
-    const useCommand = jest.fn()
+    const useCommand = jest.fn();
     const mockBot = {
-      usePlugin: (plugin: Plugin) => { loadedPlugins.set(plugin.name, true)},
+      usePlugin: (plugin: Plugin) => {
+        loadedPlugins.set(plugin.name, true);
+      },
       useCommand: () => {}
     } as unknown as DiscordBot;
     const bot = botFactory(mockBot);
     const plugins = getPlugins();
-    for(const plugin of plugins) {
+    for (const plugin of plugins) {
       expect(loadedPlugins.get(plugin)).toBe(true);
     }
   });
