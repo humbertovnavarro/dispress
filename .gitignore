@@ -6,3 +6,4 @@ dist
 *.db
 node_modules
 discord.log
+staging

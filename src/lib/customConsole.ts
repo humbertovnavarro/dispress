@@ -97,7 +97,7 @@ if (getConfig('dispress.logToFile'))
     const location = path.resolve(
       getConfig('dispress.logLocation') || './dispress.log'
     );
-    fs.writeFileSync('./dispress.log', log + '\n', { flag: 'a' });
+    fs.writeFileSync(location, log + '\n', { flag: 'a' });
   });
 
 processors.push(async function (log: string, level: LogLevel) {

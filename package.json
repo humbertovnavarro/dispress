@@ -6,9 +6,9 @@
     "lint": "prettier --write .",
     "test": "jest --forceExit",
     "dev": "nodemon src/main.ts",
-    "build": "tsc",
     "start": "node dist/main.js",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "build": "./scripts/build.sh"
   },
   "keywords": [
     "discord",
@@ -32,6 +32,7 @@
     "express": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
+    "nexe": "^4.0.0-rc.1",
     "node-html-parser": "^5.3.3",
     "openai": "^2.0.5",
     "pm2": "^5.2.0"
