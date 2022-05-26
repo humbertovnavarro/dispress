@@ -1,7 +1,6 @@
 import { Guild } from 'discord.js';
 import DiscordBot from '../../lib/dispress/DiscordBot';
 import type { Plugin } from '../../lib/dispress/dispress';
-import prisma from '../../lib/PrismaClient';
 import { getConfig } from '../../lib/config';
 
 const guildIdToWhitelist = new Map<string, boolean>();
@@ -53,13 +52,6 @@ const isWhitelisted = async (
   if (guild.ownerId === bot.user?.id) {
     return true;
   }
-  return (
-    guildIdToWhitelist.has(guild.id) ||
-    !!(await prisma.guildsWhitelist.findUnique({
-      where: {
-        id: guild.id
-      }
-    }))
-  );
+  return guildIdToWhitelist.has(guild.id);
 };
 export default plugin;

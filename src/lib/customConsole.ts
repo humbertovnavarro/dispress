@@ -2,7 +2,6 @@ import { stderr, stdout } from 'process';
 import { getConfig } from './config';
 import fs from 'fs';
 import path from 'path';
-import prisma from './PrismaClient';
 
 enum LogLevel {
   log = 'log',
@@ -99,23 +98,3 @@ if (getConfig('dispress.logToFile'))
     );
     fs.writeFileSync(location, log + '\n', { flag: 'a' });
   });
-
-processors.push(async function (log: string, level: LogLevel) {
-  let levelString = 'log';
-  switch (level) {
-    case LogLevel.log:
-      levelString = 'log';
-      break;
-    case LogLevel.error:
-      levelString = 'error';
-      break;
-    case LogLevel.warn:
-      levelString = 'warn';
-  }
-  await prisma.logs.create({
-    data: {
-      text: log,
-      level: levelString
-    }
-  });
-});

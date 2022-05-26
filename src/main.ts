@@ -1,18 +1,11 @@
 import './lib/customConsole';
 import { assertGetEnv } from './lib/config';
-import PrismaClient from './lib/PrismaClient';
 import DiscordBot from './lib/dispress/DiscordBot';
 import { Intents } from 'discord.js';
 import botFactory from './botFactory';
 
 const main = async () => {
-  try {
-    await PrismaClient.$connect();
-  } catch (error) {
-    console.error(error);
-    process.exit(1);
-  }
-  const discordBot = await botFactory(
+  const discordBot = botFactory(
     new DiscordBot({
       intents: [
         'GUILDS',
