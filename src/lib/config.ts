@@ -1,6 +1,10 @@
-import CONFIG from '../config.json';
+import path from 'path';
+import fs from 'fs';
+const CONFIG_FILE = path.resolve(process.cwd(), 'config.json');
+const CONFIG = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
 import dotenv from 'dotenv';
 dotenv.config();
+
 const getConfig = <T = string>(key: string): T => {
   const configJSON = CONFIG as { [key: string]: any };
   const keys = key.split('.');
@@ -14,6 +18,20 @@ const getConfig = <T = string>(key: string): T => {
     }
   }
   return value as T;
+};
+
+const setConfig = (key: string, value: any): void => {
+  const configJSON = CONFIG as { [key: string]: any };
+  const keys = key.split('.');
+  let current = configJSON;
+  while (keys.length > 1) {
+    const key = keys.shift() as string;
+    if (!current[key]) {
+      current[key] = {};
+    }
+    current = current[key];
+  }
+  current[keys[0]] = value;
 };
 
 const getEnv = (key: string): string | undefined => {
@@ -31,4 +49,4 @@ const assertGetEnv = (key: string): string => {
   return value;
 };
 
-export { getEnv, getConfig, assertGetEnv };
+export { getEnv, getConfig, assertGetEnv, setConfig };

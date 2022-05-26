@@ -1,5 +1,5 @@
 import './lib/customConsole';
-import { assertGetEnv } from './lib/config';
+import { getConfig, getEnv } from './lib/config';
 import DiscordBot from './lib/dispress/DiscordBot';
 import { Intents } from 'discord.js';
 import botFactory from './botFactory';
@@ -19,7 +19,7 @@ const main = async () => {
     })
   );
   if (require.main === module) {
-    discordBot.login(assertGetEnv('DISCORD_TOKEN'));
+    discordBot.login(getEnv('DISCORD_TOKEN') || getConfig('dispress.token'));
   }
   discordBot.on('ready', () => {
     console.log(`Logged in as ${discordBot.user?.tag}`);
