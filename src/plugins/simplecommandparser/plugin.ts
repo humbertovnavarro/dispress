@@ -2,9 +2,9 @@ import { Plugin } from '../../lib/dispress/dispress';
 import DiscordBot from '../../lib/dispress/DiscordBot';
 import { Message } from 'discord.js';
 import SimpleCommand from './SimpleCommand';
-import { getKey } from '../../lib/config';
+import { getConfig } from '../../lib/config';
 const commands: Map<string, SimpleCommand> = new Map<string, SimpleCommand>();
-let prefix: string = '!';
+let prefix: string = getConfig('dispress.prefix');
 
 interface SimpleCommandParserContext {
   useCommand: (command: SimpleCommand) => void;
@@ -12,14 +12,6 @@ interface SimpleCommandParserContext {
 
 const plugin: Plugin<SimpleCommandParserContext> = {
   name: 'simplecommandparser',
-  beforeReady: async (bot: DiscordBot) => {
-    try {
-      const databasePrefix = await getKey('config.simplecommandparser.prefix');
-      if (databasePrefix) prefix = databasePrefix;
-    } catch (error) {
-      console.error(error);
-    }
-  },
   onReady: (bot: DiscordBot) => {
     bot.on('messageCreate', async (message: Message) => {
       if (!message.content.startsWith(prefix)) return;

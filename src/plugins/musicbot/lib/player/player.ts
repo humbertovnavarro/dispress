@@ -17,6 +17,8 @@ export function UsePlayer(client: Client): Player {
   player.use('reverbnation', Reverbnation);
 
   player.on('trackStart', (queue, track) => {
+    const metadata = queue.metadata as QueueMeta;
+    metadata.progress = 0;
     cleanupEmbed(queue as Queue<QueueMeta>);
     trackStart(queue as Queue<QueueMeta>, track);
   });

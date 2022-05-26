@@ -1,49 +1,9 @@
-import prisma from './PrismaClient';
-import CONFIG from '../config.json';
-import type { Config } from '@prisma/client';
+import path from 'path';
+import fs from 'fs';
+const CONFIG_FILE = path.resolve(process.cwd(), 'config.json');
+const CONFIG = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
 import dotenv from 'dotenv';
 dotenv.config();
-const setKey = async (key: string, value: string): Promise<Config> => {
-  const existing = await prisma.config.findUnique({
-    where: {
-      key
-    }
-  });
-  if (!existing) {
-    const created = await prisma.config.create({
-      data: {
-        key,
-        value
-      }
-    });
-    return created;
-  }
-  return await prisma.config.update({
-    where: {
-      key
-    },
-    data: {
-      value
-    }
-  });
-};
-
-const deleteKey = async (key: string): Promise<Config> => {
-  return await prisma.config.delete({
-    where: {
-      key
-    }
-  });
-};
-
-const getKey = async (key: string): Promise<string> => {
-  const config = await prisma.config.findUnique({
-    where: {
-      key
-    }
-  });
-  return config?.value || '';
-};
 
 const getConfig = <T = string>(key: string): T => {
   const configJSON = CONFIG as { [key: string]: any };
@@ -58,6 +18,20 @@ const getConfig = <T = string>(key: string): T => {
     }
   }
   return value as T;
+};
+
+const setConfig = (key: string, value: any): void => {
+  const configJSON = CONFIG as { [key: string]: any };
+  const keys = key.split('.');
+  let current = configJSON;
+  while (keys.length > 1) {
+    const key = keys.shift() as string;
+    if (!current[key]) {
+      current[key] = {};
+    }
+    current = current[key];
+  }
+  current[keys[0]] = value;
 };
 
 const getEnv = (key: string): string | undefined => {
@@ -75,4 +49,4 @@ const assertGetEnv = (key: string): string => {
   return value;
 };
 
-export { getKey, setKey, deleteKey, getEnv, getConfig, assertGetEnv };
+export { getEnv, getConfig, assertGetEnv, setConfig };

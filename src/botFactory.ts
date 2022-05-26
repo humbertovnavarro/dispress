@@ -6,7 +6,6 @@ import uptime from './slashcommands/uptime';
 import SimpleCommandParser from './plugins/simplecommandparser/plugin';
 import SimpleCommand from './plugins/simplecommandparser/SimpleCommand';
 import debug from './simplecommands/debug';
-import admin from './plugins/admin/plugin';
 import guildwhitelist from './plugins/guildwhitelist/plugin';
 import DiscordBot from './lib/dispress/DiscordBot';
 const botFactory = (discordBot: DiscordBot) => {
@@ -29,7 +28,6 @@ const botFactory = (discordBot: DiscordBot) => {
   usePlugin(uptime);
   usePlugin(chatbot);
   usePlugin(SimpleCommandParser);
-  usePlugin(admin);
   usePlugin(guildwhitelist);
   //#endregion
   return discordBot;

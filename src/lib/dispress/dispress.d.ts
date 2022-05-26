@@ -73,6 +73,7 @@ export interface TrackEmbed {
 export interface QueueMeta {
   channel: TextChannel;
   embed?: TrackEmbed;
+  progress?: number;
 }
 
 export interface TrackMeta {

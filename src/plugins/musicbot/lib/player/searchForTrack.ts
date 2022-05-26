@@ -1,6 +1,5 @@
 import { Player, Track } from 'discord-player';
 import { Guild, User } from 'discord.js';
-import addPlay from '../database/addPlay';
 export default async function searchForTrack(
   player: Player,
   guild: Guild,
@@ -30,9 +29,6 @@ export default async function searchForTrack(
     });
   } catch (error) {
     console.error(error);
-  }
-  if (track) {
-    await addPlay(track, guild);
   }
   return track;
 }

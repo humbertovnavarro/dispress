@@ -61,10 +61,10 @@ export default {
       }
     });
 
-    const maxQueueSize = getConfig<number>('musicbot.maxQueueSize');
+    const maxQueueSize = getConfig<number>('plugins.musicbot.maxQueueSize');
     if (
       maxQueueSize >= 0 &&
-      queue.tracks.length > getConfig<number>('dispress.maxQueueSize')
+      queue.tracks.length > getConfig<number>('plugins.musicbot.maxQueueSize')
     ) {
       return interaction.reply('The queue is full');
     }
