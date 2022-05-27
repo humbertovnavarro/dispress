@@ -6,7 +6,7 @@
   "author": "humbertovnavarro <humberto.navarro.dev@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "lerna": "^5.0.0",
+    "lerna": "^5.0.0"
   },
   "workspaces": [
     "backend",
@@ -14,10 +14,10 @@
     "electron"
   ],
   "scripts": {
-    "install": "lerna bootstrap",
     "build": "rm -rf out && lerna run build --stream",
     "dev": "lerna run dev --parallel",
-    "electron": "lerna run --scope electron start"
+    "electron": "lerna run --scope electron start",
+    "install": "lerna bootstrap"
   },
   "private": true
 }
