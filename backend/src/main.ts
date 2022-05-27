@@ -20,7 +20,7 @@ const main = async () => {
     })
   );
   let staticPath: string =  detectTSNode ? path.join(path.resolve("../out"), "public")
-  : path.join(process.cwd(), "public"); 
+  : path.join(process.cwd(), "public");
   const pathEnv = getEnv("STATIC_PATH");
   if(pathEnv) staticPath = pathEnv;
   const app = express();
