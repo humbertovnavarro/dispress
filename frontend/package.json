@@ -14,8 +14,8 @@
     "webpack-dev-server": "^4.9.0"
   },
   "scripts": {
-    "build": "MODE=production webpack",
-    "dev": "MODE=development webpack serve"
+    "build": "webpack",
+    "dev": "webpack serve"
   },
   "dependencies": {
     "react": "^18.1.0",

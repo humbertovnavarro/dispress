@@ -31,5 +31,5 @@ module.exports = {
       '/api': 'http://localhost:3033',
     },
   },
-  mode: process.env.MODE
+  mode: 'development'
 };

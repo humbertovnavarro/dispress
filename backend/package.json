@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "prettier --write .",
     "test": "jest --forceExit",
-    "dev": "MODE=development nodemon src/main.ts",
+    "dev": "nodemon src/main.ts",
     "start": "node out/dispress.js",
     "prepare": "husky install",
     "build": "tsc && cp src/config.json ../out/config.json"

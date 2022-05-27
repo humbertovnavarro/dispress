@@ -13,7 +13,7 @@ app.on('ready', async _ => {
     ]
     const menu = Menu.buildFromTemplate (template)
     Menu.setApplicationMenu (menu)
-    const mode = process.env.MODE;
+    const mode = process.argv0 === 'development' ? 'production' : 'development'
     const port = mode === "development" ? 8080 : 3033;
     while(true) {
         try {

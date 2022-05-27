@@ -1,4 +1,4 @@
-import { getConfig, getEnv } from './lib/config';
+import { getEnv } from './lib/config';
 import DiscordBot from './lib/dispress/DiscordBot';
 import { Intents } from 'discord.js';
 import botFactory from './botFactory';
@@ -32,7 +32,7 @@ const main = async () => {
   app.listen(port, () => {
     console.log(`express listening on ${port}`);
   });
-  discordBot.login(getEnv('DISCORD_TOKEN') || getConfig('dispress.token'));
+  discordBot.login(getEnv('DISCORD_TOKEN'));
 };
 if (require.main === module) {
   main();
