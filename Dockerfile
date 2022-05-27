@@ -9,8 +9,6 @@ COPY package.json /app
 COPY tsconfig.json /app
 COPY yarn.lock /app
 COPY src /app/src
-COPY prisma/schema.prisma /app
-RUN yarn prisma generate
 WORKDIR /app
 
 # Build
