@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs';
-const CONFIG_FILE = path.resolve(process.cwd(), 'config.json');
+const CONFIG_FILE = process.env.CONFIG || path.resolve(process.cwd(), 'config.json');
 const CONFIG = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
 import dotenv from 'dotenv';
 dotenv.config();

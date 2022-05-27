@@ -1,0 +1,14 @@
+{
+  "name": "electron",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "electron": "^19.0.1"
+  },
+  "scripts": {
+    "start": "electron main.js",
+    "dev": "MODE=development electron main.js"
+  }
+}

@@ -5,10 +5,10 @@
   "scripts": {
     "lint": "prettier --write .",
     "test": "jest --forceExit",
-    "dev": "nodemon src/main.ts",
-    "start": "node dist/main.js",
+    "dev": "MODE=development nodemon src/main.ts",
+    "start": "node out/dispress.js",
     "prepare": "husky install",
-    "build": "tsc"
+    "build": "tsc && cp src/config.json ../out/config.json"
   },
   "keywords": [
     "discord",
@@ -59,7 +59,7 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "dist"
+      "out"
     ],
     "delay": 2500
   }

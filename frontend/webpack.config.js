@@ -1,8 +1,15 @@
 const path = require('path');
-
+const bundlePath = path.resolve("../out/public");
+const CopyPlugin = require("copy-webpack-plugin");
 module.exports = {
-  entry: './src/index.ts',
-  devtool: 'inline-source-map',
+  plugins: [
+    new CopyPlugin({
+      patterns: [
+        { from: "src/static", to: bundlePath }
+      ]
+    })
+  ],
+  entry: './src/index.tsx',
   module: {
     rules: [
       {
@@ -17,15 +24,12 @@ module.exports = {
   },
   output: {
     filename: 'bundle.js',
-    path: path.resolve("../dist/public")
+    path: bundlePath
   },
   devServer: {
-      proxy: {
-          '/api/v1': 'http://localhost:3000'
-      },
-      static: {
-          directory: path.resolve("../dist/public")
-      }
+    proxy: {
+      '/api': 'http://localhost:3033',
+    },
   },
   mode: process.env.MODE
 };

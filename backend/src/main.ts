@@ -19,24 +19,20 @@ const main = async () => {
       prefix: '/'
     })
   );
-  if (require.main === module) {
-    discordBot.login(getEnv('DISCORD_TOKEN') || getConfig('dispress.token'));
-  }
-  discordBot.on('ready', () => {
-    console.log(`Logged in as ${discordBot.user?.tag}`);
-  });
-  const staticPath: string =  detectTSNode ? path.join(path.resolve("../dist"), "public")
+  let staticPath: string =  detectTSNode ? path.join(path.resolve("../out"), "public")
   : path.join(process.cwd(), "public"); 
-  console.log(staticPath);
+  const pathEnv = getEnv("STATIC_PATH");
+  if(pathEnv) staticPath = pathEnv;
   const app = express();
   app.use(express.static(staticPath));
-  const port = Number.parseInt(getEnv("EXPRESS_PORT") || "3000");
+  const port = Number.parseInt(getEnv("EXPRESS_PORT") || "3033");
   app.get("/api/v1/ping", (_req, res: Response) => {
     res.json("Pong!")
   })
   app.listen(port, () => {
     console.log(`express listening on ${port}`);
   });
+  discordBot.login(getEnv('DISCORD_TOKEN') || getConfig('dispress.token'));
 };
 if (require.main === module) {
   main();
