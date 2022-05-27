@@ -1,0 +1,9 @@
+node_modules
+dist
+.env
+*.error
+*.log
+*.db
+node_modules
+discord.log
+staging
