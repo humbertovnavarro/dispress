@@ -8,6 +8,7 @@ import SimpleCommand from "./plugins/simplecommandparser/SimpleCommand";
 import debug from "./simplecommands/debug";
 import guildwhitelist from "./plugins/guildwhitelist/plugin";
 import DiscordBot from "./lib/dispress/DiscordBot";
+import keywords from "./plugins/keywords/plugin";
 const botFactory = (discordBot: DiscordBot) => {
   // Dereferencing and binding for readability
   const useSimpleCommand = SimpleCommandParser.context?.useCommand as (
@@ -29,6 +30,7 @@ const botFactory = (discordBot: DiscordBot) => {
   usePlugin(chatbot);
   usePlugin(SimpleCommandParser);
   usePlugin(guildwhitelist);
+  usePlugin(keywords);
   //#endregion
   return discordBot;
 };
