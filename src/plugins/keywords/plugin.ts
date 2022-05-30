@@ -107,7 +107,7 @@ const deletePhrase: Command = {
     },
     body: new SlashCommandBuilder().setName("setphrase")
     .setDescription("get notifications for a key phrase in the guild.")
-    .addStringOption(new SlashCommandStringOption().setName("phrase").setRequired(true))
+    .addStringOption(new SlashCommandStringOption().setName("phrase").setDescription("set a key phrase to be notified about"))
 }
 
 export default plugin;
