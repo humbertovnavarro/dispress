@@ -89,7 +89,7 @@ const setPhrase: Command = {
     },
     body: new SlashCommandBuilder().setName("setphrase")
     .setDescription("get notifications for a key phrase in the guild.")
-    .addStringOption(new SlashCommandStringOption().setName("phrase").setRequired(true))
+    .addStringOption(new SlashCommandStringOption().setName("phrase").setDescription("delete a phrase").setRequired(true))
 }
 
 const deletePhrase: Command = {
