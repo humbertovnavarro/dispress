@@ -17,9 +17,6 @@ export function UsePlayer(client: Client): Player {
   player.use("reverbnation", Reverbnation);
 
   player.on("trackStart", (queue, track) => {
-    const metadata = queue.metadata as QueueMeta;
-    metadata.progress = 0;
-    cleanupEmbed(queue as Queue<QueueMeta>);
     trackStart(queue as Queue<QueueMeta>, track);
   });
 
@@ -66,13 +63,29 @@ export function GetActiveChannel(guild: Guild): VoiceBasedChannel | undefined {
 }
 
 export const trackStart = async (queue: Queue<QueueMeta>, track: Track) => {
-  if (!queue.metadata) return;
-  const channel = queue.metadata?.channel;
-  if (!channel) return;
-  const trackEmbed = await createTrackEmbed(queue, track);
-  if (!trackEmbed)
-    return queue.metadata.channel.send(
-      "An error occured while trying to create the embed"
-    );
-  queue.metadata.embed = trackEmbed;
+  try {
+    if(queue.metadata?.embed) {
+      queue.metadata.embed.destroy();
+    }
+    if (!track) return queue.metadata?.channel.send("I lost the track, sorry :( ");
+    if(!track.durationMS) return queue.metadata?.channel.send("I lost the track, sorry :( ");
+    if(!track.duration)  return queue.metadata?.channel.send("I lost the track, sorry :( ");
+    if (!queue.metadata) return;
+    const channel = queue.metadata?.channel;
+    if (!channel) return;
+    const trackEmbed = await createTrackEmbed(queue, track);
+    if (!trackEmbed)
+      return queue.metadata.channel.send(
+        "An error occured while trying to create the embed"
+      );
+    queue.metadata.embed = trackEmbed;
+  } catch(error) {
+    console.error(error);
+  } finally {
+    try {
+      queue.metadata?.channel.send("I lost the track, sorry :( ");
+    } catch(error) {
+      console.error(error);
+    }
+  }
 };

@@ -32,16 +32,17 @@ export const createTrackEmbed = async (
   };
   let message: Message;
   try {
-    if (channel.lastMessage?.editable) {
-      message = (await channel.lastMessage.edit({
-        embeds: [generateTrackEmbed(playerEmbedOptions)],
-      })) as Message;
-    } else {
-      message = (await channel.send({
-        embeds: [generateTrackEmbed(playerEmbedOptions)],
-      })) as Message;
-    }
+    message = (await channel.send({
+      embeds: [generateTrackEmbed(playerEmbedOptions)],
+    })) as Message;
   } catch (error) {
+    try {
+      await channel.send(
+        `Failed to send track embed to ${channel.name}`
+      );
+    } catch(error) {
+      console.error(error);
+    }
     console.error(error);
     return;
   }
