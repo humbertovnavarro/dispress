@@ -41,10 +41,7 @@ const plugin: Plugin = {
           return;
         }
       }
-
-      const doAiReply =
-        Math.random() > 0.96 ||
-        message.content.toLowerCase().includes("dispress");
+      const doAiReply = message.content.toLowerCase().includes("dispress");
       if (doAiReply) {
         try {
           const reply = await AiReply(message);
