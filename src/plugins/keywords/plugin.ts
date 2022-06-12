@@ -9,14 +9,14 @@ const guildToUserPhraseMapMap: Map<Guild, UserPhraseMap> = new Map();
 const storageLocation = path.resolve(__dirname, "keywords.json");
 
 const plugin: Plugin = {
-    name: "keywords",
-    beforeReady(bot: DiscordBot) {
-        bot.on("messageCreate", async (message: Message) => {
-            handler(message)
-        });
-        bot.useCommand(addPhrase);
-        bot.useCommand(deletePhrase);
-    }
-}
+  name: "keywords",
+  beforeReady(bot: DiscordBot) {
+    bot.on("messageCreate", async (message: Message) => {
+      handler(message);
+    });
+    bot.useCommand(addPhrase);
+    bot.useCommand(deletePhrase);
+  },
+};
 
 export default plugin;

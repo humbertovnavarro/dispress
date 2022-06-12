@@ -1,5 +1,4 @@
 import waifu from "./slashcommands/waifu";
-import musicbot from "./plugins/musicbot/plugin";
 import chatbot from "./plugins/chatbot/plugin";
 import anime from "./slashcommands/anime";
 import uptime from "./slashcommands/uptime";
@@ -25,7 +24,6 @@ const botFactory = (discordBot: DiscordBot) => {
   useCommand(waifu);
   //#endregion
   //#region Plugins
-  usePlugin(musicbot);
   usePlugin(uptime);
   usePlugin(chatbot);
   usePlugin(SimpleCommandParser);

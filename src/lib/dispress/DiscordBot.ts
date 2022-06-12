@@ -31,6 +31,9 @@ export default class DiscordBot extends DiscordClient {
   async login(token?: string | undefined) {
     return super.login(token);
   }
+  /*
+   * Trigger on ready lifecycle method of plugins
+   **/
   private async triggerPluginOnReady() {
     this.plugins.forEach((plugin) => {
       try {
@@ -41,6 +44,9 @@ export default class DiscordBot extends DiscordClient {
       }
     });
   }
+  /*
+   * Trigger on ready lifecycle method of commands
+   **/
   private async triggerCommandOnReady() {
     this.commands.forEach((command) => {
       try {
@@ -53,6 +59,9 @@ export default class DiscordBot extends DiscordClient {
       }
     });
   }
+  /*
+   * Send slash commands to discord
+   **/
   private async postSlashCommands() {
     if (this.token) {
       this.slashCommandRest.setToken(this.token);
@@ -68,18 +77,20 @@ export default class DiscordBot extends DiscordClient {
             body: this.slashCommands,
           })
           .catch((error) => {
+            // Ignore built in guilds
             switch (guild.name) {
               case "guild":
                 return;
               case "1234512":
                 return;
             }
-            console.error(
-              `Could not update slash commands for guild ${guild.name}, caused by "${error.message}"`
-            );
+            console.error(`${error} @ ${guild.name}"`);
           });
     });
   }
+  /**
+   * Trigger on ALL plugin loaded lifecycle method on plugins and commands
+   */
   private async triggerLoadedCallbacks() {
     const commandsArray = Array.from(this.commands.values());
     const pluginsArray = Array.from(this.plugins.values());
@@ -92,6 +103,9 @@ export default class DiscordBot extends DiscordClient {
       }
     });
   }
+  /**
+   * Runs when the bot logs in to discord
+   */
   private async ready() {
     const onCommandsLoadedCallbacks: Array<(commands: Command[]) => unknown> =
       [];
@@ -101,7 +115,9 @@ export default class DiscordBot extends DiscordClient {
     this.triggerCommandOnReady();
     this.triggerLoadedCallbacks();
   }
-
+  /**
+   * Runs when the bot is invited to a guild
+   */
   private async guildCreate(guild: Guild) {
     const client = this;
     const rest = this.slashCommandRest;
@@ -117,11 +133,14 @@ export default class DiscordBot extends DiscordClient {
           });
     });
   }
-
+  /**
+   * Runs when a command is used
+   */
   private interactionCreate(interaction: Interaction) {
     if (!interaction.isCommand()) return;
     const command = this.commands.get(interaction.commandName);
     if (!command || interaction.replied) return;
+    // allow plugins to cancel commands before they are ran
     try {
       let cancelled = false;
       const cancelFunction = () => {
@@ -137,7 +156,9 @@ export default class DiscordBot extends DiscordClient {
       interaction.reply("An uknown error occured");
     }
   }
-
+  /**
+   * Runs on each discord message
+   */
   private messageCreate(message: Message) {
     this.messageHandlers.forEach((handler) => {
       try {

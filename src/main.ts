@@ -4,6 +4,7 @@ import { Intents } from "discord.js";
 import botFactory from "./botFactory";
 import path from "path";
 import detectTSNode from "detect-ts-node";
+
 const main = async () => {
   const discordBot = botFactory(
     new DiscordBot({
