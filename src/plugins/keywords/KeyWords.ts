@@ -18,7 +18,7 @@ if (!fs.existsSync(path.resolve(process.cwd(), "keywords.json"))) {
   fs.writeFileSync(path.resolve(process.cwd(), "keywords.json"), "{}");
 }
 
-let guildKeyWordMap: GuildKeyWordMap = JSON.parse(
+const guildKeyWordMap: GuildKeyWordMap = JSON.parse(
   fs.readFileSync(path.resolve(process.cwd(), "keywords.json"), "utf-8")
 );
 
